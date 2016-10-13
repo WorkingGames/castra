@@ -9,16 +9,16 @@ import de.incub8.castra.core.Castra;
 
 public class GameScreen extends ScreenAdapter
 {
+    private final Castra game;
+    private final SpriteBatch batch;
+    private final BitmapFont font;
+
     public GameScreen(Castra game)
     {
         this.game = game;
         batch = new SpriteBatch();
         font = new BitmapFont();
     }
-
-    private final Castra game;
-    private final SpriteBatch batch;
-    private final BitmapFont font;
 
     @Override
     public void render(float delta)
