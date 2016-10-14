@@ -1,6 +1,5 @@
 package de.incub8.castra.core.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import com.badlogic.gdx.math.Ellipse;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 @Data
-@AllArgsConstructor
 public class Settlement
 {
     private final SettlementSize size;
@@ -18,4 +16,14 @@ public class Settlement
 
     private int soldiers;
     private Player owner;
+
+    public Settlement(SettlementSize size, Vector2 position, int soldiers, Player owner)
+    {
+        this.size = size;
+        this.soldiers = soldiers;
+        this.owner = owner;
+        Vector2 offset = new Vector2(size.getWidth() / 2, size.getHeight() / 2);
+        this.hitbox = new Ellipse(position.sub(offset), size.getWidth(), size.getHeight());
+        this.paths = new ObjectMap<>();
+    }
 }
