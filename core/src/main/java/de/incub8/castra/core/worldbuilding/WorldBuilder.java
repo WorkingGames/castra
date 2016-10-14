@@ -1,7 +1,9 @@
 package de.incub8.castra.core.worldbuilding;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.model.Player;
 import de.incub8.castra.core.model.PlayerType;
@@ -16,21 +18,45 @@ public class WorldBuilder
     private static final Player HUMAN = new Player(Color.GOLDENROD, "Bob", PlayerType.HUMAN);
 
     private static final Settlement SETTLEMENT_1 = new Settlement(
-        SettlementSize.LARGE, new Vector2(50, 50), 100, HUMAN);
+        SettlementSize.LARGE, new GridPoint2(50, 50), 100, HUMAN, new Texture(Gdx.files.internal("castleHuman.png")));
     private static final Settlement SETTLEMENT_2 = new Settlement(
-        SettlementSize.LARGE, new Vector2(1300, 700), 100, AI);
+        SettlementSize.LARGE, new GridPoint2(1300, 700), 100, AI, new Texture(Gdx.files.internal("castleAI.png")));
     private static final Settlement SETTLEMENT_3 = new Settlement(
-        SettlementSize.MEDIUM, new Vector2(130, 500), 20, NEUTRAL);
+        SettlementSize.MEDIUM,
+        new GridPoint2(130, 500),
+        20,
+        NEUTRAL,
+        new Texture(Gdx.files.internal("castleNeutralMedium.png")));
     private static final Settlement SETTLEMENT_4 = new Settlement(
-        SettlementSize.MEDIUM, new Vector2(300, 240), 40, NEUTRAL);
+        SettlementSize.MEDIUM,
+        new GridPoint2(300, 240),
+        40,
+        NEUTRAL,
+        new Texture(Gdx.files.internal("castleNeutralMedium.png")));
     private static final Settlement SETTLEMENT_5 = new Settlement(
-        SettlementSize.SMALL, new Vector2(800, 680), 30, NEUTRAL);
+        SettlementSize.SMALL,
+        new GridPoint2(800, 680),
+        30,
+        NEUTRAL,
+        new Texture(Gdx.files.internal("castleNeutralSmall.png")));
     private static final Settlement SETTLEMENT_6 = new Settlement(
-        SettlementSize.SMALL, new Vector2(1100, 180), 10, NEUTRAL);
+        SettlementSize.SMALL,
+        new GridPoint2(1100, 180),
+        10,
+        NEUTRAL,
+        new Texture(Gdx.files.internal("castleNeutralSmall.png")));
     private static final Settlement SETTLEMENT_7 = new Settlement(
-        SettlementSize.SMALL, new Vector2(500, 80), 25, NEUTRAL);
+        SettlementSize.SMALL,
+        new GridPoint2(500, 80),
+        25,
+        NEUTRAL,
+        new Texture(Gdx.files.internal("castleNeutralSmall.png")));
     private static final Settlement SETTLEMENT_8 = new Settlement(
-        SettlementSize.SMALL, new Vector2(900, 400), 5, NEUTRAL);
+        SettlementSize.SMALL,
+        new GridPoint2(900, 400),
+        5,
+        NEUTRAL,
+        new Texture(Gdx.files.internal("castleNeutralSmall.png")));
 
     public World buildWorld()
     {
