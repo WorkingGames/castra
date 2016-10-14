@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Ellipse;
 import de.incub8.castra.core.Castra;
+import de.incub8.castra.core.model.Coordinates;
 import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.World;
+import de.incub8.castra.core.pathfinding.PathEnhancer;
 import de.incub8.castra.core.worldbuilding.WorldBuilder;
 
 public class GameScreen extends ScreenAdapter
@@ -25,7 +27,12 @@ public class GameScreen extends ScreenAdapter
         this.game = game;
         batch = new SpriteBatch();
         font = new BitmapFont();
-        world = new WorldBuilder().buildWorld();
+
+        Coordinates coordinates = new Coordinates(Castra.VIEWPORT_WIDTH, Castra.VIEWPORT_HEIGHT);
+
+        world = new WorldBuilder(coordinates).buildWorld();
+
+        new PathEnhancer(coordinates).enhance(world);
     }
 
     @Override

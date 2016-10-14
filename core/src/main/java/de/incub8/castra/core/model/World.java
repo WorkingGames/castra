@@ -13,6 +13,7 @@ public class World
 {
     private final Array<Player> players;
     private final Array<Settlement> settlements;
+    private final Paths paths;
     private final Array<Army> armies;
     private final Array<Battle> battles;
     private long startTime;
@@ -21,6 +22,7 @@ public class World
     {
         this.players = players;
         this.settlements = settlements;
+        paths = new Paths();
         armies = new Array<>();
         battles = new Array<>();
         startTime = 0;

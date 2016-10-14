@@ -13,6 +13,9 @@ import com.badlogic.gdx.utils.Array;
 @EqualsAndHashCode
 public class Army
 {
+    public static final int WIDTH = 50;
+    public static final int HEIGHT = 28;
+
     private final Player owner;
     private final Array<Vector2> path;
     private final ArmySize size;
