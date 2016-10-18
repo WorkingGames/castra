@@ -18,11 +18,11 @@ public class World
     private final Array<Battle> battles;
     private long startTime;
 
-    public World(Array<Player> players, Array<Settlement> settlements)
+    public World(Array<Player> players, Array<Settlement> settlements, Paths paths)
     {
         this.players = players;
         this.settlements = settlements;
-        paths = new Paths();
+        this.paths = paths;
         armies = new Array<>();
         battles = new Array<>();
         startTime = 0;

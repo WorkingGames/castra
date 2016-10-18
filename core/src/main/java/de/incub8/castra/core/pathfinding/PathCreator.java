@@ -9,32 +9,30 @@ import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.Array;
+import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.model.Army;
-import de.incub8.castra.core.model.Coordinates;
 import de.incub8.castra.core.model.Paths;
 import de.incub8.castra.core.model.Settlement;
-import de.incub8.castra.core.model.World;
 
-public class PathEnhancer
+public class PathCreator
 {
     private final Coordinates coordinates;
     private final BlacklistAwareCoordinateGraph blacklistAwareCoordinateGraph;
     private final PathFinder<GridPoint2> pathFinder;
     private final Heuristic<GridPoint2> heuristic;
 
-    public PathEnhancer(Coordinates coordinates)
+    public PathCreator()
     {
-        this.coordinates = coordinates;
+        coordinates = new Coordinates(Castra.VIEWPORT_WIDTH, Castra.VIEWPORT_HEIGHT);
         blacklistAwareCoordinateGraph = new BlacklistAwareCoordinateGraph(coordinates);
         pathFinder = new IndexedAStarPathFinder<>(blacklistAwareCoordinateGraph);
         heuristic = new StraightLineHeuristic();
     }
 
-    public void enhance(World world)
+    public Paths create(Array<Settlement> settlements)
     {
-        Paths paths = world.getPaths();
+        Paths result = new Paths();
 
-        Array<Settlement> settlements = world.getSettlements();
         for (int i = 0; i < settlements.size - 1; i++)
         {
             Settlement settlement1 = settlements.get(i);
@@ -49,10 +47,10 @@ public class PathEnhancer
                 if (graphPath != null)
                 {
                     Array<GridPoint2> path = toArray(graphPath);
-                    paths.put(settlement1, settlement2, path);
+                    result.put(settlement1, settlement2, path);
 
                     Array<GridPoint2> reversedPath = reverse(path);
-                    paths.put(settlement2, settlement1, reversedPath);
+                    result.put(settlement2, settlement1, reversedPath);
                 }
                 else
                 {
@@ -64,6 +62,7 @@ public class PathEnhancer
                 }
             }
         }
+        return result;
     }
 
     private void applyBlacklist(Array<Settlement> settlements, Settlement settlement1, Settlement settlement2)
@@ -90,7 +89,8 @@ public class PathEnhancer
     {
         GraphPath<GridPoint2> result = new DefaultGraphPath<>();
         boolean pathFound = pathFinder.searchNodePath(
-            settlement1.getPosition(), settlement2.getPosition(), heuristic, result);
+            coordinates.attach(
+                settlement1.getPosition()), coordinates.attach(settlement2.getPosition()), heuristic, result);
         if (!pathFound)
         {
             result = null;

@@ -1,29 +1,29 @@
 package de.incub8.castra.core.worldbuilding;
 
-import lombok.RequiredArgsConstructor;
-
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
-import de.incub8.castra.core.model.Coordinates;
+import de.incub8.castra.core.model.Paths;
 import de.incub8.castra.core.model.Player;
 import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.SettlementSize;
 import de.incub8.castra.core.model.TextureDefinition;
 import de.incub8.castra.core.model.World;
+import de.incub8.castra.core.pathfinding.PathCreator;
 
-@RequiredArgsConstructor
 public class WorldBuilder
 {
     private static final Player NEUTRAL = new Player(Color.GRAY, "NEUTRAL", PlayerType.NEUTRAL);
     private static final Player AI = new Player(Color.CYAN, "AI", PlayerType.AI);
     private static final Player HUMAN = new Player(Color.GOLDENROD, "Bob", PlayerType.HUMAN);
 
-    private final Coordinates coordinates;
-
     public World buildWorld()
     {
-        World world = new World(buildPlayers(), buildSettlements());
+        Array<Player> players = buildPlayers();
+        Array<Settlement> settlements = buildSettlements();
+        Paths paths = new PathCreator().create(settlements);
+        World world = new World(players, settlements, paths);
         return world;
     }
 
@@ -32,21 +32,21 @@ public class WorldBuilder
         Array<Settlement> settlements = new Array<>();
         settlements.addAll(
             new Settlement(
-                SettlementSize.LARGE, coordinates.get(50, 50), 100, HUMAN, TextureDefinition.CASTLE_HUMAN),
+                SettlementSize.LARGE, new GridPoint2(50, 50), 100, HUMAN, TextureDefinition.CASTLE_HUMAN),
             new Settlement(
-                SettlementSize.LARGE, coordinates.get(1300, 700), 100, AI, TextureDefinition.CASTLE_AI),
+                SettlementSize.LARGE, new GridPoint2(1300, 700), 100, AI, TextureDefinition.CASTLE_AI),
             new Settlement(
-                SettlementSize.MEDIUM, coordinates.get(130, 500), 20, NEUTRAL, TextureDefinition.NEUTRAL_MEDIUM),
+                SettlementSize.MEDIUM, new GridPoint2(130, 500), 20, NEUTRAL, TextureDefinition.NEUTRAL_MEDIUM),
             new Settlement(
-                SettlementSize.MEDIUM, coordinates.get(300, 240), 40, NEUTRAL, TextureDefinition.NEUTRAL_MEDIUM),
+                SettlementSize.MEDIUM, new GridPoint2(300, 240), 40, NEUTRAL, TextureDefinition.NEUTRAL_MEDIUM),
             new Settlement(
-                SettlementSize.SMALL, coordinates.get(800, 680), 30, NEUTRAL, TextureDefinition.NEUTRAL_SMALL),
+                SettlementSize.SMALL, new GridPoint2(800, 680), 30, NEUTRAL, TextureDefinition.NEUTRAL_SMALL),
             new Settlement(
-                SettlementSize.SMALL, coordinates.get(1100, 180), 10, NEUTRAL, TextureDefinition.NEUTRAL_SMALL),
+                SettlementSize.SMALL, new GridPoint2(1100, 180), 10, NEUTRAL, TextureDefinition.NEUTRAL_SMALL),
             new Settlement(
-                SettlementSize.SMALL, coordinates.get(500, 80), 25, NEUTRAL, TextureDefinition.NEUTRAL_SMALL),
+                SettlementSize.SMALL, new GridPoint2(500, 80), 25, NEUTRAL, TextureDefinition.NEUTRAL_SMALL),
             new Settlement(
-                SettlementSize.SMALL, coordinates.get(900, 400), 5, NEUTRAL, TextureDefinition.NEUTRAL_SMALL));
+                SettlementSize.SMALL, new GridPoint2(900, 400), 5, NEUTRAL, TextureDefinition.NEUTRAL_SMALL));
         return settlements;
     }
 
