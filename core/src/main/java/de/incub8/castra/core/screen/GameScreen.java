@@ -21,7 +21,7 @@ public class GameScreen extends ScreenAdapter
     private final BitmapFont font;
     private final World world;
 
-    private Array<AbstractRenderable> elements;
+    private Array<AbstractRenderable> renderables;
 
     public GameScreen(Castra game)
     {
@@ -29,7 +29,7 @@ public class GameScreen extends ScreenAdapter
         batch = new SpriteBatch();
         font = new BitmapFont();
         world = new WorldBuilder().buildWorld();
-        elements = new Array<>();
+        renderables = new Array<>();
     }
 
     @Override
@@ -42,18 +42,24 @@ public class GameScreen extends ScreenAdapter
         batch.setProjectionMatrix(game.getCamera().combined);
         font.setColor(Color.WHITE);
 
-        for (Settlement settlement : world.getSettlements())
-        {
-            elements.add(new SettlementRenderable(settlement));
-        }
-        elements.sort();
+        updateRenderables();
 
         batch.begin();
-        for (AbstractRenderable abstractRenderable : elements)
+        for (AbstractRenderable abstractRenderable : renderables)
         {
             abstractRenderable.render(batch, font);
         }
         batch.end();
+    }
+
+    private void updateRenderables()
+    {
+        renderables.clear();
+        for (Settlement settlement : world.getSettlements())
+        {
+            renderables.add(new SettlementRenderable(settlement));
+        }
+        renderables.sort();
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
 import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.Settlement;
 
@@ -19,7 +20,7 @@ public class SettlementRenderable extends AbstractRenderable
     {
         TextureDefinition textureDefinition = settlement.getTextureDefinition();
         GridPoint2 center = settlement.getPosition();
-        GridPoint2 offset = textureDefinition.getOffset();
+        Vector2 offset = textureDefinition.getOffset();
         Texture texture = textureDefinition.getTexture();
 
         float xRenderPosition = center.x - offset.x;
@@ -29,8 +30,7 @@ public class SettlementRenderable extends AbstractRenderable
         // AI settlements have hidden soldier sizes
         if (!settlement.getOwner().getType().equals(PlayerType.AI))
         {
-            font.draw(
-                batch, "" + (settlement.getSoldiers()), center.x, center.y);
+            font.draw(batch, String.valueOf(settlement.getSoldiers()), center.x, center.y);
         }
     }
 

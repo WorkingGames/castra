@@ -16,10 +16,10 @@ public class Settlement
     private final Ellipse hitbox;
     private final ObjectMap<Settlement, Array<GridPoint2>> paths;
     private final GridPoint2 position;
+    private final TextureDefinition textureDefinition;
 
     private int soldiers;
     private Player owner;
-    private TextureDefinition textureDefinition;
 
     public Settlement(
         SettlementSize size, GridPoint2 position, int soldiers, Player owner, TextureDefinition textureDefinition)
