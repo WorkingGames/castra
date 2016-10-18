@@ -4,8 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 
 @Getter
@@ -15,23 +14,34 @@ public class Army
 {
     public static final int WIDTH = 50;
     public static final int HEIGHT = 28;
+    private static final float SPEED = 200;
 
     private final Player owner;
-    private final Array<Vector2> path;
+    private final Array<GridPoint2> path;
     private final ArmySize size;
-    private final Animation animation;
+    private final TextureDefinition textureDefinition;
 
     private int soldiers;
     private int pathPosition;
 
-    public Army(int soldiers, Player owner, Array<Vector2> path)
+    public Army(int soldiers, Player owner, Array<GridPoint2> path)
     {
         this.soldiers = soldiers;
         this.owner = owner;
         this.path = path;
         size = ArmySize.bySoldierCount(soldiers);
-        animation = null;
+        textureDefinition = TextureDefinition.ARMY;
 
         pathPosition = 0;
+    }
+
+    public GridPoint2 getPosition()
+    {
+        return path.get(pathPosition);
+    }
+
+    public void move(float deltaTime)
+    {
+        pathPosition = Math.min(pathPosition + (int) (SPEED * deltaTime), path.size - 1);
     }
 }
