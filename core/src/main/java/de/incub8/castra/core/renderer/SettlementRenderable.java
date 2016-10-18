@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.Settlement;
+import de.incub8.castra.core.model.TextureDefinition;
 
 @RequiredArgsConstructor
 public class SettlementRenderable extends AbstractRenderable
@@ -44,11 +45,5 @@ public class SettlementRenderable extends AbstractRenderable
     protected int getY()
     {
         return settlement.getPosition().y;
-    }
-
-    @Override
-    public void dispose()
-    {
-        settlement.getTextureDefinition().getTexture().dispose();
     }
 }

@@ -7,8 +7,6 @@ public abstract class AbstractRenderable implements Comparable<AbstractRenderabl
 {
     public abstract void render(SpriteBatch batch, BitmapFont font);
 
-    public abstract void dispose();
-
     protected abstract int getX();
 
     protected abstract int getY();

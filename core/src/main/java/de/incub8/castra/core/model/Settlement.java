@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import de.incub8.castra.core.renderer.TextureDefinition;
 
 @Data
 public class Settlement

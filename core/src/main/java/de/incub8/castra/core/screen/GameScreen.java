@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.model.Settlement;
+import de.incub8.castra.core.model.TextureDefinition;
 import de.incub8.castra.core.model.World;
 import de.incub8.castra.core.renderer.AbstractRenderable;
 import de.incub8.castra.core.renderer.SettlementRenderable;
@@ -65,10 +66,7 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void dispose()
     {
-        for (AbstractRenderable abstractRenderable : renderables)
-        {
-            abstractRenderable.dispose();
-        }
+        TextureDefinition.disposeAll();
         batch.dispose();
         font.dispose();
     }
