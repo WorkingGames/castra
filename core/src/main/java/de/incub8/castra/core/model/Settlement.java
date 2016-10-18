@@ -2,7 +2,6 @@ package de.incub8.castra.core.model;
 
 import lombok.Data;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
@@ -13,12 +12,13 @@ public class Settlement
     private final SettlementSize size;
     private final Ellipse hitbox;
     private final GridPoint2 position;
+    private final TextureDefinition textureDefinition;
 
     private int soldiers;
     private Player owner;
-    private Texture texture;
 
-    public Settlement(SettlementSize size, GridPoint2 position, int soldiers, Player owner, Texture texture)
+    public Settlement(
+        SettlementSize size, GridPoint2 position, int soldiers, Player owner, TextureDefinition textureDefinition)
     {
         this.size = size;
         this.soldiers = soldiers;
@@ -27,6 +27,6 @@ public class Settlement
         Vector2 offset = new Vector2(size.getWidth() / 2, size.getHeight() / 2);
         Vector2 positionVector = new Vector2(position.x, position.y);
         this.hitbox = new Ellipse(positionVector.sub(offset), size.getWidth(), size.getHeight());
-        this.texture = texture;
+        this.textureDefinition = textureDefinition;
     }
 }

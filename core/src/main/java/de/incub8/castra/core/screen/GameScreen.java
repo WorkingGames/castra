@@ -6,13 +6,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Ellipse;
+import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.model.Coordinates;
-import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.Settlement;
+import de.incub8.castra.core.model.TextureDefinition;
 import de.incub8.castra.core.model.World;
 import de.incub8.castra.core.pathfinding.PathEnhancer;
+import de.incub8.castra.core.renderer.AbstractRenderable;
+import de.incub8.castra.core.renderer.SettlementRenderable;
 import de.incub8.castra.core.worldbuilding.WorldBuilder;
 
 public class GameScreen extends ScreenAdapter
@@ -21,6 +23,8 @@ public class GameScreen extends ScreenAdapter
     private final SpriteBatch batch;
     private final BitmapFont font;
     private final World world;
+
+    private Array<AbstractRenderable> renderables;
 
     public GameScreen(Castra game)
     {
@@ -33,6 +37,7 @@ public class GameScreen extends ScreenAdapter
         world = new WorldBuilder(coordinates).buildWorld();
 
         new PathEnhancer(coordinates).enhance(world);
+        renderables = new Array<>();
     }
 
     @Override
@@ -43,27 +48,32 @@ public class GameScreen extends ScreenAdapter
         game.getCamera().update();
 
         batch.setProjectionMatrix(game.getCamera().combined);
-
         font.setColor(Color.WHITE);
 
+        updateRenderables();
+
         batch.begin();
-        for (Settlement settlement : world.getSettlements())
+        for (AbstractRenderable abstractRenderable : renderables)
         {
-            Ellipse hitbox = settlement.getHitbox();
-            batch.draw(settlement.getTexture(), hitbox.x, hitbox.y);
-            // AI settlements have hidden soldier sizes
-            if (!settlement.getOwner().getType().equals(PlayerType.AI))
-            {
-                font.draw(
-                    batch, "" + (settlement.getSoldiers()), settlement.getPosition().x, settlement.getPosition().y);
-            }
+            abstractRenderable.render(batch, font);
         }
         batch.end();
+    }
+
+    private void updateRenderables()
+    {
+        renderables.clear();
+        for (Settlement settlement : world.getSettlements())
+        {
+            renderables.add(new SettlementRenderable(settlement));
+        }
+        renderables.sort();
     }
 
     @Override
     public void dispose()
     {
+        TextureDefinition.disposeAll();
         batch.dispose();
         font.dispose();
     }
