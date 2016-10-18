@@ -65,6 +65,10 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void dispose()
     {
+        for (AbstractRenderable abstractRenderable : renderables)
+        {
+            abstractRenderable.dispose();
+        }
         batch.dispose();
         font.dispose();
     }

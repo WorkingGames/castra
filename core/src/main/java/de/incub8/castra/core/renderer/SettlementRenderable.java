@@ -45,4 +45,10 @@ public class SettlementRenderable extends AbstractRenderable
     {
         return settlement.getPosition().y;
     }
+
+    @Override
+    public void dispose()
+    {
+        settlement.getTextureDefinition().getTexture().dispose();
+    }
 }
