@@ -32,7 +32,9 @@ public class GameScreen extends ScreenAdapter
         this.game = game;
         batch = new SpriteBatch();
         font = new BitmapFont();
+
         world = new WorldBuilder().buildWorld();
+
         renderables = new Array<>();
         background = new Background();
     }

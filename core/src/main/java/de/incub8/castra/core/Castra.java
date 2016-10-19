@@ -18,7 +18,7 @@ public class Castra extends Game
     public void create()
     {
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1366, 768);
+        camera.setToOrtho(false, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
         this.setScreen(new MainMenuScreen(this));
     }
