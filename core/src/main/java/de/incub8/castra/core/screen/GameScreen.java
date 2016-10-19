@@ -21,6 +21,7 @@ import de.incub8.castra.core.renderer.AbstractRenderable;
 import de.incub8.castra.core.renderer.ArmyRenderable;
 import de.incub8.castra.core.renderer.Background;
 import de.incub8.castra.core.renderer.SettlementRenderable;
+import de.incub8.castra.core.task.BattleProcessor;
 import de.incub8.castra.core.task.SoldierSpawner;
 import de.incub8.castra.core.worldbuilding.WorldBuilder;
 
@@ -30,7 +31,6 @@ public class GameScreen extends ScreenAdapter
     private final SpriteBatch batch;
     private final BitmapFont font;
     private final World world;
-    private final SoldierSpawner soldierSpawner;
     private final Pwnage pwnage;
 
     private Array<AbstractRenderable> renderables;
@@ -51,8 +51,8 @@ public class GameScreen extends ScreenAdapter
         MouseInputAdapter mouseInputAdapter = new MouseInputAdapter(world, game.getCamera());
         Gdx.input.setInputProcessor(mouseInputAdapter);
 
-        soldierSpawner = new SoldierSpawner(world.getSettlements());
-        soldierSpawner.startSpawn();
+        new SoldierSpawner(world.getSettlements()).startSpawn();
+        new BattleProcessor(world.getBattles()).startBattles();
 
         pwnage = new Pwnage(world);
     }
