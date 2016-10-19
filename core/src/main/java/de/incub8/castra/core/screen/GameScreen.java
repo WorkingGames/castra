@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.Castra;
+import de.incub8.castra.core.model.Army;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.TextureDefinition;
 import de.incub8.castra.core.model.World;
 import de.incub8.castra.core.renderer.AbstractRenderable;
+import de.incub8.castra.core.renderer.ArmyRenderable;
 import de.incub8.castra.core.renderer.Background;
 import de.incub8.castra.core.renderer.SettlementRenderable;
 import de.incub8.castra.core.task.SoldierSpawner;
@@ -46,6 +48,25 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void render(float delta)
     {
+        updateGameState(delta);
+        draw();
+    }
+
+    private void updateGameState(float deltaTime)
+    {
+        moveArmies(deltaTime);
+    }
+
+    private void moveArmies(float deltaTime)
+    {
+        for (Army army : world.getArmies())
+        {
+            army.move(deltaTime);
+        }
+    }
+
+    private void draw()
+    {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.getCamera().update();
@@ -70,6 +91,10 @@ public class GameScreen extends ScreenAdapter
         for (Settlement settlement : world.getSettlements())
         {
             renderables.add(new SettlementRenderable(settlement));
+        }
+        for (Army army : world.getArmies())
+        {
+            renderables.add(new ArmyRenderable(army));
         }
         renderables.sort();
     }
