@@ -1,10 +1,10 @@
-package de.incub8.castra.core.model;
+package de.incub8.castra.core.pathfinding;
 
 import lombok.Getter;
 
 import com.badlogic.gdx.math.GridPoint2;
 
-public class Coordinates
+class Coordinates
 {
     @Getter
     private final int width;
@@ -33,6 +33,11 @@ public class Coordinates
             }
         }
         return result;
+    }
+
+    public GridPoint2 attach(GridPoint2 gridPoint2)
+    {
+        return get(gridPoint2.x, gridPoint2.y);
     }
 
     public GridPoint2 get(int x, int y)

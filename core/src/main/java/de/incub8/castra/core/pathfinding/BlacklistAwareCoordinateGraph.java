@@ -8,7 +8,6 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.Array;
-import de.incub8.castra.core.model.Coordinates;
 
 class BlacklistAwareCoordinateGraph implements IndexedGraph<GridPoint2>
 {
