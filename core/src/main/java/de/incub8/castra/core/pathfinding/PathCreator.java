@@ -35,42 +35,42 @@ public class PathCreator
 
         for (int i = 0; i < settlements.size - 1; i++)
         {
-            Settlement settlement1 = settlements.get(i);
+            Settlement origin = settlements.get(i);
             for (int j = i + 1; j < settlements.size; j++)
             {
-                Settlement settlement2 = settlements.get(j);
+                Settlement destination = settlements.get(j);
 
-                applyBlacklist(settlements, settlement1, settlement2);
+                applyBlacklist(settlements, origin, destination);
 
-                GraphPath<GridPoint2> graphPath = calculateGraphPathBetween(settlement1, settlement2);
+                GraphPath<GridPoint2> graphPath = calculateGraphPathBetween(origin, destination);
 
                 if (graphPath != null)
                 {
                     Array<GridPoint2> path = toArray(graphPath);
-                    result.put(settlement1, settlement2, path);
+                    result.put(origin, destination, path);
 
                     Array<GridPoint2> reversedPath = reverse(path);
-                    result.put(settlement2, settlement1, reversedPath);
+                    result.put(destination, origin, reversedPath);
                 }
                 else
                 {
                     throw new PathFindingException(
                         "Unable to find path between " +
-                            settlement1 +
+                            origin +
                             " and " +
-                            settlement2);
+                            destination);
                 }
             }
         }
         return result;
     }
 
-    private void applyBlacklist(Array<Settlement> settlements, Settlement settlement1, Settlement settlement2)
+    private void applyBlacklist(Array<Settlement> settlements, Settlement origin, Settlement destination)
     {
         Array<Shape2D> blacklist = new Array<>();
         for (Settlement settlement : settlements)
         {
-            if (!settlement.equals(settlement1) && !settlement.equals(settlement2))
+            if (!settlement.equals(origin) && !settlement.equals(destination))
             {
                 GridPoint2 settlementPosition = settlement.getPosition();
                 Ellipse settlementHitbox = settlement.getHitbox();
@@ -85,12 +85,12 @@ public class PathCreator
         blacklistAwareCoordinateGraph.setBlacklist(blacklist);
     }
 
-    private GraphPath<GridPoint2> calculateGraphPathBetween(Settlement settlement1, Settlement settlement2)
+    private GraphPath<GridPoint2> calculateGraphPathBetween(Settlement origin, Settlement destination)
     {
         GraphPath<GridPoint2> result = new DefaultGraphPath<>();
         boolean pathFound = pathFinder.searchNodePath(
             coordinates.attach(
-                settlement1.getPosition()), coordinates.attach(settlement2.getPosition()), heuristic, result);
+                origin.getPosition()), coordinates.attach(destination.getPosition()), heuristic, result);
         if (!pathFound)
         {
             result = null;
