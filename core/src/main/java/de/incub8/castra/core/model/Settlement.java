@@ -24,9 +24,8 @@ public class Settlement
         this.soldiers = soldiers;
         this.owner = owner;
         this.position = position;
-        Vector2 offset = new Vector2(size.getWidth() / 2, size.getHeight() / 2);
         Vector2 positionVector = new Vector2(position.x, position.y);
-        this.hitbox = new Ellipse(positionVector.sub(offset), size.getWidth(), size.getHeight());
+        this.hitbox = new Ellipse(positionVector, size.getWidth(), size.getHeight());
         this.textureDefinition = textureDefinition;
     }
 
