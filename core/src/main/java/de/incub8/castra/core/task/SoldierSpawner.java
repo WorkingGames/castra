@@ -3,14 +3,18 @@ package de.incub8.castra.core.task;
 import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.SettlementSize;
 
 @RequiredArgsConstructor
-public class SoldierSpawner
+public class SoldierSpawner implements Disposable
 {
     private final Array<Settlement> settlements;
+    private Timer.Task smallTask;
+    private Timer.Task mediumTask;
+    private Timer.Task largeTask;
 
     public void startSpawn()
     {
@@ -34,8 +38,16 @@ public class SoldierSpawner
             }
         }
 
-        Timer.schedule(new SoldierSpawnTask(small), 0, SettlementSize.SMALL.getSpawnIntervalInSeconds());
-        Timer.schedule(new SoldierSpawnTask(medium), 0, SettlementSize.MEDIUM.getSpawnIntervalInSeconds());
-        Timer.schedule(new SoldierSpawnTask(large), 0, SettlementSize.LARGE.getSpawnIntervalInSeconds());
+        smallTask = Timer.schedule(new SoldierSpawnTask(small), 0, SettlementSize.SMALL.getSpawnIntervalInSeconds());
+        mediumTask = Timer.schedule(new SoldierSpawnTask(medium), 0, SettlementSize.MEDIUM.getSpawnIntervalInSeconds());
+        largeTask = Timer.schedule(new SoldierSpawnTask(large), 0, SettlementSize.LARGE.getSpawnIntervalInSeconds());
+    }
+
+    @Override
+    public void dispose()
+    {
+        smallTask.cancel();
+        mediumTask.cancel();
+        largeTask.cancel();
     }
 }

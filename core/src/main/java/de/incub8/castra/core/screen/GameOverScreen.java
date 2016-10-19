@@ -37,8 +37,6 @@ public class GameOverScreen extends ScreenAdapter
         batch.setProjectionMatrix(game.getCamera().combined);
         batch.begin();
         background.render(batch);
-        font.draw(batch, "Game Over", 600, 350);
-
         if (won)
         {
             font.draw(batch, "You Won!", 600, 400);
@@ -48,7 +46,7 @@ public class GameOverScreen extends ScreenAdapter
             font.draw(batch, "You Lost!", 600, 400);
         }
 
-        font.draw(batch, "Tap anywhere to start again!", 600, 450);
+        font.draw(batch, "Tap anywhere to start again!", 600, 350);
         batch.end();
 
         if (Gdx.input.isTouched())

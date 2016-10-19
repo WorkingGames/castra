@@ -14,9 +14,7 @@ import de.incub8.castra.core.input.MouseInputAdapter;
 import de.incub8.castra.core.model.Army;
 import de.incub8.castra.core.model.Battle;
 import de.incub8.castra.core.model.Settlement;
-import de.incub8.castra.core.model.TextureDefinition;
 import de.incub8.castra.core.model.World;
-import de.incub8.castra.core.pwnage.Pwnage;
 import de.incub8.castra.core.renderer.AbstractRenderable;
 import de.incub8.castra.core.renderer.ArmyRenderable;
 import de.incub8.castra.core.renderer.Background;
@@ -31,7 +29,10 @@ public class GameScreen extends ScreenAdapter
     private final SpriteBatch batch;
     private final BitmapFont font;
     private final World world;
-    private final Pwnage pwnage;
+    private final VictoryCondition victoryCondition;
+    private final MouseInputAdapter mouseInputAdapter;
+    private final SoldierSpawner soldierSpawner;
+    private final BattleProcessor battleProcessor;
 
     private Array<AbstractRenderable> renderables;
 
@@ -48,21 +49,23 @@ public class GameScreen extends ScreenAdapter
         renderables = new Array<>();
         background = new Background();
 
-        MouseInputAdapter mouseInputAdapter = new MouseInputAdapter(world, game.getCamera());
-        Gdx.input.setInputProcessor(mouseInputAdapter);
+        mouseInputAdapter = new MouseInputAdapter(world, game.getCamera());
+        game.getInputMultiplexer().addProcessor(mouseInputAdapter);
 
-        new SoldierSpawner(world.getSettlements()).startSpawn();
-        new BattleProcessor(world.getBattles()).startBattles();
+        soldierSpawner = new SoldierSpawner(world.getSettlements());
+        soldierSpawner.startSpawn();
+        battleProcessor = new BattleProcessor(world.getBattles());
+        battleProcessor.startBattles();
 
-        pwnage = new Pwnage(world);
+        victoryCondition = new VictoryCondition(world);
     }
 
     @Override
     public void render(float delta)
     {
-        checkGameOver();
         updateGameState(delta);
         draw();
+        checkGameOver();
     }
 
     private void updateGameState(float deltaTime)
@@ -121,12 +124,12 @@ public class GameScreen extends ScreenAdapter
 
     private void checkGameOver()
     {
-        if (pwnage.playerWon())
+        if (victoryCondition.playerWon())
         {
             game.setScreen(new GameOverScreen(game, true));
             dispose();
         }
-        else if (pwnage.playerLost())
+        else if (victoryCondition.playerLost())
         {
             game.setScreen(new GameOverScreen(game, false));
             dispose();
@@ -136,8 +139,12 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void dispose()
     {
+        soldierSpawner.dispose();
+        battleProcessor.dispose();
+        game.getInputMultiplexer().removeProcessor(mouseInputAdapter);
         background.dispose();
-        TextureDefinition.disposeAll();
+        // TODO: we will dispose the TextureDefinitions as soon as the game has an exit option
+        // TextureDefinition.disposeAll();
         batch.dispose();
         font.dispose();
     }

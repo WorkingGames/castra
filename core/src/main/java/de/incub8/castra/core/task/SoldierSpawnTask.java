@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
+import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.Settlement;
 
 @RequiredArgsConstructor
@@ -16,7 +17,10 @@ public class SoldierSpawnTask extends Timer.Task
     {
         for (Settlement settlement : settlements)
         {
-            settlement.addSoldier();
+            if (!settlement.getOwner().getType().equals(PlayerType.NEUTRAL))
+            {
+                settlement.addSoldier();
+            }
         }
     }
 }

@@ -34,7 +34,7 @@ public class WorldBuilder
             new Settlement(
                 SettlementSize.LARGE, new GridPoint2(50, 50), 100, HUMAN, TextureDefinition.CASTLE_HUMAN),
             new Settlement(
-                SettlementSize.LARGE, new GridPoint2(1300, 700), 100, AI, TextureDefinition.CASTLE_AI),
+                SettlementSize.LARGE, new GridPoint2(1300, 700), 1, AI, TextureDefinition.CASTLE_AI),
             new Settlement(
                 SettlementSize.MEDIUM, new GridPoint2(130, 500), 20, NEUTRAL, TextureDefinition.NEUTRAL_MEDIUM),
             new Settlement(

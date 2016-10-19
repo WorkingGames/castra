@@ -1,15 +1,16 @@
-package de.incub8.castra.core.pwnage;
+package de.incub8.castra.core.screen;
 
 import lombok.RequiredArgsConstructor;
 
 import de.incub8.castra.core.model.Army;
+import de.incub8.castra.core.model.Battle;
 import de.incub8.castra.core.model.Player;
 import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.World;
 
 @RequiredArgsConstructor
-public class Pwnage
+public class VictoryCondition
 {
     private final World world;
 
@@ -29,6 +30,17 @@ public class Pwnage
             for (Army army : world.getArmies())
             {
                 if (belongsToHuman(army.getOwner()))
+                {
+                    lost = false;
+                    break;
+                }
+            }
+        }
+        if (lost)
+        {
+            for (Battle battle : world.getBattles())
+            {
+                if (belongsToHuman(battle.getArmy().getOwner()))
                 {
                     lost = false;
                     break;
@@ -64,6 +76,17 @@ public class Pwnage
             for (Army army : world.getArmies())
             {
                 if (belongsToAI(army.getOwner()))
+                {
+                    won = false;
+                    break;
+                }
+            }
+        }
+        if (won)
+        {
+            for (Battle battle : world.getBattles())
+            {
+                if (belongsToAI(battle.getArmy().getOwner()))
                 {
                     won = false;
                     break;
