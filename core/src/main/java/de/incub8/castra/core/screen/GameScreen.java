@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.Castra;
+import de.incub8.castra.core.input.MouseInputAdapter;
 import de.incub8.castra.core.model.Army;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.TextureDefinition;
@@ -41,6 +42,10 @@ public class GameScreen extends ScreenAdapter
 
         renderables = new Array<>();
         background = new Background();
+
+        MouseInputAdapter mouseInputAdapter = new MouseInputAdapter(world, game.getCamera());
+        Gdx.input.setInputProcessor(mouseInputAdapter);
+        
         soldierSpawner = new SoldierSpawner(world.getSettlements());
         soldierSpawner.startSpawn();
     }
