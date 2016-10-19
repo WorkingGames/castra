@@ -4,7 +4,6 @@ import lombok.Data;
 
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
 
 @Data
 public class Settlement
@@ -24,8 +23,7 @@ public class Settlement
         this.soldiers = soldiers;
         this.owner = owner;
         this.position = position;
-        Vector2 positionVector = new Vector2(position.x, position.y);
-        this.hitbox = new Ellipse(positionVector, size.getWidth(), size.getHeight());
+        this.hitbox = new Ellipse(position.x, position.y, size.getWidth(), size.getHeight());
         this.textureDefinition = textureDefinition;
     }
 
