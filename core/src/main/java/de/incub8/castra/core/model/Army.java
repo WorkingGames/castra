@@ -52,4 +52,14 @@ public class Army
         GridPoint2 position = getPosition();
         return target.getHitbox().contains(position.x, position.y);
     }
+
+    public void removeSoldier()
+    {
+        soldiers--;
+    }
+
+    public boolean isEmpty()
+    {
+        return soldiers == 0;
+    }
 }
