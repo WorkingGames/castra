@@ -15,10 +15,10 @@ public class Battle
     private final Army army;
     private final Animation animation;
 
-    public Battle(Settlement settlement, Army army)
+    public Battle(Army army)
     {
-        this.settlement = settlement;
         this.army = army;
+        this.settlement = army.getTarget();
         animation = null;
     }
 }

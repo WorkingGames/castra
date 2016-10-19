@@ -17,6 +17,7 @@ public class Army
     private static final float SPEED = 200;
 
     private final Player owner;
+    private final Settlement target;
     private final Array<GridPoint2> path;
     private final ArmySize size;
     private final TextureDefinition textureDefinition;
@@ -24,10 +25,11 @@ public class Army
     private int soldiers;
     private int pathPosition;
 
-    public Army(int soldiers, Player owner, Array<GridPoint2> path)
+    public Army(int soldiers, Player owner, Settlement target, Array<GridPoint2> path)
     {
         this.soldiers = soldiers;
         this.owner = owner;
+        this.target = target;
         this.path = path;
         size = ArmySize.bySoldierCount(soldiers);
         textureDefinition = TextureDefinition.ARMY;
@@ -43,5 +45,11 @@ public class Army
     public void move(float deltaTime)
     {
         pathPosition = Math.min(pathPosition + (int) (SPEED * deltaTime), path.size - 1);
+    }
+
+    public boolean isAtTarget()
+    {
+        GridPoint2 position = getPosition();
+        return target.getHitbox().contains(position.x, position.y);
     }
 }
