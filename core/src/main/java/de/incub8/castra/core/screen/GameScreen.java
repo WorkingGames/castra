@@ -59,13 +59,6 @@ public class GameScreen extends ScreenAdapter
         {
             abstractRenderable.render(batch, font);
         }
-        try
-        {
-            Thread.sleep(10);
-        }
-        catch (InterruptedException ignored)
-        {
-        }
         batch.end();
     }
 

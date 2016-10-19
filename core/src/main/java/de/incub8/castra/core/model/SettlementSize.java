@@ -10,7 +10,7 @@ public enum SettlementSize
 {
     SMALL(3, 50, 28), MEDIUM(2, 70, 39), LARGE(1, 90, 50);
 
-    private final int spawnIntervalInSeconds;
+    private final float spawnIntervalInSeconds;
     private final int width;
     private final int height;
 }

@@ -33,4 +33,9 @@ public class Settlement
         this.paths = new ObjectMap<>();
         this.textureDefinition = textureDefinition;
     }
+
+    public void addSoldier()
+    {
+        soldiers++;
+    }
 }

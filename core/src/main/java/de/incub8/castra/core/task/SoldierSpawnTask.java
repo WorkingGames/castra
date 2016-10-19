@@ -16,7 +16,7 @@ public class SoldierSpawnTask extends Timer.Task
     {
         for (Settlement settlement : settlements)
         {
-            settlement.setSoldiers(settlement.getSoldiers() + 1);
+            settlement.addSoldier();
         }
     }
 }
