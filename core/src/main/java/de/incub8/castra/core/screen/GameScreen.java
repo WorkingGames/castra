@@ -12,6 +12,7 @@ import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.TextureDefinition;
 import de.incub8.castra.core.model.World;
 import de.incub8.castra.core.renderer.AbstractRenderable;
+import de.incub8.castra.core.renderer.Background;
 import de.incub8.castra.core.renderer.SettlementRenderable;
 import de.incub8.castra.core.task.SoldierSpawner;
 import de.incub8.castra.core.worldbuilding.WorldBuilder;
@@ -26,6 +27,8 @@ public class GameScreen extends ScreenAdapter
 
     private Array<AbstractRenderable> renderables;
 
+    private Background background;
+
     public GameScreen(Castra game)
     {
         this.game = game;
@@ -33,6 +36,7 @@ public class GameScreen extends ScreenAdapter
         font = new BitmapFont();
         world = new WorldBuilder().buildWorld();
         renderables = new Array<>();
+        background = new Background();
         soldierSpawner = new SoldierSpawner(world.getSettlements());
         soldierSpawner.startSpawn();
     }
@@ -50,6 +54,7 @@ public class GameScreen extends ScreenAdapter
         updateRenderables();
 
         batch.begin();
+        background.render(batch);
         for (AbstractRenderable abstractRenderable : renderables)
         {
             abstractRenderable.render(batch, font);
@@ -77,6 +82,7 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void dispose()
     {
+        background.dispose();
         TextureDefinition.disposeAll();
         batch.dispose();
         font.dispose();

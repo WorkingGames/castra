@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import de.incub8.castra.core.Castra;
+import de.incub8.castra.core.renderer.Background;
 
 public class MainMenuScreen extends ScreenAdapter
 {
@@ -13,11 +14,15 @@ public class MainMenuScreen extends ScreenAdapter
     private final SpriteBatch batch;
     private final BitmapFont font;
 
+    private Background background;
+
     public MainMenuScreen(Castra game)
     {
         this.game = game;
         batch = new SpriteBatch();
         font = new BitmapFont();
+
+        background = new Background();
     }
 
     @Override
@@ -29,6 +34,7 @@ public class MainMenuScreen extends ScreenAdapter
 
         batch.setProjectionMatrix(game.getCamera().combined);
         batch.begin();
+        background.render(batch);
         font.draw(batch, "Welcome to Charge", 600, 350);
         font.draw(batch, "Tap anywhere to begin!", 600, 400);
         batch.end();
@@ -43,6 +49,7 @@ public class MainMenuScreen extends ScreenAdapter
     @Override
     public void dispose()
     {
+        background.dispose();
         batch.dispose();
         font.dispose();
     }

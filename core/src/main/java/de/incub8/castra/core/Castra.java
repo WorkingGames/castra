@@ -8,6 +8,9 @@ import de.incub8.castra.core.screen.MainMenuScreen;
 
 public class Castra extends Game
 {
+    public static final int VIEWPORT_WIDTH = 1366;
+    public static final int VIEWPORT_HEIGHT = 768;
+
     @Getter
     private OrthographicCamera camera;
 
