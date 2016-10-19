@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 
 @Getter
@@ -26,5 +27,14 @@ public class World
         armies = new Array<>();
         battles = new Array<>();
         startTime = 0;
+    }
+
+    public void createArmy(Settlement origin, Settlement destination)
+    {
+        int count = origin.getSoldiers() * origin.getOwner().getSendTroopPercentage() / 100;
+        Array<GridPoint2> path = paths.get(origin, destination);
+        Army army = new Army(count, origin.getOwner(), destination, path);
+        armies.add(army);
+        origin.removeSoldiers(count);
     }
 }
