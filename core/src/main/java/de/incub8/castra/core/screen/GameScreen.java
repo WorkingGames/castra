@@ -16,6 +16,7 @@ import de.incub8.castra.core.model.Battle;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.TextureDefinition;
 import de.incub8.castra.core.model.World;
+import de.incub8.castra.core.pwnage.Pwnage;
 import de.incub8.castra.core.renderer.AbstractRenderable;
 import de.incub8.castra.core.renderer.ArmyRenderable;
 import de.incub8.castra.core.renderer.Background;
@@ -30,6 +31,7 @@ public class GameScreen extends ScreenAdapter
     private final BitmapFont font;
     private final World world;
     private final SoldierSpawner soldierSpawner;
+    private final Pwnage pwnage;
 
     private Array<AbstractRenderable> renderables;
 
@@ -48,14 +50,17 @@ public class GameScreen extends ScreenAdapter
 
         MouseInputAdapter mouseInputAdapter = new MouseInputAdapter(world, game.getCamera());
         Gdx.input.setInputProcessor(mouseInputAdapter);
-        
+
         soldierSpawner = new SoldierSpawner(world.getSettlements());
         soldierSpawner.startSpawn();
+
+        pwnage = new Pwnage(world);
     }
 
     @Override
     public void render(float delta)
     {
+        checkGameOver();
         updateGameState(delta);
         draw();
     }
@@ -112,6 +117,20 @@ public class GameScreen extends ScreenAdapter
             renderables.add(new ArmyRenderable(army));
         }
         renderables.sort();
+    }
+
+    private void checkGameOver()
+    {
+        if (pwnage.playerWon())
+        {
+            game.setScreen(new GameOverScreen(game, true));
+            dispose();
+        }
+        else if (pwnage.playerLost())
+        {
+            game.setScreen(new GameOverScreen(game, false));
+            dispose();
+        }
     }
 
     @Override
