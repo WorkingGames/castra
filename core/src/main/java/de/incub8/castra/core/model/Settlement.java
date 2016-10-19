@@ -29,7 +29,7 @@ public class Settlement
         this.position = position;
         this.hitbox = new Ellipse(position.x, position.y, size.getWidth(), size.getHeight());
         // we use the hitbox for now until we have the textures and can provide a better approximation
-        this.clickBox = new Ellipse(hitbox);
+        this.clickBox = this.hitbox;
         this.textureDefinition = textureDefinition;
     }
 

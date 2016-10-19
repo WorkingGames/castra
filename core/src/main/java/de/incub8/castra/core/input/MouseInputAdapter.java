@@ -1,5 +1,7 @@
 package de.incub8.castra.core.input;
 
+import lombok.RequiredArgsConstructor;
+
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
@@ -7,22 +9,18 @@ import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.World;
 
+@RequiredArgsConstructor
 public class MouseInputAdapter extends InputAdapter
 {
-    public MouseInputAdapter(World world, Camera camera)
-    {
-        this.world = world;
-        this.camera = camera;
-    }
-
     private final World world;
     private final Camera camera;
+
     private Settlement origin;
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
-        Vector3 touchPoint = camera.unproject(new Vector3(screenX, screenY, 0));
+        Vector3 touchPoint = getTouchPoint(screenX, screenY);
         for (Settlement settlement : world.getSettlements())
         {
             if (settlementClicked(settlement, touchPoint) && belongsToHuman(settlement))
@@ -31,6 +29,11 @@ public class MouseInputAdapter extends InputAdapter
             }
         }
         return true;
+    }
+
+    private Vector3 getTouchPoint(int screenX, int screenY)
+    {
+        return camera.unproject(new Vector3(screenX, screenY, 0));
     }
 
     private boolean settlementClicked(Settlement settlement, Vector3 touchPoint)
@@ -46,10 +49,10 @@ public class MouseInputAdapter extends InputAdapter
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button)
     {
-        Vector3 touchPoint = camera.unproject(new Vector3(screenX, screenY, 0));
+        Vector3 touchPoint = getTouchPoint(screenX, screenY);
         for (Settlement destination : world.getSettlements())
         {
-            if (destination.getClickBox().contains(touchPoint.x, touchPoint.y))
+            if (settlementClicked(destination, touchPoint))
             {
                 if (origin != null && !origin.equals(destination))
                 {
