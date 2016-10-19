@@ -1,5 +1,7 @@
 package de.incub8.castra.core.screen;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.input.MouseInputAdapter;
 import de.incub8.castra.core.model.Army;
+import de.incub8.castra.core.model.Battle;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.TextureDefinition;
 import de.incub8.castra.core.model.World;
@@ -59,14 +62,21 @@ public class GameScreen extends ScreenAdapter
 
     private void updateGameState(float deltaTime)
     {
-        moveArmies(deltaTime);
+        processArmies(deltaTime);
     }
 
-    private void moveArmies(float deltaTime)
+    private void processArmies(float deltaTime)
     {
-        for (Army army : world.getArmies())
+        Iterator<Army> armyIterator = world.getArmies().iterator();
+        while (armyIterator.hasNext())
         {
+            Army army = armyIterator.next();
             army.move(deltaTime);
+            if (army.isAtTarget())
+            {
+                world.getBattles().add(new Battle(army));
+                armyIterator.remove();
+            }
         }
     }
 
