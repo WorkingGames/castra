@@ -33,7 +33,7 @@ public class World
     {
         int count = origin.getSoldiers() * origin.getOwner().getSendTroopPercentage() / 100;
         Array<GridPoint2> path = paths.get(origin, destination);
-        Army army = new Army(count, origin.getOwner(), path);
+        Army army = new Army(count, origin.getOwner(), destination, path);
         armies.add(army);
         origin.removeSoldiers(count);
     }
