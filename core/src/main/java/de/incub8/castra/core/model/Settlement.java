@@ -38,8 +38,18 @@ public class Settlement
         soldiers++;
     }
 
+    public void removeSoldier()
+    {
+        soldiers--;
+    }
+
     public void removeSoldiers(int count)
     {
         soldiers = soldiers - count;
+    }
+
+    public boolean isEmpty()
+    {
+        return soldiers == 0;
     }
 }
