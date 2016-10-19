@@ -29,4 +29,9 @@ public class Settlement
         this.hitbox = new Ellipse(positionVector.sub(offset), size.getWidth(), size.getHeight());
         this.textureDefinition = textureDefinition;
     }
+
+    public void addSoldier()
+    {
+        soldiers++;
+    }
 }
