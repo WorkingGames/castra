@@ -18,7 +18,7 @@ public class AiUtils
         Player ai = null;
         for (Player player : world.getPlayers())
         {
-            if (belongsTo(player, PlayerType.AI))
+            if (playerIsOfType(player, PlayerType.AI))
             {
                 ai = player;
             }
@@ -31,7 +31,7 @@ public class AiUtils
         Array<Settlement> owned = new Array<>();
         for (Settlement settlement : world.getSettlements())
         {
-            if (belongsTo(settlement.getOwner(), PlayerType.AI))
+            if (playerIsOfType(settlement.getOwner(), PlayerType.AI))
             {
                 owned.add(settlement);
             }
@@ -44,7 +44,7 @@ public class AiUtils
         Array<Settlement> neutral = new Array<>();
         for (Settlement settlement : world.getSettlements())
         {
-            if (belongsTo(settlement.getOwner(), PlayerType.NEUTRAL))
+            if (playerIsOfType(settlement.getOwner(), PlayerType.NEUTRAL))
             {
                 neutral.add(settlement);
             }
@@ -57,7 +57,7 @@ public class AiUtils
         Array<Settlement> player = new Array<>();
         for (Settlement settlement : world.getSettlements())
         {
-            if (belongsTo(settlement.getOwner(), PlayerType.HUMAN))
+            if (playerIsOfType(settlement.getOwner(), PlayerType.HUMAN))
             {
                 player.add(settlement);
             }
@@ -65,7 +65,7 @@ public class AiUtils
         return player;
     }
 
-    private boolean belongsTo(Player player, PlayerType playerType)
+    private boolean playerIsOfType(Player player, PlayerType playerType)
     {
         return player.getType().equals(playerType);
     }

@@ -41,13 +41,9 @@ public class SimpleAi
             stateMachine.changeState(SimpleAiState.ATTACK);
             nextActionTime = MathUtils.random(time + MINIMUM_IDLE_TIME, time + MAXIMUM_IDLE_TIME);
         }
-        else
-        {
-            stateMachine.changeState(SimpleAiState.WAIT);
-        }
     }
 
-    public void Attack()
+    public void attack()
     {
         Settlement origin = randomOrigin();
         Settlement destination = randomDestination();
@@ -56,6 +52,7 @@ public class SimpleAi
             ai.setSendTroopPercentage(MathUtils.random(MINIMUM_TROOP_PERCENTAGE, MAXIMUM_TROOP_PERCENTAGE));
             world.createArmy(origin, destination);
         }
+        stateMachine.changeState(SimpleAiState.WAIT);
     }
 
     private Settlement randomOrigin()

@@ -65,7 +65,6 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void render(float delta)
     {
-        simpleAi.update();
         updateGameState(delta);
         draw();
         checkGameOver();
@@ -74,6 +73,7 @@ public class GameScreen extends ScreenAdapter
     private void updateGameState(float deltaTime)
     {
         world.getTimepiece().update(deltaTime);
+        simpleAi.update();
         processArmies(deltaTime);
     }
 

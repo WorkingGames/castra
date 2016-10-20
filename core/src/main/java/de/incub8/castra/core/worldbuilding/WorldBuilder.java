@@ -15,7 +15,7 @@ import de.incub8.castra.core.pathfinding.PathCreator;
 public class WorldBuilder
 {
     private static final Player NEUTRAL = new Player(Color.GRAY, "NEUTRAL", PlayerType.NEUTRAL);
-    private static final Player AI = new Player(Color.CYAN, "AI", PlayerType.AI);
+    private static final Player AI = new Player(Color.SCARLET, "AI", PlayerType.AI);
     private static final Player HUMAN = new Player(Color.GOLDENROD, "Bob", PlayerType.HUMAN);
 
     public World buildWorld()

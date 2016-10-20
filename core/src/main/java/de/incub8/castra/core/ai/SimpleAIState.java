@@ -10,7 +10,7 @@ public enum SimpleAiState implements State<SimpleAi>
             @Override
             public void enter(SimpleAi entity)
             {
-                entity.Attack();
+                entity.attack();
             }
         },
     WAIT;
