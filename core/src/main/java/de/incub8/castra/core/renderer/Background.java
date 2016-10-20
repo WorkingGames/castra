@@ -1,7 +1,7 @@
 package de.incub8.castra.core.renderer;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import de.incub8.castra.core.Castra;
 
 public class Background
@@ -14,9 +14,9 @@ public class Background
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
     }
 
-    public void render(SpriteBatch spriteBatch)
+    public void render(Batch batch)
     {
-        spriteBatch.draw(texture, 0, 0, 0, 0, Castra.VIEWPORT_WIDTH, Castra.VIEWPORT_HEIGHT);
+        batch.draw(texture, 0, 0, 0, 0, Castra.WORLD_WIDTH, Castra.WORLD_HEIGHT);
     }
 
     public void dispose()

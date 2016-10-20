@@ -5,16 +5,17 @@ import lombok.Getter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import de.incub8.castra.core.screen.MainMenuScreen;
 
 public class Castra extends Game
 {
-    public static final int VIEWPORT_WIDTH = 1366;
-    public static final int VIEWPORT_HEIGHT = 768;
+    public static final int WORLD_WIDTH = 1366;
+    public static final int WORLD_HEIGHT = 768;
 
     @Getter
-    private OrthographicCamera camera;
+    private Viewport viewport;
 
     @Getter
     private InputMultiplexer inputMultiplexer;
@@ -22,8 +23,7 @@ public class Castra extends Game
     @Override
     public void create()
     {
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT);
 
         inputMultiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -31,8 +31,10 @@ public class Castra extends Game
         this.setScreen(new MainMenuScreen(this));
     }
 
-    public void render()
+    @Override
+    public void resize(int width, int height)
     {
-        super.render();
+        super.resize(width, height);
+        viewport.update(width, height);
     }
 }

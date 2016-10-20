@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.ai.SimpleAi;
-import de.incub8.castra.core.input.MouseInputAdapter;
 import de.incub8.castra.core.model.Army;
 import de.incub8.castra.core.model.Battle;
 import de.incub8.castra.core.model.Settlement;
@@ -27,11 +26,12 @@ import de.incub8.castra.core.worldbuilding.WorldBuilder;
 public class GameScreen extends ScreenAdapter
 {
     private final Castra game;
+
     private final SpriteBatch batch;
     private final BitmapFont font;
     private final World world;
     private final VictoryCondition victoryCondition;
-    private final MouseInputAdapter mouseInputAdapter;
+    //private final MouseInputAdapter mouseInputAdapter;
     private final SoldierSpawner soldierSpawner;
     private final BattleProcessor battleProcessor;
     private final SimpleAi simpleAi;
@@ -42,6 +42,7 @@ public class GameScreen extends ScreenAdapter
     public GameScreen(Castra game)
     {
         this.game = game;
+
         batch = new SpriteBatch();
         font = new BitmapFont();
 
@@ -50,8 +51,8 @@ public class GameScreen extends ScreenAdapter
         renderables = new Array<>();
         background = new Background();
 
-        mouseInputAdapter = new MouseInputAdapter(world, game.getCamera());
-        game.getInputMultiplexer().addProcessor(mouseInputAdapter);
+        //mouseInputAdapter = new MouseInputAdapter(world, game.getCamera());
+        //game.getInputMultiplexer().addProcessor(mouseInputAdapter);
 
         soldierSpawner = new SoldierSpawner(world.getSettlements());
         soldierSpawner.startSpawn();
@@ -96,9 +97,9 @@ public class GameScreen extends ScreenAdapter
     {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.getCamera().update();
+        //game.getCamera().update();
 
-        batch.setProjectionMatrix(game.getCamera().combined);
+        //batch.setProjectionMatrix(game.getCamera().combined);
         font.setColor(Color.WHITE);
 
         updateRenderables();
@@ -145,7 +146,7 @@ public class GameScreen extends ScreenAdapter
     {
         soldierSpawner.dispose();
         battleProcessor.dispose();
-        game.getInputMultiplexer().removeProcessor(mouseInputAdapter);
+        //game.getInputMultiplexer().removeProcessor(mouseInputAdapter);
         background.dispose();
         // TODO: we will dispose the TextureDefinitions as soon as the game has an exit option
         // TextureDefinition.disposeAll();

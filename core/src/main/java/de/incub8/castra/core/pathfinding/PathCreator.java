@@ -23,7 +23,7 @@ public class PathCreator
 
     public PathCreator()
     {
-        coordinates = new Coordinates(Castra.VIEWPORT_WIDTH, Castra.VIEWPORT_HEIGHT);
+        coordinates = new Coordinates(Castra.WORLD_WIDTH, Castra.WORLD_HEIGHT);
         blacklistAwareCoordinateGraph = new BlacklistAwareCoordinateGraph(coordinates);
         pathFinder = new IndexedAStarPathFinder<>(blacklistAwareCoordinateGraph);
         heuristic = new StraightLineHeuristic();
