@@ -3,12 +3,12 @@ package de.incub8.castra.core.ai;
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;
 
-public enum SimpleAiState implements State<SimpleAi>
+public enum Paule implements State<Horst>
 {
     ATTACK()
         {
             @Override
-            public void enter(SimpleAi entity)
+            public void enter(Horst entity)
             {
                 entity.attack();
             }
@@ -16,22 +16,22 @@ public enum SimpleAiState implements State<SimpleAi>
     WAIT;
 
     @Override
-    public void enter(SimpleAi entity)
+    public void enter(Horst entity)
     {
     }
 
     @Override
-    public void update(SimpleAi entity)
+    public void update(Horst entity)
     {
     }
 
     @Override
-    public void exit(SimpleAi entity)
+    public void exit(Horst entity)
     {
     }
 
     @Override
-    public boolean onMessage(SimpleAi entity, Telegram telegram)
+    public boolean onMessage(Horst entity, Telegram telegram)
     {
         return false;
     }
