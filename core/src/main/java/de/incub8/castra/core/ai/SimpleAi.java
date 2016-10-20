@@ -10,7 +10,7 @@ import de.incub8.castra.core.model.Player;
 import de.incub8.castra.core.model.Settlement;
 import de.incub8.castra.core.model.World;
 
-public class Horst
+public class SimpleAi
 {
     private static final float MINIMUM_IDLE_TIME = 1;
     private static final float MAXIMUM_IDLE_TIME = 4;
@@ -18,18 +18,18 @@ public class Horst
     private static final int MAXIMUM_TROOP_PERCENTAGE = 80;
 
     @Getter
-    private final StateMachine<Horst, Paule> stateMachine;
+    private final StateMachine<SimpleAi, SimpleAiState> stateMachine;
     private final World world;
     private final AiUtils aiUtils;
     private final Player ai;
     private float nextActionTime;
 
-    public Horst(World world)
+    public SimpleAi(World world)
     {
         this.world = world;
         aiUtils = new AiUtils(world);
         ai = aiUtils.getAiPlayer();
-        stateMachine = new DefaultStateMachine<>(this, Paule.ATTACK);
+        stateMachine = new DefaultStateMachine<>(this, SimpleAiState.ATTACK);
         nextActionTime = 0;
     }
 
@@ -38,7 +38,7 @@ public class Horst
         float time = world.getTimepiece().getTime();
         if (time > nextActionTime)
         {
-            stateMachine.changeState(Paule.ATTACK);
+            stateMachine.changeState(SimpleAiState.ATTACK);
             nextActionTime = MathUtils.random(time + MINIMUM_IDLE_TIME, time + MAXIMUM_IDLE_TIME);
         }
     }
@@ -52,7 +52,7 @@ public class Horst
             ai.setSendTroopPercentage(MathUtils.random(MINIMUM_TROOP_PERCENTAGE, MAXIMUM_TROOP_PERCENTAGE));
             world.createArmy(origin, destination);
         }
-        stateMachine.changeState(Paule.WAIT);
+        stateMachine.changeState(SimpleAiState.WAIT);
     }
 
     private Settlement randomOrigin()
