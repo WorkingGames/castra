@@ -2,6 +2,7 @@ package de.incub8.castra.core.renderer;
 
 import lombok.RequiredArgsConstructor;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,8 +26,10 @@ public class ArmyRenderable extends AbstractRenderable
 
         float xRenderPosition = center.x - offset.x;
         float yRenderPosition = center.y - offset.y;
+        Color originalColor = batch.getColor();
+        batch.setColor(army.getOwner().getColor());
         batch.draw(texture, xRenderPosition, yRenderPosition, texture.getWidth(), texture.getHeight());
-
+        batch.setColor(originalColor);
         font.draw(batch, String.valueOf(army.getSoldiers()), center.x, center.y);
     }
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.Castra;
+import de.incub8.castra.core.ai.SimpleAi;
 import de.incub8.castra.core.input.MouseInputAdapter;
 import de.incub8.castra.core.model.Army;
 import de.incub8.castra.core.model.Battle;
@@ -33,7 +34,7 @@ public class GameScreen extends ScreenAdapter
     private final MouseInputAdapter mouseInputAdapter;
     private final SoldierSpawner soldierSpawner;
     private final BattleProcessor battleProcessor;
-
+    private final SimpleAi simpleAi;
     private Array<AbstractRenderable> renderables;
 
     private Background background;
@@ -58,11 +59,13 @@ public class GameScreen extends ScreenAdapter
         battleProcessor.startBattles();
 
         victoryCondition = new VictoryCondition(world);
+        simpleAi = new SimpleAi(world);
     }
 
     @Override
     public void render(float delta)
     {
+        simpleAi.update();
         updateGameState(delta);
         draw();
         checkGameOver();
@@ -70,6 +73,7 @@ public class GameScreen extends ScreenAdapter
 
     private void updateGameState(float deltaTime)
     {
+        world.getTimepiece().update(deltaTime);
         processArmies(deltaTime);
     }
 
