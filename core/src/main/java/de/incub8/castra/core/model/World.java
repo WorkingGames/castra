@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import com.badlogic.gdx.ai.DefaultTimepiece;
+import com.badlogic.gdx.ai.Timepiece;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 
@@ -17,7 +19,7 @@ public class World
     private final Paths paths;
     private final Array<Army> armies;
     private final Array<Battle> battles;
-    private long startTime;
+    private final Timepiece timepiece;
 
     public World(Array<Player> players, Array<Settlement> settlements, Paths paths)
     {
@@ -26,15 +28,18 @@ public class World
         this.paths = paths;
         armies = new Array<>();
         battles = new Array<>();
-        startTime = 0;
+        timepiece = new DefaultTimepiece();
     }
 
     public void createArmy(Settlement origin, Settlement destination)
     {
         int count = origin.getSoldiers() * origin.getOwner().getSendTroopPercentage() / 100;
-        Array<GridPoint2> path = paths.get(origin, destination);
-        Army army = new Army(count, origin.getOwner(), destination, path);
-        armies.add(army);
-        origin.removeSoldiers(count);
+        if (count > 0)
+        {
+            Array<GridPoint2> path = paths.get(origin, destination);
+            Army army = new Army(count, origin.getOwner(), destination, path);
+            armies.add(army);
+            origin.removeSoldiers(count);
+        }
     }
 }

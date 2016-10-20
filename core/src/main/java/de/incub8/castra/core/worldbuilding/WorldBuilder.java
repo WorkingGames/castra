@@ -15,7 +15,7 @@ import de.incub8.castra.core.pathfinding.PathCreator;
 public class WorldBuilder
 {
     private static final Player NEUTRAL = new Player(Color.GRAY, "NEUTRAL", PlayerType.NEUTRAL);
-    private static final Player AI = new Player(Color.CYAN, "AI", PlayerType.AI);
+    private static final Player AI = new Player(Color.SCARLET, "AI", PlayerType.AI);
     private static final Player HUMAN = new Player(Color.GOLDENROD, "Bob", PlayerType.HUMAN);
 
     public World buildWorld()
@@ -32,15 +32,15 @@ public class WorldBuilder
         Array<Settlement> settlements = new Array<>();
         settlements.addAll(
             new Settlement(
-                SettlementSize.LARGE, new GridPoint2(50, 50), 100, HUMAN, TextureDefinition.CASTLE_HUMAN),
+                SettlementSize.LARGE, new GridPoint2(50, 50), 100, HUMAN, TextureDefinition.NEUTRAL_LARGE),
             new Settlement(
-                SettlementSize.LARGE, new GridPoint2(1300, 700), 100, AI, TextureDefinition.CASTLE_AI),
+                SettlementSize.LARGE, new GridPoint2(1300, 700), 100, AI, TextureDefinition.NEUTRAL_LARGE),
             new Settlement(
                 SettlementSize.MEDIUM, new GridPoint2(130, 500), 20, NEUTRAL, TextureDefinition.NEUTRAL_MEDIUM),
             new Settlement(
                 SettlementSize.MEDIUM, new GridPoint2(300, 240), 40, NEUTRAL, TextureDefinition.NEUTRAL_MEDIUM),
             new Settlement(
-                SettlementSize.SMALL, new GridPoint2(800, 680), 30, NEUTRAL, TextureDefinition.NEUTRAL_SMALL),
+                SettlementSize.LARGE, new GridPoint2(800, 680), 60, NEUTRAL, TextureDefinition.NEUTRAL_LARGE),
             new Settlement(
                 SettlementSize.SMALL, new GridPoint2(1100, 180), 10, NEUTRAL, TextureDefinition.NEUTRAL_SMALL),
             new Settlement(
