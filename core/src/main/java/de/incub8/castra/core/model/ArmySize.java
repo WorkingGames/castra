@@ -4,12 +4,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public enum ArmySize
 {
-    SMALL(1, null), MEDIUM(50, null), LARGE(100, null);
+    SMALL(1, "army"), MEDIUM(50, "army"), LARGE(100, "army");
 
     public static ArmySize bySoldierCount(int soldiers)
     {
@@ -27,6 +26,5 @@ public enum ArmySize
     @Getter(AccessLevel.PRIVATE)
     private final int minimumSoldiers;
 
-    @Getter
-    private final TextureRegion[] textureRegions;
+    private final String textureName;
 }

@@ -3,35 +3,20 @@ package de.incub8.castra.core.ai;
 import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.utils.Array;
-import de.incub8.castra.core.model.Player;
-import de.incub8.castra.core.model.PlayerType;
-import de.incub8.castra.core.model.Settlement;
-import de.incub8.castra.core.model.World;
+import de.incub8.castra.core.actor.Settlement;
+import de.incub8.castra.core.stage.World;
 
 @RequiredArgsConstructor
-public class AiUtils
+class AiUtils
 {
     private final World world;
-
-    public Player getAiPlayer()
-    {
-        Player ai = null;
-        for (Player player : world.getPlayers())
-        {
-            if (playerIsOfType(player, PlayerType.AI))
-            {
-                ai = player;
-            }
-        }
-        return ai;
-    }
 
     public Array<Settlement> getOwnedSettlements()
     {
         Array<Settlement> owned = new Array<>();
         for (Settlement settlement : world.getSettlements())
         {
-            if (playerIsOfType(settlement.getOwner(), PlayerType.AI))
+            if (settlement.getOwner().isAi())
             {
                 owned.add(settlement);
             }
@@ -44,7 +29,7 @@ public class AiUtils
         Array<Settlement> neutral = new Array<>();
         for (Settlement settlement : world.getSettlements())
         {
-            if (playerIsOfType(settlement.getOwner(), PlayerType.NEUTRAL))
+            if (settlement.getOwner().isNeutral())
             {
                 neutral.add(settlement);
             }
@@ -57,16 +42,11 @@ public class AiUtils
         Array<Settlement> player = new Array<>();
         for (Settlement settlement : world.getSettlements())
         {
-            if (playerIsOfType(settlement.getOwner(), PlayerType.HUMAN))
+            if (settlement.getOwner().isHuman())
             {
                 player.add(settlement);
             }
         }
         return player;
-    }
-
-    private boolean playerIsOfType(Player player, PlayerType playerType)
-    {
-        return player.getType().equals(playerType);
     }
 }

@@ -1,130 +1,71 @@
 package de.incub8.castra.core.screen;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.ai.SimpleAi;
-import de.incub8.castra.core.model.Army;
-import de.incub8.castra.core.model.Battle;
-import de.incub8.castra.core.model.Settlement;
-import de.incub8.castra.core.model.World;
-import de.incub8.castra.core.renderer.AbstractRenderable;
-import de.incub8.castra.core.renderer.ArmyRenderable;
-import de.incub8.castra.core.renderer.Background;
-import de.incub8.castra.core.renderer.SettlementRenderable;
+import de.incub8.castra.core.stage.World;
 import de.incub8.castra.core.task.BattleProcessor;
 import de.incub8.castra.core.task.SoldierSpawner;
-import de.incub8.castra.core.worldbuilding.WorldBuilder;
+import de.incub8.castra.core.worldbuilding.WorldInitializer;
 
 public class GameScreen extends ScreenAdapter
 {
     private final Castra game;
+    private final World worldStage;
 
-    private final SpriteBatch batch;
-    private final BitmapFont font;
-    private final World world;
-    private final VictoryCondition victoryCondition;
-    //private final MouseInputAdapter mouseInputAdapter;
     private final SoldierSpawner soldierSpawner;
     private final BattleProcessor battleProcessor;
+    private final VictoryCondition victoryCondition;
     private final SimpleAi simpleAi;
-    private Array<AbstractRenderable> renderables;
-
-    private Background background;
 
     public GameScreen(Castra game)
     {
         this.game = game;
 
-        batch = new SpriteBatch();
-        font = new BitmapFont();
+        worldStage = new World(game.getViewport(), game.getTextureAtlas(), game.getFontProvider());
+        game.getInputMultiplexer().addProcessor(worldStage);
 
-        world = new WorldBuilder().buildWorld();
+        new WorldInitializer(game.getViewport(), game.getTextureAtlas()).initialize(worldStage);
 
-        renderables = new Array<>();
-        background = new Background();
-
-        //mouseInputAdapter = new MouseInputAdapter(world, game.getCamera());
-        //game.getInputMultiplexer().addProcessor(mouseInputAdapter);
-
-        soldierSpawner = new SoldierSpawner(world.getSettlements());
+        soldierSpawner = new SoldierSpawner(worldStage.getSettlements());
         soldierSpawner.startSpawn();
-        battleProcessor = new BattleProcessor(world.getBattles());
+        battleProcessor = new BattleProcessor(worldStage.getBattles());
         battleProcessor.startBattles();
 
-        victoryCondition = new VictoryCondition(world);
-        simpleAi = new SimpleAi(world);
+        victoryCondition = new VictoryCondition(worldStage);
+        simpleAi = new SimpleAi(worldStage);
     }
 
     @Override
     public void render(float delta)
     {
-        updateGameState(delta);
-        draw();
+        simpleAi.update();
+        draw(delta);
         checkGameOver();
     }
 
-    private void updateGameState(float deltaTime)
+    private void draw(float delta)
     {
-        world.getTimepiece().update(deltaTime);
-        simpleAi.update();
-        processArmies(deltaTime);
-    }
-
-    private void processArmies(float deltaTime)
-    {
-        Iterator<Army> armyIterator = world.getArmies().iterator();
-        while (armyIterator.hasNext())
-        {
-            Army army = armyIterator.next();
-            army.move(deltaTime);
-            if (army.isAtTarget())
-            {
-                world.getBattles().add(new Battle(army));
-                armyIterator.remove();
-            }
-        }
-    }
-
-    private void draw()
-    {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //game.getCamera().update();
 
-        //batch.setProjectionMatrix(game.getCamera().combined);
-        font.setColor(Color.WHITE);
+        worldStage.getBatch().begin();
+        worldStage.getBatch().setColor(Color.WHITE);
+        worldStage.getBatch().draw(
+            game.getTextureAtlas().findRegion("Background128").getTexture(),
+            0,
+            0,
+            0,
+            0,
+            game.getViewport().getScreenWidth(),
+            game.getViewport().getScreenHeight());
+        worldStage.getBatch().end();
 
-        updateRenderables();
+        worldStage.act(delta);
 
-        batch.begin();
-        background.render(batch);
-        for (AbstractRenderable abstractRenderable : renderables)
-        {
-            abstractRenderable.render(batch, font);
-        }
-        batch.end();
-    }
-
-    private void updateRenderables()
-    {
-        renderables.clear();
-        for (Settlement settlement : world.getSettlements())
-        {
-            renderables.add(new SettlementRenderable(settlement));
-        }
-        for (Army army : world.getArmies())
-        {
-            renderables.add(new ArmyRenderable(army));
-        }
-        renderables.sort();
+        worldStage.draw();
     }
 
     private void checkGameOver()
@@ -144,13 +85,9 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void dispose()
     {
-        soldierSpawner.dispose();
         battleProcessor.dispose();
-        //game.getInputMultiplexer().removeProcessor(mouseInputAdapter);
-        background.dispose();
-        // TODO: we will dispose the TextureDefinitions as soon as the game has an exit option
-        // TextureDefinition.disposeAll();
-        batch.dispose();
-        font.dispose();
+        soldierSpawner.dispose();
+        game.getInputMultiplexer().removeProcessor(worldStage);
+        worldStage.dispose();
     }
 }
