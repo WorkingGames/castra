@@ -1,14 +1,12 @@
 package de.incub8.castra.core.model;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import de.incub8.castra.core.actor.Army;
+import de.incub8.castra.core.actor.Settlement;
 
 @Getter
-@ToString
-@EqualsAndHashCode
 public class Battle
 {
     private final Settlement settlement;

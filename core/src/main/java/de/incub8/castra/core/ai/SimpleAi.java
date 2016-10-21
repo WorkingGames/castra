@@ -6,9 +6,8 @@ import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import de.incub8.castra.core.model.Player;
-import de.incub8.castra.core.model.Settlement;
-import de.incub8.castra.core.model.World;
+import de.incub8.castra.core.actor.Settlement;
+import de.incub8.castra.core.stage.World;
 
 public class SimpleAi
 {
@@ -21,14 +20,12 @@ public class SimpleAi
     private final StateMachine<SimpleAi, SimpleAiState> stateMachine;
     private final World world;
     private final AiUtils aiUtils;
-    private final Player ai;
     private float nextActionTime;
 
     public SimpleAi(World world)
     {
         this.world = world;
         aiUtils = new AiUtils(world);
-        ai = aiUtils.getAiPlayer();
         stateMachine = new DefaultStateMachine<>(this, SimpleAiState.ATTACK);
         nextActionTime = 0;
     }
@@ -36,7 +33,7 @@ public class SimpleAi
     public void update()
     {
         float time = world.getTimepiece().getTime();
-        if (time > nextActionTime)
+        if (time >= nextActionTime)
         {
             stateMachine.changeState(SimpleAiState.ATTACK);
             nextActionTime = MathUtils.random(time + MINIMUM_IDLE_TIME, time + MAXIMUM_IDLE_TIME);
@@ -49,7 +46,9 @@ public class SimpleAi
         Settlement destination = randomDestination();
         if (origin != null && destination != null)
         {
-            ai.setSendTroopPercentage(MathUtils.random(MINIMUM_TROOP_PERCENTAGE, MAXIMUM_TROOP_PERCENTAGE));
+            world.getAiPlayer().setSendTroopPercentage(
+                MathUtils.random(
+                    MINIMUM_TROOP_PERCENTAGE, MAXIMUM_TROOP_PERCENTAGE));
             world.createArmy(origin, destination);
         }
         stateMachine.changeState(SimpleAiState.WAIT);

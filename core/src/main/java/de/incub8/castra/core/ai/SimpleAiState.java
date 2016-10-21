@@ -3,7 +3,7 @@ package de.incub8.castra.core.ai;
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;
 
-public enum SimpleAiState implements State<SimpleAi>
+enum SimpleAiState implements State<SimpleAi>
 {
     ATTACK()
         {

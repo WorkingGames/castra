@@ -2,12 +2,10 @@ package de.incub8.castra.core.screen;
 
 import lombok.RequiredArgsConstructor;
 
-import de.incub8.castra.core.model.Army;
+import de.incub8.castra.core.actor.Army;
+import de.incub8.castra.core.actor.Settlement;
 import de.incub8.castra.core.model.Battle;
-import de.incub8.castra.core.model.Player;
-import de.incub8.castra.core.model.PlayerType;
-import de.incub8.castra.core.model.Settlement;
-import de.incub8.castra.core.model.World;
+import de.incub8.castra.core.stage.World;
 
 @RequiredArgsConstructor
 public class VictoryCondition
@@ -19,7 +17,7 @@ public class VictoryCondition
         boolean lost = true;
         for (Settlement settlement : world.getSettlements())
         {
-            if (belongsToHuman(settlement.getOwner()))
+            if (settlement.getOwner().isHuman())
             {
                 lost = false;
                 break;
@@ -29,7 +27,7 @@ public class VictoryCondition
         {
             for (Army army : world.getArmies())
             {
-                if (belongsToHuman(army.getOwner()))
+                if (army.getOwner().isHuman())
                 {
                     lost = false;
                     break;
@@ -40,7 +38,7 @@ public class VictoryCondition
         {
             for (Battle battle : world.getBattles())
             {
-                if (belongsToHuman(battle.getArmy().getOwner()))
+                if (battle.getArmy().getOwner().isHuman())
                 {
                     lost = false;
                     break;
@@ -50,22 +48,12 @@ public class VictoryCondition
         return lost;
     }
 
-    private boolean belongsToHuman(Player player)
-    {
-        return player.getType().equals(PlayerType.HUMAN);
-    }
-
-    private boolean belongsToAI(Player player)
-    {
-        return player.getType().equals(PlayerType.AI);
-    }
-
     public boolean playerWon()
     {
         boolean won = true;
         for (Settlement settlement : world.getSettlements())
         {
-            if (belongsToAI(settlement.getOwner()))
+            if (settlement.getOwner().isAi())
             {
                 won = false;
                 break;
@@ -75,7 +63,7 @@ public class VictoryCondition
         {
             for (Army army : world.getArmies())
             {
-                if (belongsToAI(army.getOwner()))
+                if (army.getOwner().isAi())
                 {
                     won = false;
                     break;
@@ -86,7 +74,7 @@ public class VictoryCondition
         {
             for (Battle battle : world.getBattles())
             {
-                if (belongsToAI(battle.getArmy().getOwner()))
+                if (battle.getArmy().getOwner().isAi())
                 {
                     won = false;
                     break;

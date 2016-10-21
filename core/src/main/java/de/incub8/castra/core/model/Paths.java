@@ -1,15 +1,12 @@
 package de.incub8.castra.core.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import de.incub8.castra.core.actor.Settlement;
 
-@ToString
-@EqualsAndHashCode
 public class Paths
 {
     @Data

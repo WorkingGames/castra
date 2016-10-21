@@ -3,6 +3,7 @@ package de.incub8.castra.core.pathfinding;
 import lombok.Getter;
 
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 class Coordinates
 {
@@ -14,15 +15,15 @@ class Coordinates
     private final int count;
     private final GridPoint2[][] coordinates;
 
-    public Coordinates(int width, int height)
+    public Coordinates(Viewport viewport)
     {
-        this.width = width;
-        this.height = height;
-        coordinates = initializeCoordinates(width, height);
+        this.width = viewport.getScreenWidth();
+        this.height = viewport.getScreenHeight();
+        coordinates = initializeCoordinates();
         count = width * height;
     }
 
-    private GridPoint2[][] initializeCoordinates(int width, int height)
+    private GridPoint2[][] initializeCoordinates()
     {
         GridPoint2[][] result = new GridPoint2[width][height];
         for (int x = 0; x < width; x++)
@@ -35,17 +36,12 @@ class Coordinates
         return result;
     }
 
-    public GridPoint2 attach(GridPoint2 gridPoint2)
-    {
-        return get(gridPoint2.x, gridPoint2.y);
-    }
-
-    public GridPoint2 get(int x, int y)
+    public GridPoint2 get(float x, float y)
     {
         GridPoint2 result = null;
         if (x >= 1 && x <= width && y >= 1 && y <= height)
         {
-            result = coordinates[x - 1][y - 1];
+            result = coordinates[(int) x - 1][(int) y - 1];
         }
         return result;
     }

@@ -1,20 +1,21 @@
 package de.incub8.castra.core.model;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import com.badlogic.gdx.graphics.Color;
 
-@Getter
-@ToString
-@EqualsAndHashCode
 public class Player
 {
-    private final Color color;
-    private final String name;
     private final PlayerType type;
+
+    @Getter
+    private final Color color;
+
+    @Getter
+    private final String name;
+
+    @Getter
     @Setter
     private int sendTroopPercentage;
 
@@ -24,5 +25,20 @@ public class Player
         this.name = name;
         this.type = type;
         sendTroopPercentage = 50;
+    }
+
+    public boolean isHuman()
+    {
+        return type.equals(PlayerType.HUMAN);
+    }
+
+    public boolean isNeutral()
+    {
+        return type.equals(PlayerType.NEUTRAL);
+    }
+
+    public boolean isAi()
+    {
+        return type.equals(PlayerType.AI);
     }
 }

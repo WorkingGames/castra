@@ -5,33 +5,42 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.ai.pfa.Heuristic;
 import com.badlogic.gdx.ai.pfa.PathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.Array;
-import de.incub8.castra.core.Castra;
-import de.incub8.castra.core.model.Army;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import de.incub8.castra.core.actor.Settlement;
+import de.incub8.castra.core.model.ArmySize;
 import de.incub8.castra.core.model.Paths;
-import de.incub8.castra.core.model.Settlement;
+import de.incub8.castra.core.stage.World;
 
-public class PathCreator
+public class PathInitializer
 {
     private final Coordinates coordinates;
     private final BlacklistAwareCoordinateGraph blacklistAwareCoordinateGraph;
     private final PathFinder<GridPoint2> pathFinder;
     private final Heuristic<GridPoint2> heuristic;
+    private final int armyWidth;
+    private final int armyHeight;
 
-    public PathCreator()
+    public PathInitializer(Viewport viewport, TextureAtlas textureAtlas)
     {
-        coordinates = new Coordinates(Castra.VIEWPORT_WIDTH, Castra.VIEWPORT_HEIGHT);
+        coordinates = new Coordinates(viewport);
         blacklistAwareCoordinateGraph = new BlacklistAwareCoordinateGraph(coordinates);
         pathFinder = new IndexedAStarPathFinder<>(blacklistAwareCoordinateGraph);
         heuristic = new StraightLineHeuristic();
+        Texture armyTexture = textureAtlas.findRegion(ArmySize.LARGE.getTextureName()).getTexture();
+        armyWidth = armyTexture.getWidth();
+        armyHeight = armyTexture.getHeight();
     }
 
-    public Paths create(Array<Settlement> settlements)
+    public void initialize(World world)
     {
-        Paths result = new Paths();
+        Array<Settlement> settlements = world.getSettlements();
+        Paths paths = world.getPaths();
 
         for (int i = 0; i < settlements.size - 1; i++)
         {
@@ -47,10 +56,10 @@ public class PathCreator
                 if (graphPath != null)
                 {
                     Array<GridPoint2> path = toArray(graphPath);
-                    result.put(origin, destination, path);
+                    paths.put(origin, destination, path);
 
                     Array<GridPoint2> reversedPath = reverse(path);
-                    result.put(destination, origin, reversedPath);
+                    paths.put(destination, origin, reversedPath);
                 }
                 else
                 {
@@ -62,7 +71,6 @@ public class PathCreator
                 }
             }
         }
-        return result;
     }
 
     private void applyBlacklist(Array<Settlement> settlements, Settlement origin, Settlement destination)
@@ -72,13 +80,8 @@ public class PathCreator
         {
             if (!settlement.equals(origin) && !settlement.equals(destination))
             {
-                GridPoint2 settlementPosition = settlement.getPosition();
-                Ellipse settlementHitbox = settlement.getHitbox();
-                Shape2D blacklistEntry = new Ellipse(
-                    settlementPosition.x,
-                    settlementPosition.y,
-                    settlementHitbox.width + Army.WIDTH,
-                    settlementHitbox.height + Army.HEIGHT);
+                Ellipse blacklistEntry = new Ellipse(settlement.getHitbox());
+                blacklistEntry.setSize(blacklistEntry.width + armyWidth, blacklistEntry.height + armyHeight);
                 blacklist.add(blacklistEntry);
             }
         }
@@ -89,8 +92,10 @@ public class PathCreator
     {
         GraphPath<GridPoint2> result = new DefaultGraphPath<>();
         boolean pathFound = pathFinder.searchNodePath(
-            coordinates.attach(
-                origin.getPosition()), coordinates.attach(destination.getPosition()), heuristic, result);
+            coordinates.get(origin.getX(), origin.getY()),
+            coordinates.get(destination.getX(), destination.getY()),
+            heuristic,
+            result);
         if (!pathFound)
         {
             result = null;

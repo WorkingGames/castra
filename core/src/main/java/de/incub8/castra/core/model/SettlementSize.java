@@ -8,9 +8,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum SettlementSize
 {
-    SMALL(3, 50, 28), MEDIUM(2, 70, 39), LARGE(1, 90, 50);
+    SMALL(3, "castleNeutralSmall"), MEDIUM(2, "castleNeutralMedium"), LARGE(1, "castleNeutralLarge");
 
     private final float spawnIntervalInSeconds;
-    private final int width;
-    private final int height;
+    private final String textureName;
 }
