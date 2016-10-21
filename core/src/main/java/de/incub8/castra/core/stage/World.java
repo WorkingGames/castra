@@ -25,6 +25,7 @@ public class World extends Stage
 {
     private final TextureAtlas textureAtlas;
     private final FontProvider fontProvider;
+    private final ActorComparator actorComparator;
 
     @Getter
     private final Player humanPlayer;
@@ -52,7 +53,8 @@ public class World extends Stage
         super(viewport);
         this.textureAtlas = textureAtlas;
         this.fontProvider = fontProvider;
-        
+        actorComparator = new ActorComparator();
+
         humanPlayer = new Player(Color.GOLDENROD, "Bob", PlayerType.HUMAN);
         aiPlayer = new Player(Color.SCARLET, "AI", PlayerType.AI);
         settlements = new Array<>();
@@ -68,6 +70,7 @@ public class World extends Stage
         timepiece.update(deltaTime);
         processArmies();
         super.act(deltaTime);
+        getActors().sort(actorComparator);
     }
 
     public void createSettlement(SettlementSize size, int x, int y, int soldiers, Player owner)
