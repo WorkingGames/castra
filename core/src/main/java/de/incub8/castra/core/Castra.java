@@ -71,7 +71,7 @@ public class Castra extends Game
     public void resize(int width, int height)
     {
         super.resize(width, height);
-        viewport.update(width, height);
+        viewport.update(width, height, true);
         fontProvider.resize(width, height);
     }
 
