@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.incub8.castra.core.actor.Army;
+import de.incub8.castra.core.actor.Battle;
 import de.incub8.castra.core.actor.Settlement;
 import de.incub8.castra.core.font.FontProvider;
-import de.incub8.castra.core.model.Battle;
 import de.incub8.castra.core.model.Paths;
 import de.incub8.castra.core.model.Player;
 import de.incub8.castra.core.model.PlayerType;
@@ -101,7 +101,8 @@ public class World extends Stage
             Army army = armyIterator.next();
             if (army.isAtTarget())
             {
-                Battle battle = new Battle(army);
+                Battle battle = new Battle(army, textureAtlas);
+                addActor(battle);
                 battles.add(battle);
 
                 army.remove();

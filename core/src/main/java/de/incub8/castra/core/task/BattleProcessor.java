@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
-import de.incub8.castra.core.model.Battle;
+import de.incub8.castra.core.actor.Battle;
 
 @RequiredArgsConstructor
 public class BattleProcessor implements Disposable

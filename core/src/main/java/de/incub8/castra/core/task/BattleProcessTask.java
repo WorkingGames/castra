@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import de.incub8.castra.core.actor.Army;
+import de.incub8.castra.core.actor.Battle;
 import de.incub8.castra.core.actor.Settlement;
-import de.incub8.castra.core.model.Battle;
 
 @RequiredArgsConstructor
 public class BattleProcessTask extends Timer.Task
@@ -24,7 +24,7 @@ public class BattleProcessTask extends Timer.Task
             Battle battle = battleIterator.next();
 
             Army army = battle.getArmy();
-            Settlement settlement = battle.getSettlement();
+            Settlement settlement = army.getTarget();
 
             if (army.getOwner().equals(settlement.getOwner()))
             {
@@ -46,6 +46,7 @@ public class BattleProcessTask extends Timer.Task
             army.removeSoldier();
             if (army.isEmpty())
             {
+                battle.remove();
                 battleIterator.remove();
             }
         }
