@@ -101,7 +101,7 @@ public class World extends Stage
             Army army = armyIterator.next();
             if (army.isAtTarget())
             {
-                Battle battle = new Battle(army, textureAtlas, fontProvider);
+                Battle battle = new Battle(army, textureAtlas);
                 addActor(battle);
                 battles.add(battle);
 

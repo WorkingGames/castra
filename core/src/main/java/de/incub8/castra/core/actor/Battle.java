@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import de.incub8.castra.core.font.FontProvider;
 
 public class Battle extends Group
 {
@@ -17,7 +16,7 @@ public class Battle extends Group
     @Getter
     private final Army army;
 
-    public Battle(Army attacker, TextureAtlas textureAtlas, FontProvider fontProvider)
+    public Battle(Army attacker, TextureAtlas textureAtlas)
     {
         army = attacker;
 
@@ -25,7 +24,9 @@ public class Battle extends Group
         addActor(animatedImage);
 
         setSize(animatedImage.getWidth(), animatedImage.getHeight());
-        setPosition(army.getX(), army.getY());
+        setPosition(
+            (int) (army.getX() + army.getWidth() / 2 - getWidth() / 2),
+            (int) (army.getY() + army.getHeight() / 2 - getHeight() / 2));
     }
 
     private Animation createAnimation(TextureAtlas textureAtlas)
