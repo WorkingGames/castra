@@ -3,8 +3,8 @@ package de.incub8.castra.core.screen;
 import lombok.RequiredArgsConstructor;
 
 import de.incub8.castra.core.actor.Army;
+import de.incub8.castra.core.actor.Battle;
 import de.incub8.castra.core.actor.Settlement;
-import de.incub8.castra.core.model.Battle;
 import de.incub8.castra.core.stage.World;
 
 @RequiredArgsConstructor
