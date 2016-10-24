@@ -32,10 +32,14 @@ public class BattleProcessTask extends Timer.Task
             }
             else
             {
-                settlement.removeSoldier();
-                if (settlement.isEmpty())
+                if (!settlement.isEmpty())
+                {
+                    settlement.removeSoldier();
+                }
+                else
                 {
                     settlement.changeOwner(army.getOwner());
+                    settlement.addSoldier();
                 }
             }
 
