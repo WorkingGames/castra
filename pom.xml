@@ -19,6 +19,7 @@
     <properties>
         <android.maven.version>4.4.3</android.maven.version>
         <android.version>4.1.1.4</android.version>
+        <gdx.ai.version>1.8.0</gdx.ai.version>
         <gdx.version>1.9.4</gdx.version>
         <gwt.maven.version>2.6.0</gwt.maven.version>
         <gwt.version>2.6.0</gwt.version>
@@ -44,7 +45,13 @@
             <dependency>
                 <groupId>com.badlogicgames.gdx</groupId>
                 <artifactId>gdx-ai</artifactId>
-                <version>1.8.0</version>
+                <version>${gdx.ai.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.badlogicgames.gdx</groupId>
+                <artifactId>gdx-ai</artifactId>
+                <version>${gdx.ai.version}</version>
+                <classifier>sources</classifier>
             </dependency>
             <dependency>
                 <groupId>com.badlogicgames.gdx</groupId>
