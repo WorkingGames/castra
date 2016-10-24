@@ -14,6 +14,22 @@ class SettlementDragSource extends DragAndDrop.Source
     @Override
     public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer)
     {
-        return new DragAndDrop.Payload();
+        Settlement settlement = (Settlement) getActor();
+        DragAndDrop.Payload result = null;
+        if (settlement.getOwner().isHuman())
+        {
+            settlement.setHighlight(true);
+            result = new DragAndDrop.Payload();
+        }
+        return result;
+    }
+
+    @Override
+    public void dragStop(
+        InputEvent event, float x, float y, int pointer, DragAndDrop.Payload payload, DragAndDrop.Target target)
+    {
+        Settlement settlement = (Settlement) getActor();
+        settlement.setHighlight(false);
+        super.dragStop(event, x, y, pointer, payload, target);
     }
 }

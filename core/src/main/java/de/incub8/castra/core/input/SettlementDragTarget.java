@@ -18,17 +18,36 @@ class SettlementDragTarget extends DragAndDrop.Target
     public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer)
     {
         Settlement origin = (Settlement) source.getActor();
+        //        origin.setHighlight(true);
         Settlement destination = (Settlement) getActor();
-
-        return origin != destination;
+        boolean valid = origin != destination;
+        if (valid)
+        {
+            destination.setHighlight(true);
+        }
+        return valid;
     }
 
     @Override
     public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer)
     {
         Settlement origin = (Settlement) source.getActor();
+        origin.setHighlight(false);
+
         Settlement destination = (Settlement) getActor();
 
         world.createArmy(origin, destination);
+    }
+
+    @Override
+    public void reset(DragAndDrop.Source source, DragAndDrop.Payload payload)
+    {
+        Settlement origin = (Settlement) source.getActor();
+        Settlement destination = (Settlement) getActor();
+        if (origin != destination)
+        {
+            destination.setHighlight(false);
+        }
+        super.reset(source, payload);
     }
 }
