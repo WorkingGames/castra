@@ -3,11 +3,14 @@ package de.incub8.castra.core.actor;
 import lombok.Getter;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.font.FontProvider;
 import de.incub8.castra.core.model.Player;
@@ -15,8 +18,10 @@ import de.incub8.castra.core.model.SettlementSize;
 
 public class Settlement extends Group
 {
+    private static final int IMAGE_COLUMNS = 4;
     private final Image image;
     private final Label label;
+    private final TextureAtlas textureAtlas;
 
     @Getter
     private final SettlementSize size;
@@ -30,6 +35,12 @@ public class Settlement extends Group
     @Getter
     private Player owner;
 
+    @Getter
+    private float centerX;
+
+    @Getter
+    private float centerY;
+
     public Settlement(
         SettlementSize size,
         float x,
@@ -39,12 +50,13 @@ public class Settlement extends Group
         TextureAtlas textureAtlas,
         FontProvider fontProvider)
     {
+        this.textureAtlas = textureAtlas;
         this.size = size;
         this.soldiers = soldiers;
         this.owner = owner;
         setPosition(x, y);
 
-        image = createImage(size, textureAtlas);
+        image = createImage();
 
         setSize(image.getWidth(), image.getHeight());
 
@@ -53,29 +65,49 @@ public class Settlement extends Group
         hitbox = createHitbox();
     }
 
-    private Image createImage(SettlementSize size, TextureAtlas textureAtlas)
+    private Image createImage()
     {
-        Image result = new Image(textureAtlas.findRegion(size.getTextureName()).getTexture());
-        result.setColor(owner.getColor());
+        Image result = new Image(getCastleTexture());
         addActor(result);
         return result;
     }
 
     private Label createLabel(FontProvider fontProvider)
     {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getFont(), Color.WHITE);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getFont(), Color.BLACK);
         Label result = new Label(String.valueOf(soldiers), labelStyle);
-        result.setX(image.getWidth() / 2);
+        scaleAndAlignLabel(result);
         result.setVisible(!owner.isAi());
         addActor(result);
         return result;
     }
 
+    private void scaleAndAlignLabel(Label label)
+    {
+        label.setFontScale(1.8f);
+        if (size.equals(SettlementSize.SMALL))
+        {
+            label.setX(getWidth() / 2 - 5);
+            label.setY(5);
+        }
+        else if (size.equals(SettlementSize.MEDIUM))
+        {
+            label.setX(getWidth() / 2 - 10);
+            label.setY(5);
+        }
+        else
+        {
+            label.setX(getWidth() / 2 - 15);
+            label.setY(7);
+        }
+        label.setAlignment(Align.center);
+    }
+
     private Ellipse createHitbox()
     {
         float height = getWidth() * Castra.WIDTH_HEIGHT_RATIO;
-        float centerX = getX() + getWidth() / 2;
-        float centerY = getY() + height / 2;
+        centerX = getX() + getWidth() / 2;
+        centerY = getY() + height / 2;
         Ellipse result = new Ellipse(centerX, centerY, getWidth(), height);
         return result;
     }
@@ -83,8 +115,19 @@ public class Settlement extends Group
     public void changeOwner(Player newOwner)
     {
         owner = newOwner;
-        image.setColor(owner.getColor());
+        Image castle = new Image(getCastleTexture());
+        image.setDrawable(castle.getDrawable());
         label.setVisible(!owner.isAi());
+    }
+
+    private TextureRegion getCastleTexture()
+    {
+        Texture allCastleColors = textureAtlas.findRegion(size.getTextureName()).getTexture();
+        int width = allCastleColors.getWidth() / IMAGE_COLUMNS;
+        int height = allCastleColors.getHeight();
+        TextureRegion[][] castles = TextureRegion.split(allCastleColors, width, height);
+        TextureRegion castle = castles[0][owner.getTextureIndex()];
+        return castle;
     }
 
     public void addSoldier()

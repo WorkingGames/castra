@@ -12,14 +12,14 @@ class SettlementInitializer
     {
         Player humanPlayer = world.getHumanPlayer();
         Player aiPlayer = world.getAiPlayer();
-        Player neutralPlayer = new Player(Color.GRAY, "NEUTRAL", PlayerType.NEUTRAL);
+        Player neutralPlayer = new Player(Color.GRAY, 0, "NEUTRAL", PlayerType.NEUTRAL);
 
         world.createSettlement(SettlementSize.LARGE, 50, 50, 100, humanPlayer);
-        world.createSettlement(SettlementSize.LARGE, 1200, 700, 100, aiPlayer);
+        world.createSettlement(SettlementSize.LARGE, 1100, 580, 100, aiPlayer);
         world.createSettlement(SettlementSize.MEDIUM, 130, 500, 20, neutralPlayer);
         world.createSettlement(SettlementSize.MEDIUM, 300, 240, 40, neutralPlayer);
-        world.createSettlement(SettlementSize.LARGE, 800, 680, 60, neutralPlayer);
-        world.createSettlement(SettlementSize.SMALL, 1100, 180, 10, neutralPlayer);
+        world.createSettlement(SettlementSize.LARGE, 700, 500, 60, neutralPlayer);
+        world.createSettlement(SettlementSize.SMALL, 1000, 180, 10, neutralPlayer);
         world.createSettlement(SettlementSize.SMALL, 500, 80, 25, neutralPlayer);
         world.createSettlement(SettlementSize.SMALL, 900, 400, 5, neutralPlayer);
     }
