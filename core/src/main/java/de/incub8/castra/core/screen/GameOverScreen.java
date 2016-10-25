@@ -54,8 +54,8 @@ public class GameOverScreen extends ScreenAdapter
             0,
             0,
             0,
-            game.getViewport().getScreenWidth(),
-            game.getViewport().getScreenHeight());
+            (int) game.getViewport().getWorldWidth(),
+            (int) game.getViewport().getWorldHeight());
         stage.getBatch().end();
 
         stage.act(delta);

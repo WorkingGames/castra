@@ -17,8 +17,8 @@ class Coordinates
 
     public Coordinates(Viewport viewport)
     {
-        this.width = viewport.getScreenWidth();
-        this.height = viewport.getScreenHeight();
+        this.width = (int) viewport.getWorldWidth();
+        this.height = (int) viewport.getWorldHeight();
         coordinates = initializeCoordinates();
         count = width * height;
     }
