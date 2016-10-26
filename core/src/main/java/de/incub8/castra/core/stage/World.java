@@ -101,13 +101,35 @@ public class World extends Stage
             Army army = armyIterator.next();
             if (army.isAtTarget())
             {
-                Battle battle = new Battle(army, textureAtlas);
-                addActor(battle);
-                battles.add(battle);
-
+                joinOrCreateBattle(army);
                 army.remove();
                 armyIterator.remove();
             }
+        }
+    }
+
+    private void joinOrCreateBattle(Army army)
+    {
+        boolean joinedBattle = false;
+        for (Battle battle : getBattles())
+        {
+            Settlement battleTarget = battle.getArmy().getTarget();
+            if (battleTarget.equals(army.getTarget()))
+            {
+                Player battleOwner = battle.getArmy().getOwner();
+                if (battleOwner.equals(army.getOwner()))
+                {
+                    battle.getArmy().addSoldiers(army.getSoldiers());
+                    joinedBattle = true;
+                    break;
+                }
+            }
+        }
+        if (!joinedBattle)
+        {
+            Battle battle = new Battle(army, textureAtlas);
+            addActor(battle);
+            battles.add(battle);
         }
     }
 }
