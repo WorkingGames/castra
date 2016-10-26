@@ -13,10 +13,11 @@ public class WorldInitializer
 {
     private final Viewport viewport;
     private final TextureAtlas textureAtlas;
+    private final long seed;
 
     public void initialize(World world)
     {
-        new SettlementInitializer().initialize(world);
+        new SettlementInitializer().initialize(world, seed, viewport);
         new PathInitializer(viewport, textureAtlas).initialize(world);
         new DragDropInitializer().initialize(world);
     }

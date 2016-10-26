@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.MathUtils;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.ai.SimpleAi;
 import de.incub8.castra.core.stage.World;
@@ -28,7 +29,8 @@ public class GameScreen extends ScreenAdapter
         worldStage = new World(game.getViewport(), game.getTextureAtlas(), game.getFontProvider());
         game.getInputMultiplexer().addProcessor(worldStage);
 
-        new WorldInitializer(game.getViewport(), game.getTextureAtlas()).initialize(worldStage);
+        long seed = MathUtils.random(978234L);
+        new WorldInitializer(game.getViewport(), game.getTextureAtlas(), seed).initialize(worldStage);
 
         soldierSpawner = new SoldierSpawner(worldStage.getSettlements());
         soldierSpawner.startSpawn();
