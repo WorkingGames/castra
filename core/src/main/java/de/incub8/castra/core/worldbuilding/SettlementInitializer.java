@@ -1,5 +1,7 @@
 package de.incub8.castra.core.worldbuilding;
 
+import java.util.Iterator;
+
 import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.graphics.Color;
@@ -41,39 +43,55 @@ class SettlementInitializer
     private float worldWidth;
     private float worldHeight;
 
-    private boolean humanSettlementPlaced;
-    private boolean aiSettlementPlaced;
-
-    private int totalSettlements;
-    private int largeSettlements;
-    private int mediumSettlements;
-
     public void initialize(long seed)
     {
         random = new RandomXS128(seed);
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
-        totalSettlements = getRandomValueInclusive(MINIMUM_SETTLEMENT_TOTAL, MAXIMUM_SETTLEMENT_TOTAL);
-        largeSettlements = getRandomValueInclusive(MINIMUM_LARGE_SETTLEMENTS, MAXIMUM_LARGE_SETTLEMENTS);
-        mediumSettlements = getRandomValueInclusive(MINIMUM_MEDIUM_SETTLEMENTS, MAXIMUM_MEDIUM_SETTLEMENTS);
+        int totalSettlements = getRandomValueInclusive(MINIMUM_SETTLEMENT_TOTAL, MAXIMUM_SETTLEMENT_TOTAL);
+        int largeSettlements = getRandomValueInclusive(MINIMUM_LARGE_SETTLEMENTS, MAXIMUM_LARGE_SETTLEMENTS);
+        int mediumSettlements = getRandomValueInclusive(MINIMUM_MEDIUM_SETTLEMENTS, MAXIMUM_MEDIUM_SETTLEMENTS);
 
-        Array<GridPoint2> settlementPositions = getSettlementPositions();
-        for (GridPoint2 position : settlementPositions)
+        Array<GridPoint2> settlementPositions = getSettlementPositions(totalSettlements);
+
+        Iterator<GridPoint2> positionIterator = settlementPositions.iterator();
+
+        createSettlement(
+            positionIterator.next(), SettlementSize.LARGE, INITIAL_SOLDIER_SIZE_HQ, world.getHumanPlayer());
+
+        createSettlement(positionIterator.next(), SettlementSize.LARGE, INITIAL_SOLDIER_SIZE_HQ, world.getAiPlayer());
+
+        for (int i = 2; i < largeSettlements; i++)
         {
-            Player owner = getOwner();
-            world.createSettlement(getSize(), position.x, position.y, getSoldiers(owner), owner);
-            humanSettlementPlaced = humanSettlementPlaced || owner.isHuman();
-            aiSettlementPlaced = aiSettlementPlaced || owner.isAi();
+            int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE, MAXIMUM_NEUTRAL_SOLDIER_SIZE);
+            createSettlement(positionIterator.next(), SettlementSize.LARGE, soldiers, NEUTRAL_PLAYER);
+        }
+
+        for (int i = 0; i < mediumSettlements; i++)
+        {
+            int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE, MAXIMUM_NEUTRAL_SOLDIER_SIZE);
+            createSettlement(positionIterator.next(), SettlementSize.MEDIUM, soldiers, NEUTRAL_PLAYER);
+        }
+
+        for (int i = largeSettlements + mediumSettlements; i < totalSettlements; i++)
+        {
+            int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE, MAXIMUM_NEUTRAL_SOLDIER_SIZE);
+            createSettlement(positionIterator.next(), SettlementSize.SMALL, soldiers, NEUTRAL_PLAYER);
         }
     }
 
-    private Array<GridPoint2> getSettlementPositions()
+    private void createSettlement(GridPoint2 position, SettlementSize size, int soldiers, Player owner)
+    {
+        world.createSettlement(size, position.x, position.y, soldiers, owner);
+    }
+
+    private Array<GridPoint2> getSettlementPositions(int totalSettlements)
     {
         Array<GridPoint2> result = new Array<>();
         int maxX = (int) worldWidth - PADDING_RIGHT;
         int maxY = (int) worldHeight - PADDING_TOP;
-        int retries = 20;
+        int retries = 0;
         while (result.size < totalSettlements)
         {
             GridPoint2 position = getRandomPosition(maxX, maxY);
@@ -83,10 +101,10 @@ class SettlementInitializer
             }
             else
             {
-                retries--;
+                retries++;
             }
             // if finding a valid position fails too often we remove a random position
-            if (retries == 0)
+            if (retries == 20)
             {
                 // we don't remove the HQs, but other settlements
                 if (result.size > 2)
@@ -99,60 +117,8 @@ class SettlementInitializer
                 {
                     result.removeValue(result.first(), true);
                 }
-                retries = 20;
+                retries = 0;
             }
-        }
-        return result;
-    }
-
-    private Player getOwner()
-    {
-        Player owner;
-        if (!humanSettlementPlaced)
-        {
-            owner = world.getHumanPlayer();
-        }
-        else if (!aiSettlementPlaced)
-        {
-            owner = world.getAiPlayer();
-        }
-        else
-        {
-            owner = NEUTRAL_PLAYER;
-        }
-        return owner;
-    }
-
-    private SettlementSize getSize()
-    {
-        SettlementSize result;
-        if (largeSettlements > 0)
-        {
-            result = SettlementSize.LARGE;
-            largeSettlements--;
-        }
-        else if (mediumSettlements > 0)
-        {
-            result = SettlementSize.MEDIUM;
-            mediumSettlements--;
-        }
-        else
-        {
-            result = SettlementSize.SMALL;
-        }
-        return result;
-    }
-
-    private int getSoldiers(Player owner)
-    {
-        int result;
-        if (owner.isHuman() || owner.isAi())
-        {
-            result = INITIAL_SOLDIER_SIZE_HQ;
-        }
-        else
-        {
-            result = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE, MAXIMUM_NEUTRAL_SOLDIER_SIZE);
         }
         return result;
     }
