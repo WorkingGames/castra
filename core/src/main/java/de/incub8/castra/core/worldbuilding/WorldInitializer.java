@@ -17,7 +17,7 @@ public class WorldInitializer
 
     public void initialize(World world)
     {
-        new SettlementInitializer().initialize(world, seed, viewport);
+        new SettlementInitializer(world, viewport).initialize(seed);
         new PathInitializer(viewport, textureAtlas).initialize(world);
         new DragDropInitializer().initialize(world);
     }

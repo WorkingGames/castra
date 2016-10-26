@@ -1,5 +1,7 @@
 package de.incub8.castra.core.worldbuilding;
 
+import lombok.RequiredArgsConstructor;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.RandomXS128;
@@ -10,12 +12,13 @@ import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.SettlementSize;
 import de.incub8.castra.core.stage.World;
 
+@RequiredArgsConstructor
 class SettlementInitializer
 {
-    private static final int PADDING_X_LEFT = 25;
-    private static final int PADDING_X_RIGHT = 225;
-    private static final int PADDING_Y_BOTTOM = 25;
-    private static final int PADDING_Y_TOP = 200;
+    private static final int PADDING_LEFT = 25;
+    private static final int PADDING_RIGHT = 225;
+    private static final int PADDING_BOTTOM = 25;
+    private static final int PADDING_TOP = 200;
     private static final int MINIMUM_DISTANCE_AI_TO_PLAYER = 500;
     private static final int SPACING_BETWEEN_SETTLEMENTS = 250;
 
@@ -32,7 +35,8 @@ class SettlementInitializer
 
     private static final Player NEUTRAL_PLAYER = new Player(Color.GRAY, 0, "NEUTRAL", PlayerType.NEUTRAL);
 
-    private World world;
+    private final World world;
+    private final Viewport viewport;
     private RandomXS128 random;
     private float worldWidth;
     private float worldHeight;
@@ -44,9 +48,8 @@ class SettlementInitializer
     private int largeSettlements;
     private int mediumSettlements;
 
-    public void initialize(World world, long seed, Viewport viewport)
+    public void initialize(long seed)
     {
-        this.world = world;
         random = new RandomXS128(seed);
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
@@ -59,7 +62,7 @@ class SettlementInitializer
         for (GridPoint2 position : settlementPositions)
         {
             Player owner = getOwner();
-            world.createSettlement(getSize(), position.x, position.y, getSoldiers(), owner);
+            world.createSettlement(getSize(), position.x, position.y, getSoldiers(owner), owner);
             humanSettlementPlaced = humanSettlementPlaced || owner.isHuman();
             aiSettlementPlaced = aiSettlementPlaced || owner.isAi();
         }
@@ -68,8 +71,8 @@ class SettlementInitializer
     private Array<GridPoint2> getSettlementPositions()
     {
         Array<GridPoint2> result = new Array<>();
-        int maxX = (int) worldWidth - PADDING_X_RIGHT;
-        int maxY = (int) worldHeight - PADDING_Y_TOP;
+        int maxX = (int) worldWidth - PADDING_RIGHT;
+        int maxY = (int) worldHeight - PADDING_TOP;
         int retries = 20;
         while (result.size < totalSettlements)
         {
@@ -140,10 +143,10 @@ class SettlementInitializer
         return result;
     }
 
-    private int getSoldiers()
+    private int getSoldiers(Player owner)
     {
         int result;
-        if (!humanSettlementPlaced || !aiSettlementPlaced)
+        if (owner.isHuman() || owner.isAi())
         {
             result = INITIAL_SOLDIER_SIZE_HQ;
         }
@@ -186,8 +189,8 @@ class SettlementInitializer
 
     private GridPoint2 getRandomPosition(int maxX, int maxY)
     {
-        int xPosition = getRandomValueInclusive(PADDING_X_LEFT, maxX);
-        int yPosition = getRandomValueInclusive(PADDING_Y_BOTTOM, maxY);
+        int xPosition = getRandomValueInclusive(PADDING_LEFT, maxX);
+        int yPosition = getRandomValueInclusive(PADDING_BOTTOM, maxY);
         return new GridPoint2(xPosition, yPosition);
     }
 }
