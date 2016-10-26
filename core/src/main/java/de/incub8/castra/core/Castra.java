@@ -14,7 +14,7 @@ import de.incub8.castra.core.screen.MainMenuScreen;
 
 public class Castra extends Game
 {
-    public static final float WIDTH_HEIGHT_RATIO = 0.3f;
+    public static final float WIDTH_HEIGHT_RATIO = 0.6f;
 
     private static final int WORLD_WIDTH = 1366;
     private static final int WORLD_HEIGHT = 768;
@@ -55,10 +55,10 @@ public class Castra extends Game
         TextureAtlas result = new TextureAtlas();
         addToAtlas("army", result);
         addToAtlas("Background128", result);
-        addToAtlas("castleNeutralLarge", result);
-        addToAtlas("castleNeutralMedium", result);
-        addToAtlas("castleNeutralSmall", result);
         addToAtlas("cloud", result);
+        addToAtlas("LargeCastles", result);
+        addToAtlas("MediumCastles", result);
+        addToAtlas("SmallCastles", result);
         return result;
     }
 

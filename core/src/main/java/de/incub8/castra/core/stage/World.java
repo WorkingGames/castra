@@ -55,8 +55,8 @@ public class World extends Stage
         this.fontProvider = fontProvider;
         actorComparator = new ActorComparator();
 
-        humanPlayer = new Player(Color.GOLDENROD, "Bob", PlayerType.HUMAN);
-        aiPlayer = new Player(Color.SCARLET, "AI", PlayerType.AI);
+        humanPlayer = new Player(new Color(0x4d7afdff), 2, "Bob", PlayerType.HUMAN);
+        aiPlayer = new Player(Color.SCARLET, 1, "AI", PlayerType.AI);
         settlements = new Array<>();
         paths = new Paths();
         armies = new Array<>();

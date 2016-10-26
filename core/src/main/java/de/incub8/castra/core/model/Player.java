@@ -13,15 +13,19 @@ public class Player
     private final Color color;
 
     @Getter
+    private final int textureIndex;
+
+    @Getter
     private final String name;
 
     @Getter
     @Setter
     private int sendTroopPercentage;
 
-    public Player(Color color, String name, PlayerType type)
+    public Player(Color color, int textureIndex, String name, PlayerType type)
     {
         this.color = color;
+        this.textureIndex = textureIndex;
         this.name = name;
         this.type = type;
         sendTroopPercentage = 50;

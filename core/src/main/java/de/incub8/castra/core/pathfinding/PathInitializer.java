@@ -92,8 +92,8 @@ public class PathInitializer
     {
         GraphPath<GridPoint2> result = new DefaultGraphPath<>();
         boolean pathFound = pathFinder.searchNodePath(
-            coordinates.get(origin.getX(), origin.getY()),
-            coordinates.get(destination.getX(), destination.getY()),
+            coordinates.get(origin.getCenterX(), origin.getCenterY()),
+            coordinates.get(destination.getCenterX(), destination.getCenterY()),
             heuristic,
             result);
         if (!pathFound)
