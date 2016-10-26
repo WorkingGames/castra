@@ -97,6 +97,12 @@ public class Army extends Group
         updateLabel();
     }
 
+    public void addSoldiers(int count)
+    {
+        this.soldiers += count;
+        updateLabel();
+    }
+
     public boolean isEmpty()
     {
         return soldiers == 0;
