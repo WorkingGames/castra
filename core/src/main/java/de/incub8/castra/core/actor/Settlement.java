@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.font.FontProvider;
@@ -115,8 +116,7 @@ public class Settlement extends Group
     public void changeOwner(Player newOwner)
     {
         owner = newOwner;
-        Image castle = new Image(getCastleTexture());
-        image.setDrawable(castle.getDrawable());
+        image.setDrawable(new TextureRegionDrawable(getCastleTexture()));
         label.setVisible(!owner.isAi());
     }
 
