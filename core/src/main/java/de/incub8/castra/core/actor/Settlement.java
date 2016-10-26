@@ -75,31 +75,36 @@ public class Settlement extends Group
 
     private Label createLabel(FontProvider fontProvider)
     {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getFont(), Color.BLACK);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.BLACK);
         Label result = new Label(String.valueOf(soldiers), labelStyle);
-        scaleAndAlignLabel(result);
+        applyOffset(result);
         result.setVisible(!owner.isAi());
         addActor(result);
         return result;
     }
 
-    private void scaleAndAlignLabel(Label label)
+    private void applyOffset(Label label)
     {
-        label.setFontScale(1.8f);
         if (size.equals(SettlementSize.SMALL))
         {
-            label.setX(getWidth() / 2 - 5);
-            label.setY(5);
+            label.setWidth(48);
+            label.setHeight(20);
+            label.setX(52);
+            label.setY(6);
         }
         else if (size.equals(SettlementSize.MEDIUM))
         {
-            label.setX(getWidth() / 2 - 10);
-            label.setY(5);
+            label.setWidth(56);
+            label.setHeight(22);
+            label.setX(52);
+            label.setY(7);
         }
         else
         {
-            label.setX(getWidth() / 2 - 15);
-            label.setY(7);
+            label.setWidth(56);
+            label.setHeight(22);
+            label.setX(70);
+            label.setY(9);
         }
         label.setAlignment(Align.center);
     }
