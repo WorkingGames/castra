@@ -8,8 +8,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 @Data
 public class PlayerColor
 {
-    private static final Color REPLACEMENT_COLOR1 = Color.valueOf("ff69b4ff");
-    private static final Color REPLACEMENT_COLOR2 = Color.valueOf("ff69b4ff");
+    private static final Color REPLACEMENT_COLOR1 = Color.valueOf("ff00ffff");
+    private static final Color REPLACEMENT_COLOR2 = Color.valueOf("960096ff");
 
     private final ObjectMap<Color, Color> colorMapping;
     private final String regionNameSuffix;
