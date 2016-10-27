@@ -11,7 +11,10 @@ class ColorReplacer
     public Texture replaceColors(Texture texture, ObjectMap<Color, Color> mappings)
     {
         Pixmap pixmap = getPixmap(texture);
+        Pixmap.Blending originalBlending = Pixmap.getBlending();
+        Pixmap.setBlending(Pixmap.Blending.None);
         replaceColors(pixmap, mappings);
+        Pixmap.setBlending(originalBlending);
         return convertToTextureAndDispose(pixmap);
     }
 
@@ -28,14 +31,39 @@ class ColorReplacer
         {
             for (int y = 0; y < pixmap.getHeight(); y++)
             {
-                Color pixelColor = new Color(pixmap.getPixel(x, y));
-                if (mappings.containsKey(pixelColor))
+                Color pixelColor = getColor(x, y, pixmap);
+                Color opaqueColor = makeOpaque(pixelColor);
+                if (mappings.containsKey(opaqueColor))
                 {
-                    pixmap.setColor(mappings.get(pixelColor));
-                    pixmap.drawPixel(x, y);
+                    Color newOpaqueColor = mappings.get(opaqueColor);
+                    Color newColor = addTransparency(newOpaqueColor, pixelColor.a);
+                    draw(x, y, newColor, pixmap);
                 }
             }
         }
+    }
+
+    private Color getColor(int x, int y, Pixmap pixmap)
+    {
+        return new Color(pixmap.getPixel(x, y));
+    }
+
+    private Color makeOpaque(Color pixelColor)
+    {
+        return addTransparency(pixelColor, 1.0f);
+    }
+
+    private Color addTransparency(Color color, float alpha)
+    {
+        Color result = new Color(color);
+        result.a = alpha;
+        return result;
+    }
+
+    private void draw(int x, int y, Color color, Pixmap pixmap)
+    {
+        pixmap.setColor(color);
+        pixmap.drawPixel(x, y);
     }
 
     private Texture convertToTextureAndDispose(Pixmap pixmap)
