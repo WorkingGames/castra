@@ -5,15 +5,13 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.ai.pfa.Heuristic;
 import com.badlogic.gdx.ai.pfa.PathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Ellipse;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Shape2D;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.incub8.castra.core.actor.Settlement;
-import de.incub8.castra.core.model.ArmySize;
 import de.incub8.castra.core.model.Paths;
 import de.incub8.castra.core.stage.World;
 
@@ -21,10 +19,9 @@ public class PathInitializer
 {
     private final Coordinates coordinates;
     private final BlacklistAwareCoordinateGraph blacklistAwareCoordinateGraph;
-    private final PathFinder<GridPoint2> pathFinder;
-    private final Heuristic<GridPoint2> heuristic;
-    private final int armyWidth;
-    private final int armyHeight;
+    private final PathFinder<Vector2> pathFinder;
+    private final Heuristic<Vector2> heuristic;
+    private final PathUtils pathUtils;
 
     public PathInitializer(Viewport viewport, TextureAtlas textureAtlas)
     {
@@ -32,14 +29,14 @@ public class PathInitializer
         blacklistAwareCoordinateGraph = new BlacklistAwareCoordinateGraph(coordinates);
         pathFinder = new IndexedAStarPathFinder<>(blacklistAwareCoordinateGraph);
         heuristic = new StraightLineHeuristic();
-        Texture armyTexture = textureAtlas.findRegion(ArmySize.LARGE.getTextureName()).getTexture();
-        armyWidth = armyTexture.getWidth();
-        armyHeight = armyTexture.getHeight();
+        pathUtils = new PathUtils(textureAtlas);
     }
 
     public void initialize(World world)
     {
         Array<Settlement> settlements = world.getSettlements();
+        PathSmoother pathSmoother = new PathSmoother(settlements, pathUtils);
+
         Paths paths = world.getPaths();
 
         for (int i = 0; i < settlements.size - 1; i++)
@@ -51,15 +48,15 @@ public class PathInitializer
 
                 applyBlacklist(settlements, origin, destination);
 
-                GraphPath<GridPoint2> graphPath = calculateGraphPathBetween(origin, destination);
+                GraphPath<Vector2> graphPath = calculateGraphPathBetween(origin, destination);
 
                 if (graphPath != null)
                 {
-                    Array<GridPoint2> path = toArray(graphPath);
-                    paths.put(origin, destination, path);
+                    Array<Line> linePath = pathSmoother.smoothPath(origin, destination, graphPath);
+                    paths.put(origin, destination, new LinePath(linePath));
 
-                    Array<GridPoint2> reversedPath = reverse(path);
-                    paths.put(destination, origin, reversedPath);
+                    Array<Line> reversedLinePath = pathUtils.reverse(linePath);
+                    paths.put(destination, origin, new LinePath(reversedLinePath));
                 }
                 else
                 {
@@ -80,17 +77,16 @@ public class PathInitializer
         {
             if (!settlement.equals(origin) && !settlement.equals(destination))
             {
-                Ellipse blacklistEntry = new Ellipse(settlement.getHitbox());
-                blacklistEntry.setSize(blacklistEntry.width + armyWidth, blacklistEntry.height + armyHeight);
+                Ellipse blacklistEntry = pathUtils.getHitboxWithArmySpacing(settlement);
                 blacklist.add(blacklistEntry);
             }
         }
         blacklistAwareCoordinateGraph.setBlacklist(blacklist);
     }
 
-    private GraphPath<GridPoint2> calculateGraphPathBetween(Settlement origin, Settlement destination)
+    private GraphPath<Vector2> calculateGraphPathBetween(Settlement origin, Settlement destination)
     {
-        GraphPath<GridPoint2> result = new DefaultGraphPath<>();
+        GraphPath<Vector2> result = new DefaultGraphPath<>();
         boolean pathFound = pathFinder.searchNodePath(
             coordinates.get(origin.getCenterX(), origin.getCenterY()),
             coordinates.get(destination.getCenterX(), destination.getCenterY()),
@@ -100,23 +96,6 @@ public class PathInitializer
         {
             result = null;
         }
-        return result;
-    }
-
-    private <T> Array<T> toArray(GraphPath<T> graphPath)
-    {
-        Array<T> result = new Array<>();
-        for (T step : graphPath)
-        {
-            result.add(step);
-        }
-        return result;
-    }
-
-    private <T> Array<T> reverse(Array<T> array)
-    {
-        Array<T> result = new Array<>(array);
-        result.reverse();
         return result;
     }
 }
