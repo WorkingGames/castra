@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.ai.SimpleAi;
+import de.incub8.castra.core.input.ArmySplitInputProcessor;
 import de.incub8.castra.core.stage.World;
 import de.incub8.castra.core.task.BattleProcessor;
 import de.incub8.castra.core.task.SoldierSpawner;
@@ -21,6 +22,7 @@ public class GameScreen extends ScreenAdapter
     private final BattleProcessor battleProcessor;
     private final VictoryCondition victoryCondition;
     private final SimpleAi simpleAi;
+    private final ArmySplitInputProcessor armySplitInputProcessor;
 
     public GameScreen(Castra game)
     {
@@ -28,6 +30,9 @@ public class GameScreen extends ScreenAdapter
 
         worldStage = new World(game.getViewport(), game.getTextureAtlas(), game.getFontProvider());
         game.getInputMultiplexer().addProcessor(worldStage);
+
+        armySplitInputProcessor = new ArmySplitInputProcessor(worldStage.getHumanPlayer(), worldStage.getArmySplit());
+        game.getInputMultiplexer().addProcessor(armySplitInputProcessor);
 
         long seed = MathUtils.random(978234L);
         new WorldInitializer(game.getViewport(), game.getTextureAtlas(), seed).initialize(worldStage);
@@ -90,6 +95,7 @@ public class GameScreen extends ScreenAdapter
         battleProcessor.dispose();
         soldierSpawner.dispose();
         game.getInputMultiplexer().removeProcessor(worldStage);
+        game.getInputMultiplexer().removeProcessor(armySplitInputProcessor);
         worldStage.dispose();
     }
 }
