@@ -18,6 +18,7 @@ import de.incub8.castra.core.actor.Settlement;
 import de.incub8.castra.core.font.FontProvider;
 import de.incub8.castra.core.model.Paths;
 import de.incub8.castra.core.model.Player;
+import de.incub8.castra.core.model.PlayerColor;
 import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.SettlementSize;
 
@@ -55,8 +56,9 @@ public class World extends Stage
         this.fontProvider = fontProvider;
         actorComparator = new ActorComparator();
 
-        humanPlayer = new Player(new Color(0x4d7afdff), 2, "Bob", PlayerType.HUMAN);
-        aiPlayer = new Player(Color.SCARLET, 1, "AI", PlayerType.AI);
+        humanPlayer = new Player(
+            new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)), 1, "Bob", PlayerType.HUMAN);
+        aiPlayer = new Player(new PlayerColor(new Color(0xda0205ff), new Color(0x6d0103ff)), 1, "AI", PlayerType.AI);
         settlements = new Array<>();
         paths = new Paths();
         armies = new Array<>();

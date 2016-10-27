@@ -13,6 +13,7 @@ import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.font.FontProvider;
 import de.incub8.castra.core.model.ArmySize;
 import de.incub8.castra.core.model.Player;
+import de.incub8.castra.core.texture.ColorizingTextureAtlasAdapter;
 
 public class Army extends Group
 {
@@ -50,17 +51,17 @@ public class Army extends Group
 
         ArmySize size = ArmySize.bySoldierCount(soldiers);
 
-        image = createImage(size, textureAtlas);
+        image = createImage(size, new ColorizingTextureAtlasAdapter(textureAtlas));
 
         setSize(image.getWidth(), image.getHeight());
 
         this.label = createLabel(fontProvider);
     }
 
-    private Image createImage(ArmySize size, TextureAtlas textureAtlas)
+    private Image createImage(ArmySize size, ColorizingTextureAtlasAdapter textureAtlas)
     {
-        Image result = new Image(textureAtlas.findRegion(size.getTextureName()).getTexture());
-        result.setColor(owner.getColor());
+        TextureAtlas.AtlasRegion atlasRegion = textureAtlas.findRegion(size.getTextureName(), owner.getColor());
+        Image result = new Image(atlasRegion.getTexture());
         addActor(result);
         return result;
     }

@@ -2,6 +2,7 @@ package de.incub8.castra.core.worldbuilding;
 
 import com.badlogic.gdx.graphics.Color;
 import de.incub8.castra.core.model.Player;
+import de.incub8.castra.core.model.PlayerColor;
 import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.SettlementSize;
 import de.incub8.castra.core.stage.World;
@@ -12,7 +13,8 @@ class SettlementInitializer
     {
         Player humanPlayer = world.getHumanPlayer();
         Player aiPlayer = world.getAiPlayer();
-        Player neutralPlayer = new Player(Color.GRAY, 0, "NEUTRAL", PlayerType.NEUTRAL);
+        Player neutralPlayer = new Player(
+            new PlayerColor(new Color(0xc8c8c8ff), new Color(0x4b4b4bff)), 0, "NEUTRAL", PlayerType.NEUTRAL);
 
         world.createSettlement(SettlementSize.LARGE, 50, 50, 100, humanPlayer);
         world.createSettlement(SettlementSize.LARGE, 1100, 580, 100, aiPlayer);
