@@ -59,6 +59,7 @@ public class Castra extends Game
         addToAtlas("LargeCastles", result);
         addToAtlas("MediumCastles", result);
         addToAtlas("SmallCastles", result);
+        addToAtlas("armySplit", result);
         return result;
     }
 

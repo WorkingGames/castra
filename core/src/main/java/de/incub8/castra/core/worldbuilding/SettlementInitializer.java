@@ -23,6 +23,7 @@ class SettlementInitializer
     private static final int PADDING_TOP = 200;
     private static final int MINIMUM_DISTANCE_AI_TO_PLAYER = 500;
     private static final int SPACING_BETWEEN_SETTLEMENTS = 250;
+    private static final int DISTANCE_TO_LOWER_RIGHT_CORNER = 120;
 
     private static final int MINIMUM_SETTLEMENT_TOTAL = 8;
     private static final int MAXIMUM_SETTLEMENT_TOTAL = 10;
@@ -145,7 +146,15 @@ class SettlementInitializer
                 }
             }
         }
+        // Check if settlement is too close to the army split display
+        valid = valid && enoughSpaceToLowerRightCorner(position);
         return valid;
+    }
+
+    private boolean enoughSpaceToLowerRightCorner(GridPoint2 position)
+    {
+        GridPoint2 lowerRightCorner = new GridPoint2((int) worldWidth, 0);
+        return position.dst(lowerRightCorner) >= DISTANCE_TO_LOWER_RIGHT_CORNER;
     }
 
     private int getRandomValueInclusive(int minimum, int maximum)
