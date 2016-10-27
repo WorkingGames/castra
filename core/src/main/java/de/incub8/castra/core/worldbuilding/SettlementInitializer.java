@@ -147,10 +147,7 @@ class SettlementInitializer
             }
         }
         // Check if settlement is too close to the army split display
-        if (valid && !enoughSpaceToLowerRightCorner(position))
-        {
-            valid = false;
-        }
+        valid = valid && enoughSpaceToLowerRightCorner(position);
         return valid;
     }
 
