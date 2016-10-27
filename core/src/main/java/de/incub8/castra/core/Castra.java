@@ -73,7 +73,6 @@ public class Castra extends Game
     {
         super.resize(width, height);
         viewport.update(width, height, true);
-        fontProvider.resize(width, height);
     }
 
     @Override

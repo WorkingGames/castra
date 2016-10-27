@@ -20,7 +20,7 @@ public class GameOverScreen extends ScreenAdapter
 
         stage = new Stage(game.getViewport());
 
-        labelStyle = new Label.LabelStyle(game.getFontProvider().getFont(), Color.WHITE);
+        labelStyle = new Label.LabelStyle(game.getFontProvider().getDefaultFont(), Color.WHITE);
 
         if (won)
         {
