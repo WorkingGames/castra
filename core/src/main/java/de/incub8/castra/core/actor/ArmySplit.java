@@ -47,4 +47,9 @@ public class ArmySplit extends Group
         addActor(result);
         return result;
     }
+
+    public void updateLabel()
+    {
+        label.setText(player.getSendTroopPercentage() + "%");
+    }
 }

@@ -49,6 +49,9 @@ public class World extends Stage
     @Getter
     private final Timepiece timepiece;
 
+    @Getter
+    private final ArmySplit armySplit;
+
     public World(Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider)
     {
         super(viewport);
@@ -64,7 +67,8 @@ public class World extends Stage
         battles = new Array<>();
         timepiece = new DefaultTimepiece();
 
-        addActor(new ArmySplit(textureAtlas, fontProvider, viewport, humanPlayer));
+        armySplit = new ArmySplit(textureAtlas, fontProvider, viewport, humanPlayer);
+        addActor(armySplit);
     }
 
     @Override
