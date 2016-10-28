@@ -18,7 +18,6 @@ class SettlementDragTarget extends DragAndDrop.Target
     public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer)
     {
         Settlement origin = (Settlement) source.getActor();
-        //        origin.setHighlight(true);
         Settlement destination = (Settlement) getActor();
         boolean valid = origin != destination;
         if (valid)
@@ -32,8 +31,6 @@ class SettlementDragTarget extends DragAndDrop.Target
     public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer)
     {
         Settlement origin = (Settlement) source.getActor();
-        origin.setHighlight(false);
-
         Settlement destination = (Settlement) getActor();
 
         world.createArmy(origin, destination);
