@@ -67,7 +67,7 @@ public class World extends Stage
         battles = new Array<>();
         timepiece = new DefaultTimepiece();
 
-        armySplit = new ArmySplit(textureAtlas, fontProvider, viewport, humanPlayer);
+        armySplit = new ArmySplit(textureAtlas, fontProvider, humanPlayer);
         addActor(armySplit);
     }
 

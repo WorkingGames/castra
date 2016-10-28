@@ -9,16 +9,21 @@ import com.badlogic.gdx.utils.Disposable;
 public class FontProvider implements Disposable
 {
     @Getter
-    private BitmapFont defaultFont;
+    private final BitmapFont defaultFont;
 
     @Getter
-    private BitmapFont soldierCountFont;
+    private final BitmapFont soldierCountFont;
+
+    @Getter
+    private final BitmapFont splitInfoFont;
 
     public FontProvider()
     {
         defaultFont = new BitmapFont();
         soldierCountFont = new BitmapFont(
             Gdx.files.internal("fonts/SoldierCount.fnt"), Gdx.files.internal("fonts/SoldierCount.png"), false);
+        splitInfoFont = new BitmapFont(
+            Gdx.files.internal("fonts/SplitInfoText.fnt"), Gdx.files.internal("fonts/SplitInfoText.png"), false);
     }
 
     @Override
