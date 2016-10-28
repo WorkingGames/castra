@@ -19,8 +19,12 @@ class SettlementDragTarget extends DragAndDrop.Target
     {
         Settlement origin = (Settlement) source.getActor();
         Settlement destination = (Settlement) getActor();
-
-        return origin != destination;
+        boolean valid = origin != destination;
+        if (valid)
+        {
+            destination.setHighlight(true);
+        }
+        return valid;
     }
 
     @Override
@@ -30,5 +34,17 @@ class SettlementDragTarget extends DragAndDrop.Target
         Settlement destination = (Settlement) getActor();
 
         world.createArmy(origin, destination);
+    }
+
+    @Override
+    public void reset(DragAndDrop.Source source, DragAndDrop.Payload payload)
+    {
+        Settlement origin = (Settlement) source.getActor();
+        Settlement destination = (Settlement) getActor();
+        if (origin != destination)
+        {
+            destination.setHighlight(false);
+        }
+        super.reset(source, payload);
     }
 }
