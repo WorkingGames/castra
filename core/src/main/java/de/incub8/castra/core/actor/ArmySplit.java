@@ -24,26 +24,25 @@ public class ArmySplit extends Group
 
     private final Label label;
     private final TextureAtlas textureAtlas;
+    private final FontProvider fontProvider;
     private final Player player;
-    private final Label.LabelStyle labelStyle;
 
     public ArmySplit(TextureAtlas textureAtlas, FontProvider fontProvider, Player player)
     {
         this.textureAtlas = textureAtlas;
+        this.fontProvider = fontProvider;
         this.player = player;
-
-        labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.BLACK);
 
         setPosition(0, 0);
         Image outerRim = createImage("armySplitOuterRim");
-        Label maxValue = createInfoLabel(2, 128, "100%");
-        Label midValue = createInfoLabel(100, 95, "50%");
-        Label minValue = createInfoLabel(185, 0, "5%");
+        Label firstInfo = createInfoLabel(155, 62, "25%");
+        Label secondInfo = createInfoLabel(100, 105, "50%");
+        Label thirdInfo = createInfoLabel(40, 128, "75%");
         outerRimGroup = new Group();
         outerRimGroup.addActor(outerRim);
-        outerRimGroup.addActor(maxValue);
-        outerRimGroup.addActor(midValue);
-        outerRimGroup.addActor(minValue);
+        outerRimGroup.addActor(firstInfo);
+        outerRimGroup.addActor(secondInfo);
+        outerRimGroup.addActor(thirdInfo);
         hideOuterRimGroup();
         addActor(outerRimGroup);
 
@@ -88,6 +87,7 @@ public class ArmySplit extends Group
 
     private Label createLabel()
     {
+        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.BLACK);
         Label result = new Label(player.getSendTroopPercentage() + "%", labelStyle);
         result.setWidth(60);
         result.setHeight(50);
@@ -98,6 +98,7 @@ public class ArmySplit extends Group
 
     private Label createInfoLabel(float x, float y, String value)
     {
+        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSplitInfoFont(), Color.BLACK);
         Label result = new Label(value, labelStyle);
         result.setPosition(x, y);
         return result;
