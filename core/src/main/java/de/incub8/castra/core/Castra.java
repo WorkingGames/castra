@@ -56,9 +56,9 @@ public class Castra extends Game
         addToAtlas("army", result);
         addToAtlas("Background128", result);
         addToAtlas("cloud", result);
-        addToAtlas("LargeCastles", result);
-        addToAtlas("MediumCastles", result);
-        addToAtlas("SmallCastles", result);
+        addToAtlas("LargeCastle", result);
+        addToAtlas("MediumCastle", result);
+        addToAtlas("SmallCastle", result);
         addToAtlas("LargeShadow", result);
         addToAtlas("MediumShadow", result);
         addToAtlas("SmallShadow", result);
