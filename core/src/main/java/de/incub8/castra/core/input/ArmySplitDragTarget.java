@@ -19,14 +19,14 @@ public class ArmySplitDragTarget extends DragAndDrop.Target
     @Override
     public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer)
     {
+        int percentage = calculateArmySplitPercentage(x, y);
+        armySplit.updatePercentage(percentage);
         return true;
     }
 
     @Override
     public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer)
     {
-        int percentage = calculateArmySplitPercentage(x, y);
-        armySplit.updatePercentage(percentage);
         armySplit.hideOuterRimGroup();
     }
 

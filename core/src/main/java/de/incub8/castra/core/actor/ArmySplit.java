@@ -37,7 +37,7 @@ public class ArmySplit extends Group
         setPosition(0, 0);
         Image outerRim = createImage("armySplitOuterRim");
         Label maxValue = createInfoLabel(2, 128, "100%");
-        Label midValue = createInfoLabel(110, 80, "50%");
+        Label midValue = createInfoLabel(100, 95, "50%");
         Label minValue = createInfoLabel(185, 0, "5%");
         outerRimGroup = new Group();
         outerRimGroup.addActor(outerRim);
