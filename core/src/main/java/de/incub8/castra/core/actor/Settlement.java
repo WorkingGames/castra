@@ -15,15 +15,19 @@ import com.badlogic.gdx.utils.Align;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.font.FontProvider;
 import de.incub8.castra.core.model.Player;
+import de.incub8.castra.core.model.PlayerColor;
 import de.incub8.castra.core.model.SettlementSize;
+import de.incub8.castra.core.texture.ColorizingTextureAtlasAdapter;
 
 public class Settlement extends Group
 {
-    private static final int IMAGE_COLUMNS = 4;
+    private static final PlayerColor HIGHLIGHT_COLOR = new PlayerColor(new Color(0xc8c8c8ff), new Color(0x4b4b4bff));
+    private static final int IMAGE_COLUMNS = 2;
+    
     private final Image image;
     private final Image highlight;
     private final Label label;
-    private final TextureAtlas textureAtlas;
+    private final ColorizingTextureAtlasAdapter textureAtlas;
 
     @Getter
     private final SettlementSize size;
@@ -52,7 +56,7 @@ public class Settlement extends Group
         TextureAtlas textureAtlas,
         FontProvider fontProvider)
     {
-        this.textureAtlas = textureAtlas;
+        this.textureAtlas = new ColorizingTextureAtlasAdapter(textureAtlas);
         this.size = size;
         this.soldiers = soldiers;
         this.owner = owner;
@@ -152,7 +156,7 @@ public class Settlement extends Group
 
     private TextureRegion getCastleTexture()
     {
-        Texture allCastleColors = textureAtlas.findRegion(size.getTextureName()).getTexture();
+        Texture allCastleColors = textureAtlas.findRegion(size.getTextureName(), owner.getColor()).getTexture();
         int width = allCastleColors.getWidth() / IMAGE_COLUMNS;
         int height = allCastleColors.getHeight();
         TextureRegion[][] castles = TextureRegion.split(allCastleColors, width, height);
@@ -162,8 +166,8 @@ public class Settlement extends Group
 
     private TextureRegion getHighlightTexture()
     {
-        Texture allHighlights = textureAtlas.findRegion(size.getHighlightTextureName()).getTexture();
-        int width = allHighlights.getWidth() / 2;
+        Texture allHighlights = textureAtlas.findRegion(size.getHighlightTextureName(), HIGHLIGHT_COLOR).getTexture();
+        int width = allHighlights.getWidth() / IMAGE_COLUMNS;
         int height = allHighlights.getHeight();
         TextureRegion[][] highlights = TextureRegion.split(allHighlights, width, height);
         TextureRegion highlight;

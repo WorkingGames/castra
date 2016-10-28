@@ -3,14 +3,12 @@ package de.incub8.castra.core.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.badlogic.gdx.graphics.Color;
-
 public class Player
 {
     private final PlayerType type;
 
     @Getter
-    private final Color color;
+    private final PlayerColor color;
 
     @Getter
     private final int textureIndex;
@@ -22,7 +20,7 @@ public class Player
     @Setter
     private int sendTroopPercentage;
 
-    public Player(Color color, int textureIndex, String name, PlayerType type)
+    public Player(PlayerColor color, int textureIndex, String name, PlayerType type)
     {
         this.color = color;
         this.textureIndex = textureIndex;
