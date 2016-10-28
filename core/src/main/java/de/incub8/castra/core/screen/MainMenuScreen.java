@@ -20,7 +20,7 @@ public class MainMenuScreen extends ScreenAdapter
 
         stage = new Stage(game.getViewport());
 
-        labelStyle = new Label.LabelStyle(game.getFontProvider().getFont(), Color.WHITE);
+        labelStyle = new Label.LabelStyle(game.getFontProvider().getDefaultFont(), Color.WHITE);
 
         stage.addActor(createLabel("Welcome to Charge", 600, 350));
         stage.addActor(createLabel("Tap anywhere to begin!", 600, 400));

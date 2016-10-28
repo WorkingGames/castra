@@ -59,6 +59,11 @@ public class Castra extends Game
         addToAtlas("LargeCastles", result);
         addToAtlas("MediumCastles", result);
         addToAtlas("SmallCastles", result);
+        addToAtlas("LargeShadow", result);
+        addToAtlas("MediumShadow", result);
+        addToAtlas("SmallShadow", result);
+        addToAtlas("armySplit", result);
+        addToAtlas("armySplitOuterRim", result);
         return result;
     }
 
@@ -73,7 +78,6 @@ public class Castra extends Game
     {
         super.resize(width, height);
         viewport.update(width, height, true);
-        fontProvider.resize(width, height);
     }
 
     @Override

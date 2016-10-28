@@ -22,6 +22,7 @@ public class Settlement extends Group
 {
     private static final int IMAGE_COLUMNS = 4;
     private final Image image;
+    private final Image highlight;
     private final Label label;
     private final ColorizingTextureAtlasAdapter textureAtlas;
 
@@ -58,7 +59,11 @@ public class Settlement extends Group
         this.owner = owner;
         setPosition(x, y);
 
-        image = createImage();
+        highlight = createImage(getHighlightTexture());
+        highlight.setVisible(false);
+        applyOffset(highlight);
+
+        image = createImage(getCastleTexture());
 
         setSize(image.getWidth(), image.getHeight());
 
@@ -67,40 +72,64 @@ public class Settlement extends Group
         hitbox = createHitbox();
     }
 
-    private Image createImage()
+    private void applyOffset(Image highlight)
     {
-        Image result = new Image(getCastleTexture());
+        if (size.equals(SettlementSize.SMALL))
+        {
+            highlight.setX(-10);
+            highlight.setY(42);
+        }
+        else if (size.equals(SettlementSize.MEDIUM))
+        {
+            highlight.setX(-11);
+            highlight.setY(15);
+        }
+        else
+        {
+            highlight.setX(-14);
+            highlight.setY(35);
+        }
+    }
+
+    private Image createImage(TextureRegion textureRegion)
+    {
+        Image result = new Image(textureRegion);
         addActor(result);
         return result;
     }
 
     private Label createLabel(FontProvider fontProvider)
     {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getFont(), Color.BLACK);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.BLACK);
         Label result = new Label(String.valueOf(soldiers), labelStyle);
-        scaleAndAlignLabel(result);
+        applyOffset(result);
         result.setVisible(!owner.isAi());
         addActor(result);
         return result;
     }
 
-    private void scaleAndAlignLabel(Label label)
+    private void applyOffset(Label label)
     {
-        label.setFontScale(1.8f);
         if (size.equals(SettlementSize.SMALL))
         {
-            label.setX(getWidth() / 2 - 5);
-            label.setY(5);
+            label.setWidth(48);
+            label.setHeight(20);
+            label.setX(52);
+            label.setY(6);
         }
         else if (size.equals(SettlementSize.MEDIUM))
         {
-            label.setX(getWidth() / 2 - 10);
-            label.setY(5);
+            label.setWidth(56);
+            label.setHeight(22);
+            label.setX(52);
+            label.setY(7);
         }
         else
         {
-            label.setX(getWidth() / 2 - 15);
-            label.setY(7);
+            label.setWidth(56);
+            label.setHeight(22);
+            label.setX(70);
+            label.setY(9);
         }
         label.setAlignment(Align.center);
     }
@@ -118,6 +147,7 @@ public class Settlement extends Group
     {
         owner = newOwner;
         image.setDrawable(new TextureRegionDrawable(getCastleTexture()));
+        highlight.setDrawable(new TextureRegionDrawable(getHighlightTexture()));
         label.setVisible(!owner.isAi());
     }
 
@@ -129,6 +159,24 @@ public class Settlement extends Group
         TextureRegion[][] castles = TextureRegion.split(allCastleColors, width, height);
         TextureRegion castle = castles[0][owner.getTextureIndex()];
         return castle;
+    }
+
+    private TextureRegion getHighlightTexture()
+    {
+        Texture allHighlights = textureAtlas.findRegion(size.getHighlightTextureName()).getTexture();
+        int width = allHighlights.getWidth() / 2;
+        int height = allHighlights.getHeight();
+        TextureRegion[][] highlights = TextureRegion.split(allHighlights, width, height);
+        TextureRegion highlight;
+        if (owner.isNeutral())
+        {
+            highlight = highlights[0][0];
+        }
+        else
+        {
+            highlight = highlights[0][1];
+        }
+        return highlight;
     }
 
     public void addSoldier()
@@ -152,6 +200,11 @@ public class Settlement extends Group
     public boolean isEmpty()
     {
         return soldiers == 0;
+    }
+
+    public void setHighlight(boolean highlighted)
+    {
+        highlight.setVisible(highlighted);
     }
 
     private void updateLabel()

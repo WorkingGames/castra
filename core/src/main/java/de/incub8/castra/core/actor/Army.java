@@ -68,7 +68,7 @@ public class Army extends Group
 
     private Label createLabel(FontProvider fontProvider)
     {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getFont(), Color.WHITE);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.WHITE);
         Label result = new Label(String.valueOf(soldiers), labelStyle);
         result.setX(image.getWidth() / 2);
         addActor(result);

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.incub8.castra.core.actor.Army;
+import de.incub8.castra.core.actor.ArmySplit;
 import de.incub8.castra.core.actor.Battle;
 import de.incub8.castra.core.actor.Settlement;
 import de.incub8.castra.core.font.FontProvider;
@@ -49,6 +50,9 @@ public class World extends Stage
     @Getter
     private final Timepiece timepiece;
 
+    @Getter
+    private final ArmySplit armySplit;
+
     public World(Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider)
     {
         super(viewport);
@@ -64,6 +68,9 @@ public class World extends Stage
         armies = new Array<>();
         battles = new Array<>();
         timepiece = new DefaultTimepiece();
+
+        armySplit = new ArmySplit(textureAtlas, fontProvider, humanPlayer);
+        addActor(armySplit);
     }
 
     @Override
