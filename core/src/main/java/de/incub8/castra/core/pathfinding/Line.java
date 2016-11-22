@@ -12,15 +12,17 @@ public class Line
     private final Vector2 start;
     private final Vector2 end;
     private final float distance;
+    private final Array<Vector2> intersectCheckpoints;
 
     public Line(Vector2 start, Vector2 end)
     {
         this.start = start;
         this.end = end;
         distance = start.dst(end);
+        intersectCheckpoints = getIntersectCheckPoints();
     }
 
-    private Array<Vector2> getPoints()
+    private Array<Vector2> getIntersectCheckPoints()
     {
         Array<Vector2> result = new Array<>();
         for (int i = 1; i < distance; i++)
@@ -35,7 +37,7 @@ public class Line
     public boolean intersectsEllipse(Ellipse ellipse)
     {
         boolean intersects = false;
-        for (Vector2 point : getPoints())
+        for (Vector2 point : intersectCheckpoints)
         {
             intersects = ellipse.contains(point);
             if (intersects)
