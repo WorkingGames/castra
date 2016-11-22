@@ -4,22 +4,21 @@ import lombok.Getter;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Path;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Array;
 import de.incub8.castra.core.Castra;
+import de.incub8.castra.core.action.MoveAlongAction;
 import de.incub8.castra.core.font.FontProvider;
 import de.incub8.castra.core.model.ArmySize;
 import de.incub8.castra.core.model.Player;
+import de.incub8.castra.core.pathfinding.LinePath;
 import de.incub8.castra.core.texture.ColorizingTextureAtlasAdapter;
 
 public class Army extends Group
 {
-    private static final float SPEED = 200;
-
-    private final Array<GridPoint2> path;
     private final Image image;
     private final Label label;
 
@@ -32,22 +31,17 @@ public class Army extends Group
     @Getter
     private int soldiers;
 
-    private int pathPosition;
-
     public Army(
         int soldiers,
         Player owner,
         Settlement target,
-        Array<GridPoint2> path,
+        LinePath path,
         TextureAtlas textureAtlas,
         FontProvider fontProvider)
     {
         this.soldiers = soldiers;
         this.owner = owner;
         this.target = target;
-        this.path = path;
-
-        pathPosition = 0;
 
         ArmySize size = ArmySize.bySoldierCount(soldiers);
 
@@ -56,6 +50,8 @@ public class Army extends Group
         setSize(image.getWidth(), image.getHeight());
 
         this.label = createLabel(fontProvider);
+
+        addAction(MoveAlongAction.obtain(path));
     }
 
     private Image createImage(ArmySize size, ColorizingTextureAtlasAdapter textureAtlas)
@@ -73,15 +69,6 @@ public class Army extends Group
         result.setX(image.getWidth() / 2);
         addActor(result);
         return result;
-    }
-
-    @Override
-    public void act(float delta)
-    {
-        super.act(delta);
-        pathPosition = Math.min(pathPosition + (int) (SPEED * delta), path.size - 1);
-        GridPoint2 position = path.get(pathPosition);
-        setPosition(position.x, position.y);
     }
 
     public boolean isAtTarget()

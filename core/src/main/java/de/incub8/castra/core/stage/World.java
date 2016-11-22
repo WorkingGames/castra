@@ -8,7 +8,6 @@ import com.badlogic.gdx.ai.DefaultTimepiece;
 import com.badlogic.gdx.ai.Timepiece;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -22,6 +21,7 @@ import de.incub8.castra.core.model.Player;
 import de.incub8.castra.core.model.PlayerColor;
 import de.incub8.castra.core.model.PlayerType;
 import de.incub8.castra.core.model.SettlementSize;
+import de.incub8.castra.core.pathfinding.LinePath;
 
 public class World extends Stage
 {
@@ -94,7 +94,7 @@ public class World extends Stage
         int count = origin.getSoldiers() * origin.getOwner().getSendTroopPercentage() / 100;
         if (count > 0)
         {
-            Array<GridPoint2> path = paths.get(origin, destination);
+            LinePath path = paths.get(origin, destination);
             Army army = new Army(count, origin.getOwner(), destination, path, textureAtlas, fontProvider);
             addActor(army);
             armies.add(army);

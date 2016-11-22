@@ -5,11 +5,11 @@ import lombok.Setter;
 
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Shape2D;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-class BlacklistAwareCoordinateGraph implements IndexedGraph<GridPoint2>
+class BlacklistAwareCoordinateGraph implements IndexedGraph<Vector2>
 {
     private final Coordinates coordinates;
 
@@ -26,51 +26,51 @@ class BlacklistAwareCoordinateGraph implements IndexedGraph<GridPoint2>
     }
 
     @Override
-    public Array<Connection<GridPoint2>> getConnections(GridPoint2 fromNode)
+    public Array<Connection<Vector2>> getConnections(Vector2 fromNode)
     {
-        Array<GridPoint2> surroundingGridPoints = getSurroundingGridPoints(fromNode);
-        Array<Connection<GridPoint2>> result = createConnections(fromNode, surroundingGridPoints);
+        Array<Vector2> surroundingCoordinates = getSurroundingCoordinates(fromNode);
+        Array<Connection<Vector2>> result = createConnections(fromNode, surroundingCoordinates);
         return result;
     }
 
-    private Array<GridPoint2> getSurroundingGridPoints(GridPoint2 gridPoint2)
+    private Array<Vector2> getSurroundingCoordinates(Vector2 coordinate)
     {
-        int x = gridPoint2.x;
-        int y = gridPoint2.y;
+        float x = coordinate.x;
+        float y = coordinate.y;
 
-        Array<GridPoint2> result = new Array<>();
-        addGridPointIfValid(coordinates.get(x - 1, y - 1), result);
-        addGridPointIfValid(coordinates.get(x, y - 1), result);
-        addGridPointIfValid(coordinates.get(x + 1, y - 1), result);
-        addGridPointIfValid(coordinates.get(x - 1, y), result);
-        addGridPointIfValid(coordinates.get(x + 1, y), result);
-        addGridPointIfValid(coordinates.get(x - 1, y + 1), result);
-        addGridPointIfValid(coordinates.get(x, y + 1), result);
-        addGridPointIfValid(coordinates.get(x + 1, y + 1), result);
+        Array<Vector2> result = new Array<>();
+        addCoordinateIfValid(coordinates.get(x - 1, y - 1), result);
+        addCoordinateIfValid(coordinates.get(x, y - 1), result);
+        addCoordinateIfValid(coordinates.get(x + 1, y - 1), result);
+        addCoordinateIfValid(coordinates.get(x - 1, y), result);
+        addCoordinateIfValid(coordinates.get(x + 1, y), result);
+        addCoordinateIfValid(coordinates.get(x - 1, y + 1), result);
+        addCoordinateIfValid(coordinates.get(x, y + 1), result);
+        addCoordinateIfValid(coordinates.get(x + 1, y + 1), result);
         return result;
     }
 
-    private void addGridPointIfValid(GridPoint2 gridPoint2, Array<GridPoint2> result)
+    private void addCoordinateIfValid(Vector2 coordinate, Array<Vector2> result)
     {
-        if (isValid(gridPoint2))
+        if (isValid(coordinate))
         {
-            result.add(gridPoint2);
+            result.add(coordinate);
         }
     }
 
-    private boolean isValid(GridPoint2 gridPoint2)
+    private boolean isValid(Vector2 coordinate)
     {
-        return gridPoint2 != null && !isBlacklisted(gridPoint2);
+        return coordinate != null && !isBlacklisted(coordinate);
     }
 
-    private boolean isBlacklisted(GridPoint2 gridPoint2)
+    private boolean isBlacklisted(Vector2 coordinate)
     {
         boolean result = false;
         if (blacklist != null)
         {
             for (Shape2D shape2D : blacklist)
             {
-                result = shape2D.contains(gridPoint2.x, gridPoint2.y);
+                result = shape2D.contains(coordinate.x, coordinate.y);
                 if (result)
                 {
                     break;
@@ -80,20 +80,20 @@ class BlacklistAwareCoordinateGraph implements IndexedGraph<GridPoint2>
         return result;
     }
 
-    private Array<Connection<GridPoint2>> createConnections(
-        GridPoint2 fromNode, Array<GridPoint2> surroundingGridPoints)
+    private Array<Connection<Vector2>> createConnections(
+        Vector2 fromNode, Array<Vector2> surroundingCoordinates)
     {
-        Array<Connection<GridPoint2>> result = new Array<>();
-        for (GridPoint2 toNode : surroundingGridPoints)
+        Array<Connection<Vector2>> result = new Array<>();
+        for (Vector2 toNode : surroundingCoordinates)
         {
-            result.add(new GridPoint2Connection(fromNode, toNode));
+            result.add(new PathConnection(fromNode, toNode));
         }
         return result;
     }
 
     @Override
-    public int getIndex(GridPoint2 node)
+    public int getIndex(Vector2 node)
     {
-        return (node.x - 1) * coordinates.getHeight() + node.y - 1;
+        return (int) ((node.x - 1) * coordinates.getHeight() + node.y - 1);
     }
 }
