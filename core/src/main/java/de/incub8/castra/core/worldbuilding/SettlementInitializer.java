@@ -39,7 +39,7 @@ class SettlementInitializer
 
     private static final Player NEUTRAL_PLAYER = new Player(
         new PlayerColor(
-            new Color(0xc8c8c8ff), new Color(0x4b4b4bff)), 0, "NEUTRAL", PlayerType.NEUTRAL);
+            new Color(0xc8c8c8ff), new Color(0x4b4b4bff)), "NEUTRAL", PlayerType.NEUTRAL);
 
     private final World world;
     private final Viewport viewport;

@@ -8,11 +8,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum SettlementSize
 {
-    SMALL(3, "SmallCastle", "SmallShadow"),
-    MEDIUM(2, "MediumCastle", "MediumShadow"),
-    LARGE(1, "LargeCastle", "LargeShadow");
+    SMALL(3, "SmallCastlePink", "SmallCastleNeutralHighlight", "SmallCastleHighlight", "SmallCastleFlags"),
+    MEDIUM(2, "MediumCastlePink", "MediumCastleNeutralHighlight", "MediumCastleHighlight", "MediumCastleFlags"),
+    LARGE(1, "LargeCastlePink", "LargeCastleNeutralHighlight", "LargeCastleHighlight", "LargeCastleFlags");
 
     private final float spawnIntervalInSeconds;
     private final String textureName;
-    private final String highlightTextureName;
+    private final String neutralHighlight;
+    private final String highlightAnimationName;
+    private final String flagAnimationName;
 }

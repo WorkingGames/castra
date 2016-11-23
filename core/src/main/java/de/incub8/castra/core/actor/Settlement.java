@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
@@ -15,17 +16,17 @@ import com.badlogic.gdx.utils.Align;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.font.FontProvider;
 import de.incub8.castra.core.model.Player;
-import de.incub8.castra.core.model.PlayerColor;
 import de.incub8.castra.core.model.SettlementSize;
 import de.incub8.castra.core.texture.ColorizingTextureAtlasAdapter;
 
 public class Settlement extends Group
 {
-    private static final PlayerColor HIGHLIGHT_COLOR = new PlayerColor(new Color(0xc8c8c8ff), new Color(0x4b4b4bff));
-    private static final int IMAGE_COLUMNS = 2;
-    
+    private static final int FLAG_ANIMATION_COLUMNS = 6;
+    private static final int HIGHLIGHT_ANIMATION_COLUMNS = 6;
+
     private final Image image;
-    private final Image highlight;
+    private final AnimatedImage highlight;
+    private final AnimatedImage flags;
     private final Label label;
     private final ColorizingTextureAtlasAdapter textureAtlas;
 
@@ -62,13 +63,25 @@ public class Settlement extends Group
         this.owner = owner;
         setPosition(x, y);
 
-        highlight = createImage(getHighlightTexture());
+        if (owner.isNeutral())
+        {
+            highlight = createAnimatedImage(getNeutralHighlightTexture());
+        }
+        else
+        {
+            highlight = createAnimatedImage(getHighlightAnimation());
+        }
         highlight.setVisible(false);
-        applyOffset(highlight);
 
         image = createImage(getCastleTexture());
 
         setSize(image.getWidth(), image.getHeight());
+
+        flags = createAnimatedImage(getFlagAnimation());
+        if (owner.isNeutral())
+        {
+            flags.setVisible(false);
+        }
 
         label = createLabel(fontProvider);
 
@@ -111,6 +124,20 @@ public class Settlement extends Group
         return result;
     }
 
+    private AnimatedImage createAnimatedImage(Animation animation)
+    {
+        AnimatedImage animatedImage = new AnimatedImage(animation);
+        addActor(animatedImage);
+        return animatedImage;
+    }
+
+    private AnimatedImage createAnimatedImage(TextureRegion textureRegion)
+    {
+        AnimatedImage animatedImage = new AnimatedImage(textureRegion);
+        addActor(animatedImage);
+        return animatedImage;
+    }
+
     private void applyOffset(Label label)
     {
         if (size.equals(SettlementSize.SMALL))
@@ -150,36 +177,70 @@ public class Settlement extends Group
     {
         owner = newOwner;
         image.setDrawable(new TextureRegionDrawable(getCastleTexture()));
-        highlight.setDrawable(new TextureRegionDrawable(getHighlightTexture()));
+
+        flags.setAnimation(getFlagAnimation());
+        flags.setVisible(true);
+
+        highlight.setAnimation(getHighlightAnimation());
+
         label.setVisible(!owner.isAi());
     }
 
     private TextureRegion getCastleTexture()
     {
         Texture allCastleColors = textureAtlas.findRegion(size.getTextureName(), owner.getColor()).getTexture();
-        int width = allCastleColors.getWidth() / IMAGE_COLUMNS;
-        int height = allCastleColors.getHeight();
-        TextureRegion[][] castles = TextureRegion.split(allCastleColors, width, height);
-        TextureRegion castle = castles[0][owner.getTextureIndex()];
-        return castle;
+        return new TextureRegion(allCastleColors);
     }
 
-    private TextureRegion getHighlightTexture()
+    private Animation getHighlightAnimation()
     {
-        Texture allHighlights = textureAtlas.findRegion(size.getHighlightTextureName(), HIGHLIGHT_COLOR).getTexture();
-        int width = allHighlights.getWidth() / IMAGE_COLUMNS;
-        int height = allHighlights.getHeight();
-        TextureRegion[][] highlights = TextureRegion.split(allHighlights, width, height);
-        TextureRegion highlight;
-        if (owner.isNeutral())
+        Texture highlightTexture = getHighlightAnimationTexture();
+        TextureRegion[][] tmp = TextureRegion.split(
+            highlightTexture, highlightTexture.getWidth() / HIGHLIGHT_ANIMATION_COLUMNS, highlightTexture.getHeight());
+        TextureRegion[] highlightFrames = new TextureRegion[HIGHLIGHT_ANIMATION_COLUMNS];
+        int index = 0;
+        for (int j = 0; j < HIGHLIGHT_ANIMATION_COLUMNS; j++)
         {
-            highlight = highlights[0][0];
+            highlightFrames[index++] = tmp[0][j];
         }
-        else
+        Animation highlightAnimation = new Animation(0.2f, highlightFrames);
+        highlightAnimation.setPlayMode(Animation.PlayMode.LOOP);
+        return highlightAnimation;
+    }
+
+    private Animation getFlagAnimation()
+    {
+        Texture flagTexture = getFlagTexture();
+        TextureRegion[][] tmp = TextureRegion.split(
+            flagTexture, flagTexture.getWidth() / FLAG_ANIMATION_COLUMNS, flagTexture.getHeight());
+        TextureRegion[] flagFrames = new TextureRegion[FLAG_ANIMATION_COLUMNS];
+        int index = 0;
+        for (int j = 0; j < FLAG_ANIMATION_COLUMNS; j++)
         {
-            highlight = highlights[0][1];
+            flagFrames[index++] = tmp[0][j];
         }
-        return highlight;
+        Animation flagAnimation = new Animation(0.2f, flagFrames);
+        flagAnimation.setPlayMode(Animation.PlayMode.LOOP);
+        return flagAnimation;
+    }
+
+    private Texture getFlagTexture()
+    {
+        Texture flagTexture = textureAtlas.findRegion(size.getFlagAnimationName(), owner.getColor()).getTexture();
+        return flagTexture;
+    }
+
+    private TextureRegion getNeutralHighlightTexture()
+    {
+        Texture neutralHighlight = textureAtlas.findRegion(size.getNeutralHighlight(), owner.getColor()).getTexture();
+        return new TextureRegion(neutralHighlight);
+    }
+
+    private Texture getHighlightAnimationTexture()
+    {
+        Texture highlightTexture = textureAtlas.findRegion(size.getHighlightAnimationName(), owner.getColor())
+            .getTexture();
+        return highlightTexture;
     }
 
     public void addSoldier()
