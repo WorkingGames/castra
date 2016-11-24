@@ -61,8 +61,8 @@ public class World extends Stage
         actorComparator = new ActorComparator();
 
         humanPlayer = new Player(
-            new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)), 1, "Bob", PlayerType.HUMAN);
-        aiPlayer = new Player(new PlayerColor(new Color(0xda0205ff), new Color(0x6d0103ff)), 1, "AI", PlayerType.AI);
+            new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)), "Bob", PlayerType.HUMAN);
+        aiPlayer = new Player(new PlayerColor(new Color(0xda0205ff), new Color(0x6d0103ff)), "AI", PlayerType.AI);
         settlements = new Array<>();
         paths = new Paths();
         armies = new Array<>();

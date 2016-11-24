@@ -5,8 +5,8 @@ import lombok.Getter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import de.incub8.castra.core.texture.AnimationUtil;
 
 public class Battle extends Group
 {
@@ -16,8 +16,11 @@ public class Battle extends Group
     @Getter
     private final Army army;
 
+    private final AnimationUtil animationUtil;
+
     public Battle(Army attacker, TextureAtlas textureAtlas)
     {
+        this.animationUtil = new AnimationUtil();
         army = attacker;
 
         AnimatedImage animatedImage = new AnimatedImage(createAnimation(textureAtlas));
@@ -32,18 +35,7 @@ public class Battle extends Group
     private Animation createAnimation(TextureAtlas textureAtlas)
     {
         Texture battleTexture = textureAtlas.findRegion("cloud").getTexture();
-        TextureRegion[][] tmp = TextureRegion.split(
-            battleTexture, battleTexture.getWidth() / FRAME_COLS, battleTexture.getHeight() / FRAME_ROWS);
-        TextureRegion[] battleFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++)
-        {
-            for (int j = 0; j < FRAME_COLS; j++)
-            {
-                battleFrames[index++] = tmp[i][j];
-            }
-        }
-        Animation battleAnimation = new Animation(0.3f, battleFrames);
+        Animation battleAnimation = animationUtil.createAnimation(battleTexture, FRAME_ROWS, FRAME_COLS, 0.3f);
         battleAnimation.setPlayMode(Animation.PlayMode.LOOP_RANDOM);
         return battleAnimation;
     }
