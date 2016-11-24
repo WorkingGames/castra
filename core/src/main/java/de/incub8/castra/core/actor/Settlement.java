@@ -17,6 +17,7 @@ import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.font.FontProvider;
 import de.incub8.castra.core.model.Player;
 import de.incub8.castra.core.model.SettlementSize;
+import de.incub8.castra.core.texture.AnimationUtil;
 import de.incub8.castra.core.texture.ColorizingTextureAtlasAdapter;
 
 public class Settlement extends Group
@@ -29,6 +30,7 @@ public class Settlement extends Group
     private final AnimatedImage flags;
     private final Label label;
     private final ColorizingTextureAtlasAdapter textureAtlas;
+    private final AnimationUtil animationUtil;
 
     @Getter
     private final SettlementSize size;
@@ -58,6 +60,7 @@ public class Settlement extends Group
         FontProvider fontProvider)
     {
         this.textureAtlas = new ColorizingTextureAtlasAdapter(textureAtlas);
+        this.animationUtil = new AnimationUtil();
         this.size = size;
         this.soldiers = soldiers;
         this.owner = owner;
@@ -86,25 +89,6 @@ public class Settlement extends Group
         label = createLabel(fontProvider);
 
         hitbox = createHitbox();
-    }
-
-    private void applyOffset(Image highlight)
-    {
-        if (size.equals(SettlementSize.SMALL))
-        {
-            highlight.setX(-10);
-            highlight.setY(42);
-        }
-        else if (size.equals(SettlementSize.MEDIUM))
-        {
-            highlight.setX(-11);
-            highlight.setY(15);
-        }
-        else
-        {
-            highlight.setX(-14);
-            highlight.setY(35);
-        }
     }
 
     private Image createImage(TextureRegion textureRegion)
@@ -194,32 +178,15 @@ public class Settlement extends Group
 
     private Animation getHighlightAnimation()
     {
-        Texture highlightTexture = getHighlightAnimationTexture();
-        TextureRegion[][] tmp = TextureRegion.split(
-            highlightTexture, highlightTexture.getWidth() / HIGHLIGHT_ANIMATION_COLUMNS, highlightTexture.getHeight());
-        TextureRegion[] highlightFrames = new TextureRegion[HIGHLIGHT_ANIMATION_COLUMNS];
-        int index = 0;
-        for (int j = 0; j < HIGHLIGHT_ANIMATION_COLUMNS; j++)
-        {
-            highlightFrames[index++] = tmp[0][j];
-        }
-        Animation highlightAnimation = new Animation(0.2f, highlightFrames);
+        Animation highlightAnimation = animationUtil.createAnimation(
+            getHighlightAnimationTexture(), 1, HIGHLIGHT_ANIMATION_COLUMNS, 0.2f);
         highlightAnimation.setPlayMode(Animation.PlayMode.LOOP);
         return highlightAnimation;
     }
 
     private Animation getFlagAnimation()
     {
-        Texture flagTexture = getFlagTexture();
-        TextureRegion[][] tmp = TextureRegion.split(
-            flagTexture, flagTexture.getWidth() / FLAG_ANIMATION_COLUMNS, flagTexture.getHeight());
-        TextureRegion[] flagFrames = new TextureRegion[FLAG_ANIMATION_COLUMNS];
-        int index = 0;
-        for (int j = 0; j < FLAG_ANIMATION_COLUMNS; j++)
-        {
-            flagFrames[index++] = tmp[0][j];
-        }
-        Animation flagAnimation = new Animation(0.2f, flagFrames);
+        Animation flagAnimation = animationUtil.createAnimation(getFlagTexture(), 1, FLAG_ANIMATION_COLUMNS, 0.2f);
         flagAnimation.setPlayMode(Animation.PlayMode.LOOP);
         return flagAnimation;
     }
