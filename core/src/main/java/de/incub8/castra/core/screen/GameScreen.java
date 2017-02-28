@@ -61,7 +61,7 @@ public class GameScreen extends ScreenAdapter
         worldStage.getBatch().begin();
         worldStage.getBatch().setColor(Color.WHITE);
         worldStage.getBatch().draw(
-            game.getTextureAtlas().findRegion("Background128").getTexture(),
+            game.getTextureAtlas().findRegion("Background256").getTexture(),
             0,
             0,
             0,
