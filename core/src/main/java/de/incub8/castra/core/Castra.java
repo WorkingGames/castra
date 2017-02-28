@@ -40,7 +40,7 @@ public class Castra extends Game
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         textureAtlas = initializeAtlas();
-        textureAtlas.findRegion("Background128")
+        textureAtlas.findRegion("Background256")
             .getTexture()
             .setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
@@ -54,7 +54,7 @@ public class Castra extends Game
         /* TODO CST-51: read atlas from file (inline method) */
         TextureAtlas result = new TextureAtlas();
         addToAtlas("army", result);
-        addToAtlas("Background128", result);
+        addToAtlas("Background256", result);
         addToAtlas("cloud", result);
         addToAtlas("LargeCastlePink", result);
         addToAtlas("LargeCastleHighlight", result);
