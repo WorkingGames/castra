@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum ArmySize
 {
-    SMALL(1, "army"), MEDIUM(50, "army"), LARGE(100, "army");
+    SMALL(1, "soldiers"), MEDIUM(50, "soldiers"), LARGE(100, "soldiers");
 
     public static ArmySize bySoldierCount(int soldiers)
     {

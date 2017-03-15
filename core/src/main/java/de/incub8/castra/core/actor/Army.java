@@ -3,11 +3,10 @@ package de.incub8.castra.core.actor;
 import lombok.Getter;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Path;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import de.incub8.castra.core.Castra;
 import de.incub8.castra.core.action.MoveAlongAction;
@@ -15,12 +14,15 @@ import de.incub8.castra.core.font.FontProvider;
 import de.incub8.castra.core.model.ArmySize;
 import de.incub8.castra.core.model.Player;
 import de.incub8.castra.core.pathfinding.LinePath;
+import de.incub8.castra.core.texture.AnimationUtil;
 import de.incub8.castra.core.texture.ColorizingTextureAtlasAdapter;
 
 public class Army extends Group
 {
-    private final Image image;
+    private final AnimatedImage image;
     private final Label label;
+    private final ColorizingTextureAtlasAdapter textureAtlas;
+    private final AnimationUtil animationUtil;
 
     @Getter
     private final Player owner;
@@ -42,10 +44,12 @@ public class Army extends Group
         this.soldiers = soldiers;
         this.owner = owner;
         this.target = target;
+        this.textureAtlas = new ColorizingTextureAtlasAdapter(textureAtlas);
+        this.animationUtil = new AnimationUtil();
 
         ArmySize size = ArmySize.bySoldierCount(soldiers);
 
-        image = createImage(size, new ColorizingTextureAtlasAdapter(textureAtlas));
+        image = createAnimatedImage(getAnimation(getArmyTexture(size)));
 
         setSize(image.getWidth(), image.getHeight());
 
@@ -54,12 +58,24 @@ public class Army extends Group
         addAction(MoveAlongAction.obtain(path));
     }
 
-    private Image createImage(ArmySize size, ColorizingTextureAtlasAdapter textureAtlas)
+    private AnimatedImage createAnimatedImage(Animation animation)
     {
-        TextureAtlas.AtlasRegion atlasRegion = textureAtlas.findRegion(size.getTextureName(), owner.getColor());
-        Image result = new Image(atlasRegion.getTexture());
-        addActor(result);
-        return result;
+        AnimatedImage animatedImage = new AnimatedImage(animation);
+        addActor(animatedImage);
+        return animatedImage;
+    }
+
+    private Animation getAnimation(Texture texture)
+    {
+        Animation animation = animationUtil.createAnimation(texture, 4, 1, 0.05f);
+        animation.setPlayMode(Animation.PlayMode.LOOP);
+        return animation;
+    }
+
+    private Texture getArmyTexture(ArmySize size)
+    {
+        Texture texture = textureAtlas.findRegion(size.getTextureName(), owner.getColor()).getTexture();
+        return texture;
     }
 
     private Label createLabel(FontProvider fontProvider)

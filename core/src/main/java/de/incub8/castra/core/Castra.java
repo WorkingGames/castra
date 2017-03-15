@@ -53,7 +53,7 @@ public class Castra extends Game
     {
         /* TODO CST-51: read atlas from file (inline method) */
         TextureAtlas result = new TextureAtlas();
-        addToAtlas("army", result);
+        addToAtlas("soldiers", result);
         addToAtlas("Background256", result);
         addToAtlas("cloud", result);
         addToAtlas("LargeCastlePink", result);
