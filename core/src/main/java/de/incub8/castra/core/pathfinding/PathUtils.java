@@ -16,7 +16,7 @@ public class PathUtils
     {
         Texture armyTexture = textureAtlas.findRegion(ArmySize.LARGE.getTextureName()).getTexture();
         armyWidth = armyTexture.getWidth();
-        armyHeight = armyTexture.getHeight();
+        armyHeight = armyTexture.getHeight() / 4;
     }
 
     public Ellipse getHitboxWithArmySpacing(Settlement settlement)
