@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>de.incub8</groupId>
-        <artifactId>corporate-pom</artifactId>
-        <version>26</version>
-    </parent>
 
-    <groupId>de.incub8.castra</groupId>
+    <groupId>com.github.workinggames.castra</groupId>
     <artifactId>castra</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>core</module>
+        <module>desktop</module>
     </modules>
 
     <properties>
         <android.maven.version>4.4.3</android.maven.version>
         <android.version>4.1.1.4</android.version>
+        <encoding>UTF-8</encoding>
         <gdx.ai.version>1.8.0</gdx.ai.version>
         <gdx.version>1.9.4</gdx.version>
         <gwt.maven.version>2.6.0</gwt.maven.version>
         <gwt.version>2.6.0</gwt.version>
         <!-- Although we develop for Desktop first, we want to stay compatible to Android and GWT. At least Android
         complained about lambdas. -->
-        <java.version>1.7</java.version>
-        <origin>git@bitbucket.org:incub8/castra.git</origin>
+        <java.version>1.8</java.version>
+        <origin>git@github.com:WorkingGames/castra.git</origin>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
     </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -111,6 +110,18 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>com.github.workinggames.castra</groupId>
+                <artifactId>castra-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.workinggames.castra</groupId>
+                <artifactId>castra-core</artifactId>
+                <version>${project.version}</version>
+                <classifier>sources</classifier>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>com.google.android</groupId>
                 <artifactId>android</artifactId>
                 <version>${android.version}</version>
@@ -129,18 +140,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>de.incub8.castra</groupId>
-                <artifactId>castra-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.incub8.castra</groupId>
-                <artifactId>castra-core</artifactId>
-                <version>${project.version}</version>
-                <classifier>sources</classifier>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.16.10</version>
@@ -152,6 +151,32 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>com.github.ekryd.sortpom</groupId>
+                    <artifactId>sortpom-maven-plugin</artifactId>
+                    <version>2.11.0</version>
+                    <configuration>
+                        <encoding>${encoding}</encoding>
+                        <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
+                        <sortDependencies>groupId,artifactId</sortDependencies>
+                        <sortModules>true</sortModules>
+                        <sortPlugins>groupId,artifactId</sortPlugins>
+                        <sortProperties>true</sortProperties>
+                        <createBackupFile>false</createBackupFile>
+                        <expandEmptyElements>false</expandEmptyElements>
+                        <keepBlankLines>true</keepBlankLines>
+                        <lineSeparator>\n</lineSeparator>
+                        <nrOfIndentSpace>4</nrOfIndentSpace>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>sort</goal>
+                            </goals>
+                            <phase>verify</phase>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>com.googlecode.mavennatives</groupId>
                     <artifactId>maven-nativedependencies-plugin</artifactId>
@@ -166,6 +191,14 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
