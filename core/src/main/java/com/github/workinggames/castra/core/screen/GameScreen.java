@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.MathUtils;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.ai.SimpleAi;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
@@ -27,18 +26,16 @@ public class GameScreen extends ScreenAdapter
     private final SimpleAi simpleAi;
     private final ArmySplitInputProcessor armySplitInputProcessor;
 
-    public GameScreen(Castra game)
+    public GameScreen(Castra game, long seed)
     {
         this.game = game;
-
+        log.info("Starting game with seed: " + seed);
         worldStage = new World(game.getViewport(), game.getTextureAtlas(), game.getFontProvider());
         game.getInputMultiplexer().addProcessor(worldStage);
 
         armySplitInputProcessor = new ArmySplitInputProcessor(worldStage.getHumanPlayer(), worldStage.getArmySplit());
         game.getInputMultiplexer().addProcessor(armySplitInputProcessor);
 
-        long seed = MathUtils.random(978234L);
-        log.info("Playing seed: "+seed);
         new WorldInitializer(game.getViewport(), game.getTextureAtlas(), seed).initialize(worldStage);
 
         soldierSpawner = new SoldierSpawner(worldStage.getSettlements());

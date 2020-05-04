@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.font.FontProvider;
@@ -31,6 +32,9 @@ public class Castra extends Game
     @Getter
     private FontProvider fontProvider;
 
+    @Getter
+    private Skin skin;
+
     @Override
     public void create()
     {
@@ -45,6 +49,7 @@ public class Castra extends Game
             .setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         fontProvider = new FontProvider();
+        skin = new Skin();
 
         this.setScreen(new MainMenuScreen(this));
     }
@@ -92,5 +97,6 @@ public class Castra extends Game
         super.dispose();
         fontProvider.dispose();
         textureAtlas.dispose();
+        skin.dispose();
     }
 }
