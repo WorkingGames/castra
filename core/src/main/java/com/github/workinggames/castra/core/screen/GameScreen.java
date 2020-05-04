@@ -1,5 +1,7 @@
 package com.github.workinggames.castra.core.screen;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +15,7 @@ import com.github.workinggames.castra.core.task.BattleProcessor;
 import com.github.workinggames.castra.core.task.SoldierSpawner;
 import com.github.workinggames.castra.core.worldbuilding.WorldInitializer;
 
+@Slf4j
 public class GameScreen extends ScreenAdapter
 {
     private final Castra game;
@@ -35,6 +38,7 @@ public class GameScreen extends ScreenAdapter
         game.getInputMultiplexer().addProcessor(armySplitInputProcessor);
 
         long seed = MathUtils.random(978234L);
+        log.info("Playing seed: "+seed);
         new WorldInitializer(game.getViewport(), game.getTextureAtlas(), seed).initialize(worldStage);
 
         soldierSpawner = new SoldierSpawner(worldStage.getSettlements());
