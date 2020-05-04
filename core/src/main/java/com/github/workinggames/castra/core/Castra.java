@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.screen.MainMenuScreen;
+import com.github.workinggames.castra.core.worldbuilding.FluffLoader;
 
 public class Castra extends Game
 {
@@ -21,19 +22,19 @@ public class Castra extends Game
     private static final int WORLD_HEIGHT = 768;
 
     @Getter
-    private Viewport viewport;
+    private final TextureAtlas textureAtlas = new TextureAtlas();
 
     @Getter
-    private InputMultiplexer inputMultiplexer;
-
-    @Getter
-    private TextureAtlas textureAtlas;
+    private final Skin skin = new Skin();
 
     @Getter
     private FontProvider fontProvider;
 
     @Getter
-    private Skin skin;
+    private Viewport viewport;
+
+    @Getter
+    private InputMultiplexer inputMultiplexer;
 
     @Override
     public void create()
@@ -43,42 +44,39 @@ public class Castra extends Game
         inputMultiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        textureAtlas = initializeAtlas();
+        initializeAtlasContent();
         textureAtlas.findRegion("Background256")
             .getTexture()
             .setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         fontProvider = new FontProvider();
-        skin = new Skin();
 
         this.setScreen(new MainMenuScreen(this));
     }
 
-    private TextureAtlas initializeAtlas()
+    private void initializeAtlasContent()
     {
-        /* TODO CST-51: read atlas from file (inline method) */
-        TextureAtlas result = new TextureAtlas();
-        addToAtlas("soldiers", result);
-        addToAtlas("Background256", result);
-        addToAtlas("cloud", result);
-        addToAtlas("LargeCastlePink", result);
-        addToAtlas("LargeCastleHighlight", result);
-        addToAtlas("LargeCastleNeutralHighlight", result);
-        addToAtlas("LargeCastleFlags", result);
-        addToAtlas("MediumCastlePink", result);
-        addToAtlas("MediumCastleHighlight", result);
-        addToAtlas("MediumCastleNeutralHighlight", result);
-        addToAtlas("MediumCastleFlags", result);
-        addToAtlas("SmallCastlePink", result);
-        addToAtlas("SmallCastleHighlight", result);
-        addToAtlas("SmallCastleNeutralHighlight", result);
-        addToAtlas("SmallCastleFlags", result);
-        addToAtlas("armySplit", result);
-        addToAtlas("armySplitOuterRim", result);
-        return result;
+        addToAtlas("soldiers");
+        addToAtlas("Background256");
+        addToAtlas("cloud");
+        addToAtlas("LargeCastlePink");
+        addToAtlas("LargeCastleHighlight");
+        addToAtlas("LargeCastleNeutralHighlight");
+        addToAtlas("LargeCastleFlags");
+        addToAtlas("MediumCastlePink");
+        addToAtlas("MediumCastleHighlight");
+        addToAtlas("MediumCastleNeutralHighlight");
+        addToAtlas("MediumCastleFlags");
+        addToAtlas("SmallCastlePink");
+        addToAtlas("SmallCastleHighlight");
+        addToAtlas("SmallCastleNeutralHighlight");
+        addToAtlas("SmallCastleFlags");
+        addToAtlas("armySplit");
+        addToAtlas("armySplitOuterRim");
+        FluffLoader.addFluffToAtlas(textureAtlas);
     }
 
-    private void addToAtlas(String name, TextureAtlas textureAtlas)
+    private void addToAtlas(String name)
     {
         Texture texture = new Texture(Gdx.files.internal(name + ".png"));
         textureAtlas.addRegion(name, texture, 0, 0, texture.getWidth(), texture.getHeight());

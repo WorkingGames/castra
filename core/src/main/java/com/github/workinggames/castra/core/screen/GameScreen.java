@@ -30,7 +30,7 @@ public class GameScreen extends ScreenAdapter
     {
         this.game = game;
         log.info("Starting game with seed: " + seed);
-        worldStage = new World(game.getViewport(), game.getTextureAtlas(), game.getFontProvider());
+        worldStage = new World(game.getViewport(), game.getTextureAtlas(), game.getFontProvider(), seed);
         game.getInputMultiplexer().addProcessor(worldStage);
 
         armySplitInputProcessor = new ArmySplitInputProcessor(worldStage.getHumanPlayer(), worldStage.getArmySplit());

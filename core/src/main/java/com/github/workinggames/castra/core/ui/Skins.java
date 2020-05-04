@@ -8,9 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.github.workinggames.castra.core.Castra;
 
-public class Utils
+public class Skins
 {
-    public static void initializeSkin(Castra game)
+    public static void initialize(Castra game)
     {
         Skin skin = game.getSkin();
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);

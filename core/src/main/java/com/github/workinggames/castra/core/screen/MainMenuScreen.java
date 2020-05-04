@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.workinggames.castra.core.Castra;
-import com.github.workinggames.castra.core.ui.Utils;
+import com.github.workinggames.castra.core.ui.Skins;
 
 public class MainMenuScreen extends ScreenAdapter
 {
@@ -28,9 +28,9 @@ public class MainMenuScreen extends ScreenAdapter
         this.game = game;
 
         stage = new Stage(game.getViewport());
-        Gdx.input.setInputProcessor(stage);
+        game.getInputMultiplexer().addProcessor(stage);
 
-        Utils.initializeSkin(game);
+        Skins.initialize(game);
 
         randomSeed = new TextButton("Start Game", game.getSkin());
         randomSeed.addListener(new ClickListener());

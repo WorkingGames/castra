@@ -46,9 +46,9 @@ class SettlementInitializer
     private float worldWidth;
     private float worldHeight;
 
-    public void initialize(long seed)
+    public void initialize()
     {
-        random = new RandomXS128(seed);
+        random = new RandomXS128(world.getSeed());
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 

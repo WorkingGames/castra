@@ -9,6 +9,7 @@ import com.badlogic.gdx.ai.Timepiece;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.actor.Army;
@@ -25,7 +26,9 @@ import com.github.workinggames.castra.core.pathfinding.LinePath;
 
 public class World extends Stage
 {
+    @Getter
     private final TextureAtlas textureAtlas;
+
     private final FontProvider fontProvider;
     private final ActorComparator actorComparator;
 
@@ -53,15 +56,20 @@ public class World extends Stage
     @Getter
     private final ArmySplit armySplit;
 
-    public World(Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider)
+    @Getter
+    private final long seed;
+
+    public World(Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, long seed)
     {
         super(viewport);
         this.textureAtlas = textureAtlas;
         this.fontProvider = fontProvider;
+        this.seed = seed;
         actorComparator = new ActorComparator();
 
-        humanPlayer = new Player(
-            new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)), "Bob", PlayerType.HUMAN);
+        humanPlayer = new Player(new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)),
+            "Bob",
+            PlayerType.HUMAN);
         aiPlayer = new Player(new PlayerColor(new Color(0xda0205ff), new Color(0x6d0103ff)), "AI", PlayerType.AI);
         settlements = new Array<>();
         paths = new Paths();
@@ -100,6 +108,11 @@ public class World extends Stage
             armies.add(army);
             origin.removeSoldiers(count);
         }
+    }
+
+    public void createFluff(Image fluff)
+    {
+        addActor(fluff);
     }
 
     private void processArmies()

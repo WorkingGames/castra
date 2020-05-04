@@ -140,6 +140,18 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>3.15.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>3.2.4</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.16.10</version>
@@ -154,6 +166,12 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>1.7.24</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>7.1.0</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
