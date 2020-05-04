@@ -32,7 +32,11 @@ public class ColorizingTextureAtlasAdapter
         TextureAtlas.AtlasRegion originalRegion = textureAtlas.findRegion(originalRegionName);
         Texture originalTexture = originalRegion.getTexture();
         Texture coloredTexture = colorReplacer.replaceColors(originalTexture, playerColor.getColorMapping());
-        textureAtlas.addRegion(
-            coloredRegionName, coloredTexture, 0, 0, coloredTexture.getWidth(), coloredTexture.getHeight());
+        textureAtlas.addRegion(coloredRegionName,
+            coloredTexture,
+            0,
+            0,
+            coloredTexture.getWidth(),
+            coloredTexture.getHeight());
     }
 }

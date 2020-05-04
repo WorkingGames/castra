@@ -37,9 +37,8 @@ class SettlementInitializer
     private static final int MINIMUM_NEUTRAL_SOLDIER_SIZE = 1;
     private static final int MAXIMUM_NEUTRAL_SOLDIER_SIZE = 30;
 
-    private static final Player NEUTRAL_PLAYER = new Player(
-        new PlayerColor(
-            new Color(0xc8c8c8ff), new Color(0x4b4b4bff)), "NEUTRAL", PlayerType.NEUTRAL);
+    private static final Player NEUTRAL_PLAYER = new Player(new PlayerColor(new Color(0xc8c8c8ff),
+        new Color(0x4b4b4bff)), "NEUTRAL", PlayerType.NEUTRAL);
 
     private final World world;
     private final Viewport viewport;
@@ -61,8 +60,10 @@ class SettlementInitializer
 
         Iterator<GridPoint2> positionIterator = settlementPositions.iterator();
 
-        createSettlement(
-            positionIterator.next(), SettlementSize.LARGE, INITIAL_SOLDIER_SIZE_HQ, world.getHumanPlayer());
+        createSettlement(positionIterator.next(),
+            SettlementSize.LARGE,
+            INITIAL_SOLDIER_SIZE_HQ,
+            world.getHumanPlayer());
 
         createSettlement(positionIterator.next(), SettlementSize.LARGE, INITIAL_SOLDIER_SIZE_HQ, world.getAiPlayer());
 

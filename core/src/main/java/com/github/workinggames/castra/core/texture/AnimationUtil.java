@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class AnimationUtil
 {
-    public Animation createAnimation(Texture texture, int rows, int columns, float frameDuration)
+    public Animation<TextureRegion> createAnimation(Texture texture, int rows, int columns, float frameDuration)
     {
-        TextureRegion[][] tmp = TextureRegion.split(
-            texture, texture.getWidth() / columns, texture.getHeight() / rows);
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / columns, texture.getHeight() / rows);
         TextureRegion[] animationFrames = new TextureRegion[rows * columns];
         int index = 0;
         for (int i = 0; i < rows; i++)
@@ -19,7 +18,6 @@ public class AnimationUtil
                 animationFrames[index++] = tmp[i][j];
             }
         }
-        Animation animation = new Animation(frameDuration, animationFrames);
-        return animation;
+        return new Animation<>(frameDuration, animationFrames);
     }
 }

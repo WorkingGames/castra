@@ -60,11 +60,7 @@ public class PathInitializer
                 }
                 else
                 {
-                    throw new PathFindingException(
-                        "Unable to find path between " +
-                            origin +
-                            " and " +
-                            destination);
+                    throw new PathFindingException("Unable to find path between " + origin + " and " + destination);
                 }
             }
         }
@@ -87,8 +83,7 @@ public class PathInitializer
     private GraphPath<Vector2> calculateGraphPathBetween(Settlement origin, Settlement destination)
     {
         GraphPath<Vector2> result = new DefaultGraphPath<>();
-        boolean pathFound = pathFinder.searchNodePath(
-            coordinates.get(origin.getCenterX(), origin.getCenterY()),
+        boolean pathFound = pathFinder.searchNodePath(coordinates.get(origin.getCenterX(), origin.getCenterY()),
             coordinates.get(destination.getCenterX(), destination.getCenterY()),
             heuristic,
             result);

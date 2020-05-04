@@ -29,8 +29,7 @@ class BlacklistAwareCoordinateGraph implements IndexedGraph<Vector2>
     public Array<Connection<Vector2>> getConnections(Vector2 fromNode)
     {
         Array<Vector2> surroundingCoordinates = getSurroundingCoordinates(fromNode);
-        Array<Connection<Vector2>> result = createConnections(fromNode, surroundingCoordinates);
-        return result;
+        return createConnections(fromNode, surroundingCoordinates);
     }
 
     private Array<Vector2> getSurroundingCoordinates(Vector2 coordinate)

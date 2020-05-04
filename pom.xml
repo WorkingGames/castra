@@ -16,8 +16,8 @@
         <android.maven.version>4.4.3</android.maven.version>
         <android.version>4.1.1.4</android.version>
         <encoding>UTF-8</encoding>
-        <gdx.ai.version>1.8.0</gdx.ai.version>
-        <gdx.version>1.9.4</gdx.version>
+        <gdx.ai.version>1.8.2</gdx.ai.version>
+        <gdx.version>1.9.10</gdx.version>
         <gwt.maven.version>2.6.0</gwt.maven.version>
         <gwt.version>2.6.0</gwt.version>
         <!-- Although we develop for Desktop first, we want to stay compatible to Android and GWT. At least Android

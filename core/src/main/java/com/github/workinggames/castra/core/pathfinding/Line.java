@@ -51,7 +51,6 @@ public class Line
     public Vector2 valueAt(float distance)
     {
         Vector2 slopeVector = new Vector2(end).sub(start).setLength(distance);
-        Vector2 point = new Vector2(start).add(slopeVector);
-        return point;
+        return new Vector2(start).add(slopeVector);
     }
 }

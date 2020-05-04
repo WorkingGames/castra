@@ -22,8 +22,8 @@ public class PathUtils
     public Ellipse getHitboxWithArmySpacing(Settlement settlement)
     {
         Ellipse hitboxWithArmySpacing = new Ellipse(settlement.getHitbox());
-        hitboxWithArmySpacing.setSize(
-            hitboxWithArmySpacing.width + armyWidth, hitboxWithArmySpacing.height + armyHeight);
+        hitboxWithArmySpacing.setSize(hitboxWithArmySpacing.width + armyWidth,
+            hitboxWithArmySpacing.height + armyHeight);
         return hitboxWithArmySpacing;
     }
 

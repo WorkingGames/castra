@@ -48,14 +48,14 @@ public class GameOverScreen extends ScreenAdapter
 
         stage.getBatch().begin();
         stage.getBatch().setColor(Color.WHITE);
-        stage.getBatch().draw(
-            game.getTextureAtlas().findRegion("Background256").getTexture(),
-            0,
-            0,
-            0,
-            0,
-            (int) game.getViewport().getWorldWidth(),
-            (int) game.getViewport().getWorldHeight());
+        stage.getBatch()
+            .draw(game.getTextureAtlas().findRegion("Background256").getTexture(),
+                0,
+                0,
+                0,
+                0,
+                (int) game.getViewport().getWorldWidth(),
+                (int) game.getViewport().getWorldHeight());
         stage.getBatch().end();
 
         stage.act(delta);

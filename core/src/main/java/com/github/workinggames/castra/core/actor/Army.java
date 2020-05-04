@@ -6,11 +6,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.github.workinggames.castra.core.Castra;
-import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.action.MoveAlongAction;
+import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.ArmySize;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
@@ -58,24 +59,23 @@ public class Army extends Group
         addAction(MoveAlongAction.obtain(path));
     }
 
-    private AnimatedImage createAnimatedImage(Animation animation)
+    private AnimatedImage createAnimatedImage(Animation<TextureRegion> animation)
     {
         AnimatedImage animatedImage = new AnimatedImage(animation);
         addActor(animatedImage);
         return animatedImage;
     }
 
-    private Animation getAnimation(Texture texture)
+    private Animation<TextureRegion> getAnimation(Texture texture)
     {
-        Animation animation = animationUtil.createAnimation(texture, 4, 1, 0.05f);
+        Animation<TextureRegion> animation = animationUtil.createAnimation(texture, 4, 1, 0.05f);
         animation.setPlayMode(Animation.PlayMode.LOOP);
         return animation;
     }
 
     private Texture getArmyTexture(ArmySize size)
     {
-        Texture texture = textureAtlas.findRegion(size.getTextureName(), owner.getColor()).getTexture();
-        return texture;
+        return textureAtlas.findRegion(size.getTextureName(), owner.getColor()).getTexture();
     }
 
     private Label createLabel(FontProvider fontProvider)

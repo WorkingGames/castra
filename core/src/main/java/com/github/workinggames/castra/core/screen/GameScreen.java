@@ -8,9 +8,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.ai.SimpleAi;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
+import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.BattleProcessor;
 import com.github.workinggames.castra.core.task.SoldierSpawner;
-import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.worldbuilding.WorldInitializer;
 
 public class GameScreen extends ScreenAdapter
@@ -60,14 +60,14 @@ public class GameScreen extends ScreenAdapter
 
         worldStage.getBatch().begin();
         worldStage.getBatch().setColor(Color.WHITE);
-        worldStage.getBatch().draw(
-            game.getTextureAtlas().findRegion("Background256").getTexture(),
-            0,
-            0,
-            0,
-            0,
-            (int) game.getViewport().getWorldWidth(),
-            (int) game.getViewport().getWorldHeight());
+        worldStage.getBatch()
+            .draw(game.getTextureAtlas().findRegion("Background256").getTexture(),
+                0,
+                0,
+                0,
+                0,
+                (int) game.getViewport().getWorldWidth(),
+                (int) game.getViewport().getWorldHeight());
         worldStage.getBatch().end();
 
         worldStage.act(delta);

@@ -108,7 +108,7 @@ public class Settlement extends Group
         return result;
     }
 
-    private AnimatedImage createAnimatedImage(Animation animation)
+    private AnimatedImage createAnimatedImage(Animation<TextureRegion> animation)
     {
         AnimatedImage animatedImage = new AnimatedImage(animation);
         addActor(animatedImage);
@@ -153,8 +153,7 @@ public class Settlement extends Group
         float height = getWidth() * Castra.WIDTH_HEIGHT_RATIO;
         centerX = getX() + getWidth() / 2;
         centerY = getY() + height / 2;
-        Ellipse result = new Ellipse(centerX, centerY, getWidth(), height);
-        return result;
+        return new Ellipse(centerX, centerY, getWidth(), height);
     }
 
     public void changeOwner(Player newOwner)
@@ -176,25 +175,29 @@ public class Settlement extends Group
         return new TextureRegion(allCastleColors);
     }
 
-    private Animation getHighlightAnimation()
+    private Animation<TextureRegion> getHighlightAnimation()
     {
-        Animation highlightAnimation = animationUtil.createAnimation(
-            getHighlightAnimationTexture(), 1, HIGHLIGHT_ANIMATION_COLUMNS, 0.2f);
+        Animation<TextureRegion> highlightAnimation = animationUtil.createAnimation(getHighlightAnimationTexture(),
+            1,
+            HIGHLIGHT_ANIMATION_COLUMNS,
+            0.2f);
         highlightAnimation.setPlayMode(Animation.PlayMode.LOOP);
         return highlightAnimation;
     }
 
-    private Animation getFlagAnimation()
+    private Animation<TextureRegion> getFlagAnimation()
     {
-        Animation flagAnimation = animationUtil.createAnimation(getFlagTexture(), 1, FLAG_ANIMATION_COLUMNS, 0.2f);
+        Animation<TextureRegion> flagAnimation = animationUtil.createAnimation(getFlagTexture(),
+            1,
+            FLAG_ANIMATION_COLUMNS,
+            0.2f);
         flagAnimation.setPlayMode(Animation.PlayMode.LOOP);
         return flagAnimation;
     }
 
     private Texture getFlagTexture()
     {
-        Texture flagTexture = textureAtlas.findRegion(size.getFlagAnimationName(), owner.getColor()).getTexture();
-        return flagTexture;
+        return textureAtlas.findRegion(size.getFlagAnimationName(), owner.getColor()).getTexture();
     }
 
     private TextureRegion getNeutralHighlightTexture()
@@ -205,9 +208,7 @@ public class Settlement extends Group
 
     private Texture getHighlightAnimationTexture()
     {
-        Texture highlightTexture = textureAtlas.findRegion(size.getHighlightAnimationName(), owner.getColor())
-            .getTexture();
-        return highlightTexture;
+        return textureAtlas.findRegion(size.getHighlightAnimationName(), owner.getColor()).getTexture();
     }
 
     public void addSoldier()

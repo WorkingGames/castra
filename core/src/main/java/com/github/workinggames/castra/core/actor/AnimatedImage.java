@@ -10,10 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class AnimatedImage extends Image
 {
     @Setter
-    protected Animation animation = null;
+    protected Animation<TextureRegion> animation = null;
     private float stateTime = 0;
 
-    public AnimatedImage(Animation animation)
+    public AnimatedImage(Animation<TextureRegion> animation)
     {
         super(animation.getKeyFrame(0));
         this.animation = animation;

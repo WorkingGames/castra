@@ -11,10 +11,10 @@ class ColorReplacer
     public Texture replaceColors(Texture texture, ObjectMap<Color, Color> mappings)
     {
         Pixmap pixmap = getPixmap(texture);
-        Pixmap.Blending originalBlending = Pixmap.getBlending();
-        Pixmap.setBlending(Pixmap.Blending.None);
+        Pixmap.Blending originalBlending = pixmap.getBlending();
+        pixmap.setBlending(Pixmap.Blending.None);
         replaceColors(pixmap, mappings);
-        Pixmap.setBlending(originalBlending);
+        pixmap.setBlending(originalBlending);
         return convertToTextureAndDispose(pixmap);
     }
 

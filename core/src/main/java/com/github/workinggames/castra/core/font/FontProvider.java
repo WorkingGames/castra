@@ -20,10 +20,12 @@ public class FontProvider implements Disposable
     public FontProvider()
     {
         defaultFont = new BitmapFont();
-        soldierCountFont = new BitmapFont(
-            Gdx.files.internal("fonts/SoldierCount.fnt"), Gdx.files.internal("fonts/SoldierCount.png"), false);
-        splitInfoFont = new BitmapFont(
-            Gdx.files.internal("fonts/SplitInfoText.fnt"), Gdx.files.internal("fonts/SplitInfoText.png"), false);
+        soldierCountFont = new BitmapFont(Gdx.files.internal("fonts/SoldierCount.fnt"),
+            Gdx.files.internal("fonts/SoldierCount.png"),
+            false);
+        splitInfoFont = new BitmapFont(Gdx.files.internal("fonts/SplitInfoText.fnt"),
+            Gdx.files.internal("fonts/SplitInfoText.png"),
+            false);
     }
 
     @Override

@@ -33,8 +33,7 @@ public class ArmySplitDragTarget extends DragAndDrop.Target
     private int calculateArmySplitPercentage(float x, float y)
     {
         float angle = new Vector2(x, y).angle();
-        int percentage = (int) (Math.round(angle / DEGREES_FOR_STEP) * STEP_SIZE);
-        return percentage;
+        return (int) (Math.round(angle / DEGREES_FOR_STEP) * STEP_SIZE);
     }
 
     @Override

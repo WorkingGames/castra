@@ -81,8 +81,7 @@ public class ArmySplit extends Group
 
     private Image createImage(String name)
     {
-        Image result = new Image(textureAtlas.findRegion(name).getTexture());
-        return result;
+        return new Image(textureAtlas.findRegion(name).getTexture());
     }
 
     private Label createLabel()
