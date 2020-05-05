@@ -2,21 +2,23 @@ package com.github.workinggames.castra.core.ui;
 
 import lombok.Getter;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.model.Player;
-import com.github.workinggames.castra.core.model.PlayerColor;
+import com.github.workinggames.castra.core.model.PlayerColorSchema;
 import com.github.workinggames.castra.core.model.PlayerType;
 
 public class PlayerOptions extends Table
@@ -24,44 +26,64 @@ public class PlayerOptions extends Table
     @Getter
     private final Player player;
 
-    public PlayerOptions(Castra game, String title, PlayerColor playerColor, PlayerType playerType)
+    public PlayerOptions(Castra game, String title, PlayerColorSchema color, PlayerType playerType)
     {
         super(game.getSkin());
         Skin skin = game.getSkin();
-        player = new Player(playerColor, title, playerType);
+        player = new Player(color.getPlayerColor(), title, playerType);
 
         addTitle(title, skin);
         addNameInput(title, skin);
         addTypeInput(skin, playerType);
-        addColor(playerColor, skin);
+        addColor(color, skin);
     }
 
-    private void addColor(PlayerColor playerColor, Skin skin)
+    private void addColor(PlayerColorSchema color, Skin skin)
     {
-        Pixmap pixmap = new Pixmap(20, 10, Pixmap.Format.RGBA8888);
-        pixmap.setColor(playerColor.getColors().get(0));
-        pixmap.fill();
-        TextureRegionDrawable color1 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+        Label playerColorLabel = new Label("Player color schema: ", skin);
+        add(playerColorLabel);
 
-        pixmap.setColor(playerColor.getColors().get(1));
-        pixmap.fill();
-        TextureRegionDrawable color2 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+        SelectBox<PlayerColorSchema> playerColorSelectBox = new SelectBox<>(skin);
+        playerColorSelectBox.setItems(PlayerColorSchema.values());
+        playerColorSelectBox.setSelected(color);
+        add(playerColorSelectBox);
+        row();
 
-        Label playerColor1Label = new Label("Player color1: ", skin);
+        Label playerColor1Label = new Label("Primary color: ", skin);
         add(playerColor1Label);
 
-        ImageButton playerColor1Button = new ImageButton(color1);
-        playerColor1Button.setSize(20, 10);
-        add(playerColor1Button);
+        Image playerColor1 = new Image(createColorPreview(player.getColor().getPrimaryColor()));
+        playerColor1.setSize(20, 10);
+        add(playerColor1);
         row();
 
-        Label playerColor2Label = new Label("Player color2: ", skin);
+        Label playerColor2Label = new Label("Secondary color: ", skin);
         add(playerColor2Label);
 
-        ImageButton playerColor2Button = new ImageButton(color2);
-        playerColor2Button.setSize(20, 10);
-        add(playerColor2Button);
+        Image playerColor2 = new Image(createColorPreview(player.getColor().getSecondaryColor()));
+        playerColor2.setSize(20, 10);
+        add(playerColor2);
         row();
+
+        playerColorSelectBox.addListener(new ChangeListener()
+        {
+            @Override
+            public void changed(ChangeEvent event, Actor actor)
+            {
+                SelectBox<PlayerColorSchema> selectBox = (SelectBox<PlayerColorSchema>) actor;
+                player.setColor(selectBox.getSelected().getPlayerColor());
+                playerColor1.setDrawable(createColorPreview(player.getColor().getPrimaryColor()));
+                playerColor2.setDrawable(createColorPreview(player.getColor().getSecondaryColor()));
+            }
+        });
+    }
+
+    private Drawable createColorPreview(Color color)
+    {
+        Pixmap pixmap = new Pixmap(20, 10, Pixmap.Format.RGBA8888);
+        pixmap.setColor(color);
+        pixmap.fill();
+        return new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
     }
 
     private void addTitle(String title, Skin skin)

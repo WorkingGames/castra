@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.screen.MainMenuScreen;
 import com.github.workinggames.castra.core.worldbuilding.FluffLoader;
-import com.kotcrab.vis.ui.VisUI;
 
 public class Castra extends Game
 {
@@ -51,7 +50,6 @@ public class Castra extends Game
             .setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         fontProvider = new FontProvider();
-        VisUI.load();
 
         this.setScreen(new MainMenuScreen(this));
     }
@@ -100,6 +98,5 @@ public class Castra extends Game
         fontProvider.dispose();
         textureAtlas.dispose();
         skin.dispose();
-        VisUI.dispose();
     }
 }

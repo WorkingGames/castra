@@ -3,7 +3,6 @@ package com.github.workinggames.castra.core.model;
 import lombok.Data;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 @Data
@@ -21,9 +20,14 @@ public class PlayerColor
         regionNameSuffix = createRegionNameSuffix(color1, color2);
     }
 
-    public Array<Color> getColors()
+    public Color getPrimaryColor()
     {
-        return colorMapping.values().toArray();
+        return colorMapping.get(REPLACEMENT_COLOR1);
+    }
+
+    public Color getSecondaryColor()
+    {
+        return colorMapping.get(REPLACEMENT_COLOR2);
     }
 
     private ObjectMap<Color, Color> createColorMapping(Color color1, Color color2)
