@@ -56,6 +56,7 @@ public class Castra extends Game
 
     private void initializeAtlasContent()
     {
+        addToAtlas("soldier");
         addToAtlas("soldiers");
         addToAtlas("Background256");
         addToAtlas("cloud");
