@@ -56,6 +56,12 @@ public class Army extends Group
 
         this.label = createLabel(fontProvider);
 
+        // flip image, moving from right to left
+        if (path.valueAt(0).x > path.valueAt(1).x)
+        {
+            image.setOriginX(image.getWidth() / 2);
+            image.setScaleX(-1);
+        }
         addAction(MoveAlongAction.obtain(path));
     }
 
