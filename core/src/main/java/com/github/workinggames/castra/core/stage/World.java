@@ -20,6 +20,7 @@ import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.Paths;
 import com.github.workinggames.castra.core.model.Player;
+import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.model.SettlementSize;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
 import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
@@ -55,7 +56,7 @@ public class World extends Stage
     private final Timepiece timepiece;
 
     @Getter
-    private final ArmySplit armySplit;
+    private ArmySplit armySplit;
 
     @Getter
     private final long seed;
@@ -83,9 +84,12 @@ public class World extends Stage
         battles = new Array<>();
         timepiece = new DefaultTimepiece();
 
-        armySplit = new ArmySplit(textureAtlas, fontProvider, player1);
-        armySplit.setZIndex(0);
-        addActor(armySplit);
+        if (player1.getType().equals(PlayerType.HUMAN) || player2.getType().equals(PlayerType.HUMAN))
+        {
+            armySplit = new ArmySplit(textureAtlas, fontProvider, player1);
+            armySplit.setZIndex(0);
+            addActor(armySplit);
+        }
     }
 
     @Override

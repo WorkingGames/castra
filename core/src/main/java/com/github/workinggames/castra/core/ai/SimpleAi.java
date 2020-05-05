@@ -7,6 +7,7 @@ import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
 public class SimpleAi
@@ -21,10 +22,12 @@ public class SimpleAi
     private final World world;
     private final AiUtils aiUtils;
     private float nextActionTime;
+    private final Player player;
 
-    public SimpleAi(World world)
+    public SimpleAi(World world, Player aiPlayer)
     {
         this.world = world;
+        this.player = aiPlayer;
         aiUtils = new AiUtils(world);
         stateMachine = new DefaultStateMachine<>(this, SimpleAiState.ATTACK);
         nextActionTime = 0;
@@ -56,7 +59,7 @@ public class SimpleAi
     private Settlement randomOrigin()
     {
         Settlement origin = null;
-        Array<Settlement> owned = aiUtils.getOwnedSettlements();
+        Array<Settlement> owned = aiUtils.getOwnedSettlements(player);
         if (owned.size > 0)
         {
             origin = owned.get(MathUtils.random(0, owned.size - 1));
@@ -68,7 +71,7 @@ public class SimpleAi
     {
         Settlement destination = null;
         Array<Settlement> targets = new Array<>();
-        targets.addAll(aiUtils.getPlayerSettlements());
+        targets.addAll(aiUtils.getOpponentSettlements(player));
         targets.addAll(aiUtils.getNeutralSettlements());
         if (targets.size > 0)
         {

@@ -10,6 +10,7 @@ import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.ai.SimpleAi;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
 import com.github.workinggames.castra.core.model.Player;
+import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.BattleProcessor;
 import com.github.workinggames.castra.core.task.SoldierSpawner;
@@ -20,12 +21,13 @@ public class GameScreen extends ScreenAdapter
 {
     private final Castra game;
     private final World worldStage;
-
     private final SoldierSpawner soldierSpawner;
     private final BattleProcessor battleProcessor;
     private final VictoryCondition victoryCondition;
-    private final SimpleAi simpleAi;
     private final ArmySplitInputProcessor armySplitInputProcessor;
+
+    private SimpleAi ai1;
+    private SimpleAi ai2;
 
     public GameScreen(Castra game, long seed, Player player1, Player player2)
     {
@@ -50,13 +52,28 @@ public class GameScreen extends ScreenAdapter
         battleProcessor.startBattles();
 
         victoryCondition = new VictoryCondition(worldStage);
-        simpleAi = new SimpleAi(worldStage);
+
+        if (player1.getType().equals(PlayerType.AI))
+        {
+            ai1 = new SimpleAi(worldStage, player1);
+        }
+        if (player2.getType().equals(PlayerType.AI))
+        {
+            ai2 = new SimpleAi(worldStage, player2);
+        }
     }
 
     @Override
     public void render(float delta)
     {
-        simpleAi.update();
+        if (ai1 != null)
+        {
+            ai1.update();
+        }
+        if (ai2 != null)
+        {
+            ai2.update();
+        }
         draw(delta);
         checkGameOver();
     }
@@ -84,12 +101,12 @@ public class GameScreen extends ScreenAdapter
 
     private void checkGameOver()
     {
-        if (victoryCondition.playerWon())
+        if (victoryCondition.player1Won())
         {
             game.setScreen(new GameOverScreen(game, true));
             dispose();
         }
-        else if (victoryCondition.playerLost())
+        else if (victoryCondition.player1Lost())
         {
             game.setScreen(new GameOverScreen(game, false));
             dispose();

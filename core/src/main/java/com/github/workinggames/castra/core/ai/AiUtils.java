@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.utils.Array;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
 @RequiredArgsConstructor
@@ -11,12 +12,12 @@ class AiUtils
 {
     private final World world;
 
-    public Array<Settlement> getOwnedSettlements()
+    public Array<Settlement> getOwnedSettlements(Player player)
     {
         Array<Settlement> owned = new Array<>();
         for (Settlement settlement : world.getSettlements())
         {
-            if (settlement.getOwner().isAi())
+            if (settlement.getOwner().equals(player))
             {
                 owned.add(settlement);
             }
@@ -37,16 +38,17 @@ class AiUtils
         return neutral;
     }
 
-    public Array<Settlement> getPlayerSettlements()
+    public Array<Settlement> getOpponentSettlements(Player player)
     {
-        Array<Settlement> player = new Array<>();
+        Array<Settlement> opponent = new Array<>();
         for (Settlement settlement : world.getSettlements())
         {
-            if (settlement.getOwner().isHuman())
+            Player owner = settlement.getOwner();
+            if (!owner.isNeutral() && !owner.equals(player))
             {
-                player.add(settlement);
+                opponent.add(settlement);
             }
         }
-        return player;
+        return opponent;
     }
 }
