@@ -9,6 +9,7 @@ import com.badlogic.gdx.ai.Timepiece;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -30,7 +31,7 @@ public class World extends Stage
     private final TextureAtlas textureAtlas;
 
     private final FontProvider fontProvider;
-    private final ActorComparator actorComparator;
+    private final ZAwareActorComparator actorComparator;
 
     @Getter
     private final Player humanPlayer;
@@ -65,7 +66,7 @@ public class World extends Stage
         this.textureAtlas = textureAtlas;
         this.fontProvider = fontProvider;
         this.seed = seed;
-        actorComparator = new ActorComparator();
+        actorComparator = new ZAwareActorComparator();
 
         humanPlayer = new Player(new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)),
             "Bob",
@@ -78,6 +79,7 @@ public class World extends Stage
         timepiece = new DefaultTimepiece();
 
         armySplit = new ArmySplit(textureAtlas, fontProvider, humanPlayer);
+        armySplit.setZIndex(0);
         addActor(armySplit);
     }
 
@@ -93,6 +95,7 @@ public class World extends Stage
     public void createSettlement(SettlementSize size, int x, int y, int soldiers, Player owner)
     {
         Settlement settlement = new Settlement(size, x, y, soldiers, owner, textureAtlas, fontProvider);
+        settlement.setZIndex(0);
         addActor(settlement);
         settlements.add(settlement);
     }
@@ -104,6 +107,7 @@ public class World extends Stage
         {
             LinePath path = paths.get(origin, destination);
             Army army = new Army(count, origin.getOwner(), destination, path, textureAtlas, fontProvider);
+            army.setZIndex(100);
             addActor(army);
             armies.add(army);
             origin.removeSoldiers(count);
@@ -112,6 +116,8 @@ public class World extends Stage
 
     public void createFluff(Image fluff)
     {
+        fluff.setZIndex(1000);
+        fluff.setTouchable(Touchable.disabled);
         addActor(fluff);
     }
 
