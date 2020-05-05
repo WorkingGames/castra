@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.model.PlayerColor;
+import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.ui.PlayerOptions;
 import com.github.workinggames.castra.core.ui.Skins;
 import com.github.workinggames.castra.core.ui.WorldOptions;
@@ -43,14 +44,16 @@ public class MainMenuScreen extends ScreenAdapter
 
         player1Options = new PlayerOptions(game,
             "Player1",
-            new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)));
-        player1Options.setPosition(200, 100);
+            new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)),
+            PlayerType.HUMAN);
+        player1Options.setPosition(400, 200);
         stage.addActor(player1Options);
 
         player2Options = new PlayerOptions(game,
             "Player2",
-            new PlayerColor(new Color(0xda0205ff), new Color(0x6d0103ff)));
-        player2Options.setPosition(600, 100);
+            new PlayerColor(new Color(0xda0205ff), new Color(0x6d0103ff)),
+            PlayerType.AI);
+        player2Options.setPosition(900, 200);
         stage.addActor(player2Options);
     }
 

@@ -3,6 +3,7 @@ package com.github.workinggames.castra.core.model;
 import lombok.Data;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 @Data
@@ -18,6 +19,11 @@ public class PlayerColor
     {
         colorMapping = createColorMapping(color1, color2);
         regionNameSuffix = createRegionNameSuffix(color1, color2);
+    }
+
+    public Array<Color> getColors()
+    {
+        return colorMapping.values().toArray();
     }
 
     private ObjectMap<Color, Color> createColorMapping(Color color1, Color color2)

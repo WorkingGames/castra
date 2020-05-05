@@ -3,6 +3,7 @@ package com.github.workinggames.castra.core.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -63,5 +64,8 @@ public class Skins
         selectBoxStyle.listStyle = listStyle;
         selectBoxStyle.scrollStyle = scrollPaneStyle;
         skin.add("default", selectBoxStyle);
+
+        ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
+        skin.add("default", imageButtonStyle);
     }
 }
