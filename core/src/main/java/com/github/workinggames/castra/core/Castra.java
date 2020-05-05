@@ -58,6 +58,7 @@ public class Castra extends Game
     {
         addToAtlas("soldier");
         addToAtlas("soldiers");
+        addToAtlas("horsesAndSoldiers");
         addToAtlas("Background256");
         addToAtlas("cloud");
         addToAtlas("LargeCastlePink");

@@ -10,7 +10,7 @@ public enum ArmySize
 {
     SMALL(1, "soldier"),
     MEDIUM(20, "soldiers"),
-    LARGE(100, "soldiers");
+    LARGE(50, "horsesAndSoldiers");
 
     public static ArmySize bySoldierCount(int soldiers)
     {
