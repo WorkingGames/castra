@@ -34,6 +34,9 @@ public class Army extends Group
     @Getter
     private int soldiers;
 
+    @Getter
+    private LinePath path;
+
     public Army(
         int soldiers,
         Player owner,
@@ -45,6 +48,7 @@ public class Army extends Group
         this.soldiers = soldiers;
         this.owner = owner;
         this.target = target;
+        this.path = path;
         this.textureAtlas = new ColorizingTextureAtlasAdapter(textureAtlas);
         this.animationUtil = new AnimationUtil();
 

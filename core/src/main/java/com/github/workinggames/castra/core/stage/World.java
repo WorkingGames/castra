@@ -3,6 +3,7 @@ package com.github.workinggames.castra.core.stage;
 import java.util.Iterator;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import com.badlogic.gdx.ai.DefaultTimepiece;
 import com.badlogic.gdx.ai.Timepiece;
@@ -24,7 +25,10 @@ import com.github.workinggames.castra.core.model.PlayerColor;
 import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.model.SettlementSize;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
+import com.github.workinggames.castra.core.statistics.GameStats;
+import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 
+@Slf4j
 public class World extends Stage
 {
     @Getter
@@ -60,6 +64,9 @@ public class World extends Stage
     @Getter
     private final long seed;
 
+    @Getter
+    private final GameStats gameStats;
+
     public World(Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, long seed)
     {
         super(viewport);
@@ -81,6 +88,8 @@ public class World extends Stage
         armySplit = new ArmySplit(textureAtlas, fontProvider, humanPlayer);
         armySplit.setZIndex(0);
         addActor(armySplit);
+
+        gameStats = new GameStats();
     }
 
     @Override
@@ -111,6 +120,8 @@ public class World extends Stage
             addActor(army);
             armies.add(army);
             origin.removeSoldiers(count);
+
+            StatisticsEventCreator.sendSoldiers(army);
         }
     }
 
@@ -149,6 +160,7 @@ public class World extends Stage
                 {
                     battle.getArmy().addSoldiers(army.getSoldiers());
                     joinedBattle = true;
+                    StatisticsEventCreator.joinedBattle(army);
                     break;
                 }
             }
@@ -158,6 +170,7 @@ public class World extends Stage
             Battle battle = new Battle(army, textureAtlas);
             addActor(battle);
             battles.add(battle);
+            StatisticsEventCreator.battle(army);
         }
     }
 }

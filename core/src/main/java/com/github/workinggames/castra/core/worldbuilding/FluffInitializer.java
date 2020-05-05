@@ -70,11 +70,6 @@ class FluffInitializer
 
         for (Image image : fluff)
         {
-            log.info("creating fluff at: [{},{},{},{}]",
-                image.getX(),
-                image.getY(),
-                image.getWidth(),
-                image.getHeight());
             world.createFluff(image);
         }
     }
@@ -94,7 +89,7 @@ class FluffInitializer
             Array<Image> allPreviousFluffs = new Array<>();
             allPreviousFluffs.addAll(fluffs);
             allPreviousFluffs.addAll(result);
-            
+
             if (validFluffPosition(fluff, position, allPreviousFluffs))
             {
                 fluff.setPosition(position.x, position.y);

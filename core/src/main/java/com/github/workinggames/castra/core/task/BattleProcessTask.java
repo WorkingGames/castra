@@ -9,11 +9,14 @@ import com.badlogic.gdx.utils.Timer;
 import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 
 @RequiredArgsConstructor
 public class BattleProcessTask extends Timer.Task
 {
     private final Array<Battle> battles;
+
+    private boolean defended = true;
 
     @Override
     public void run()
@@ -40,6 +43,7 @@ public class BattleProcessTask extends Timer.Task
                 {
                     settlement.changeOwner(army.getOwner());
                     settlement.addSoldier();
+                    defended = false;
                 }
             }
 
@@ -48,6 +52,7 @@ public class BattleProcessTask extends Timer.Task
             {
                 battle.remove();
                 battleIterator.remove();
+                StatisticsEventCreator.BattleEnded(army, defended);
             }
         }
     }
