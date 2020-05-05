@@ -1,28 +1,22 @@
 package com.github.workinggames.castra.core.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class Player
 {
-    private final PlayerType type;
-
-    @Getter
-    private final PlayerColor color;
-
-    @Getter
-    private final String name;
-
-    @Getter
-    @Setter
-    private int sendTroopPercentage;
+    private PlayerType type;
+    private PlayerColor color;
+    private String name;
+    private int sendTroopPercentage = 50;
 
     public Player(PlayerColor color, String name, PlayerType type)
     {
         this.color = color;
         this.name = name;
         this.type = type;
-        sendTroopPercentage = 50;
     }
 
     public boolean isHuman()

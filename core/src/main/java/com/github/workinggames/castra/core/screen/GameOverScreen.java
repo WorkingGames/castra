@@ -64,7 +64,7 @@ public class GameOverScreen extends ScreenAdapter
 
         if (Gdx.input.isTouched())
         {
-            game.setScreen(new GameScreen(game, 1L));
+            game.setScreen(new GameScreen(game, 1L, null, null));
             dispose();
         }
     }

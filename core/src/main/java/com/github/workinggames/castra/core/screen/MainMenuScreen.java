@@ -5,23 +5,23 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.workinggames.castra.core.Castra;
+import com.github.workinggames.castra.core.model.PlayerColor;
+import com.github.workinggames.castra.core.ui.PlayerOptions;
 import com.github.workinggames.castra.core.ui.Skins;
+import com.github.workinggames.castra.core.ui.WorldOptions;
 
 public class MainMenuScreen extends ScreenAdapter
 {
     private final Castra game;
     private final Stage stage;
-    private final TextButton randomSeed;
-
-    private long seed = MathUtils.random(978234L);
+    private final TextButton startGame;
+    private final WorldOptions worldOptions;
+    private final PlayerOptions player1Options;
+    private final PlayerOptions player2Options;
 
     public MainMenuScreen(Castra game)
     {
@@ -32,33 +32,26 @@ public class MainMenuScreen extends ScreenAdapter
 
         Skins.initialize(game);
 
-        randomSeed = new TextButton("Start Game", game.getSkin());
-        randomSeed.addListener(new ClickListener());
-        randomSeed.setPosition(600, 400);
-        stage.addActor(randomSeed);
+        startGame = new TextButton("Start Game", game.getSkin());
+        startGame.addListener(new ClickListener());
+        startGame.setPosition(600, 400);
+        stage.addActor(startGame);
 
-        TextField seedInputField = new TextField("" + seed, game.getSkin());
-        seedInputField.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
-        seedInputField.setMaxLength(10);
-        seedInputField.addListener(new ChangeListener()
-        {
-            @Override
-            public void changed(ChangeEvent event, Actor actor)
-            {
-                TextField textField = (TextField) actor;
-                String value = textField.getText();
-                if (!value.isEmpty())
-                {
-                    seed = Long.parseLong(value);
-                }
-                else
-                {
-                    seed = 0L;
-                }
-            }
-        });
-        seedInputField.setPosition(600, 500);
-        stage.addActor(seedInputField);
+        worldOptions = new WorldOptions(game);
+        worldOptions.setPosition(600, 500);
+        stage.addActor(worldOptions);
+
+        player1Options = new PlayerOptions(game,
+            "Player1",
+            new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)));
+        player1Options.setPosition(200, 100);
+        stage.addActor(player1Options);
+
+        player2Options = new PlayerOptions(game,
+            "Player2",
+            new PlayerColor(new Color(0xda0205ff), new Color(0x6d0103ff)));
+        player2Options.setPosition(600, 100);
+        stage.addActor(player2Options);
     }
 
     @Override
@@ -82,9 +75,12 @@ public class MainMenuScreen extends ScreenAdapter
         stage.act(delta);
         stage.draw();
 
-        if (randomSeed.isChecked())
+        if (startGame.isChecked())
         {
-            game.setScreen(new GameScreen(game, seed));
+            game.setScreen(new GameScreen(game,
+                worldOptions.getSeed(),
+                player1Options.getPlayer(),
+                player2Options.getPlayer()));
             dispose();
         }
     }

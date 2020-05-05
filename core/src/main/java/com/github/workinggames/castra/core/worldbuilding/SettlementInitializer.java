@@ -63,9 +63,9 @@ class SettlementInitializer
         createSettlement(positionIterator.next(),
             SettlementSize.LARGE,
             INITIAL_SOLDIER_SIZE_HQ,
-            world.getHumanPlayer());
+            world.getPlayer1());
 
-        createSettlement(positionIterator.next(), SettlementSize.LARGE, INITIAL_SOLDIER_SIZE_HQ, world.getAiPlayer());
+        createSettlement(positionIterator.next(), SettlementSize.LARGE, INITIAL_SOLDIER_SIZE_HQ, world.getPlayer2());
 
         for (int i = 2; i < largeSettlements; i++)
         {

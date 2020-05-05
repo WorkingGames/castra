@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.badlogic.gdx.ai.DefaultTimepiece;
 import com.badlogic.gdx.ai.Timepiece;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -21,11 +20,8 @@ import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.Paths;
 import com.github.workinggames.castra.core.model.Player;
-import com.github.workinggames.castra.core.model.PlayerColor;
-import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.model.SettlementSize;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
-import com.github.workinggames.castra.core.statistics.GameStats;
 import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 
 @Slf4j
@@ -38,10 +34,10 @@ public class World extends Stage
     private final ZAwareActorComparator actorComparator;
 
     @Getter
-    private final Player humanPlayer;
+    private final Player player1;
 
     @Getter
-    private final Player aiPlayer;
+    private final Player player2;
 
     @Getter
     private final Array<Settlement> settlements;
@@ -64,32 +60,32 @@ public class World extends Stage
     @Getter
     private final long seed;
 
-    @Getter
-    private final GameStats gameStats;
-
-    public World(Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, long seed)
+    public World(
+        Viewport viewport,
+        TextureAtlas textureAtlas,
+        FontProvider fontProvider,
+        long seed,
+        Player player1,
+        Player player2)
     {
         super(viewport);
         this.textureAtlas = textureAtlas;
         this.fontProvider = fontProvider;
         this.seed = seed;
+        this.player1 = player1;
+        this.player2 = player2;
+
         actorComparator = new ZAwareActorComparator();
 
-        humanPlayer = new Player(new PlayerColor(new Color(0x4d7afdff), new Color(0x023adaff)),
-            "Bob",
-            PlayerType.HUMAN);
-        aiPlayer = new Player(new PlayerColor(new Color(0xda0205ff), new Color(0x6d0103ff)), "AI", PlayerType.AI);
         settlements = new Array<>();
         paths = new Paths();
         armies = new Array<>();
         battles = new Array<>();
         timepiece = new DefaultTimepiece();
 
-        armySplit = new ArmySplit(textureAtlas, fontProvider, humanPlayer);
+        armySplit = new ArmySplit(textureAtlas, fontProvider, player1);
         armySplit.setZIndex(0);
         addActor(armySplit);
-
-        gameStats = new GameStats();
     }
 
     @Override

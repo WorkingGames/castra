@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.ai.SimpleAi;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
+import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.BattleProcessor;
 import com.github.workinggames.castra.core.task.SoldierSpawner;
@@ -26,14 +27,19 @@ public class GameScreen extends ScreenAdapter
     private final SimpleAi simpleAi;
     private final ArmySplitInputProcessor armySplitInputProcessor;
 
-    public GameScreen(Castra game, long seed)
+    public GameScreen(Castra game, long seed, Player player1, Player player2)
     {
         this.game = game;
         log.info("Starting game with seed: " + seed);
-        worldStage = new World(game.getViewport(), game.getTextureAtlas(), game.getFontProvider(), seed);
+        worldStage = new World(game.getViewport(),
+            game.getTextureAtlas(),
+            game.getFontProvider(),
+            seed,
+            player1,
+            player2);
         game.getInputMultiplexer().addProcessor(worldStage);
 
-        armySplitInputProcessor = new ArmySplitInputProcessor(worldStage.getHumanPlayer(), worldStage.getArmySplit());
+        armySplitInputProcessor = new ArmySplitInputProcessor(worldStage.getPlayer1(), worldStage.getArmySplit());
         game.getInputMultiplexer().addProcessor(armySplitInputProcessor);
 
         new WorldInitializer(game.getViewport(), game.getTextureAtlas(), seed).initialize(worldStage);

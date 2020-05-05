@@ -3,6 +3,10 @@ package com.github.workinggames.castra.core.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -36,5 +40,28 @@ public class Skins
         textFieldStyle.messageFont = skin.getFont("default");
         textFieldStyle.messageFontColor = Color.WHITE;
         skin.add("default", textFieldStyle);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = skin.getFont("default");
+        labelStyle.fontColor = Color.WHITE;
+        skin.add("default", labelStyle);
+
+        List.ListStyle listStyle = new List.ListStyle();
+        listStyle.font = skin.getFont("default");
+        listStyle.selection = skin.newDrawable("white", Color.GOLD);
+        skin.add("default", listStyle);
+
+        ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
+        scrollPaneStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
+        skin.add("default", scrollPaneStyle);
+
+        SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
+        selectBoxStyle.font = skin.getFont("default");
+        selectBoxStyle.fontColor = Color.WHITE;
+        selectBoxStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
+        selectBoxStyle.backgroundOpen = skin.newDrawable("white", Color.LIGHT_GRAY);
+        selectBoxStyle.listStyle = listStyle;
+        selectBoxStyle.scrollStyle = scrollPaneStyle;
+        skin.add("default", selectBoxStyle);
     }
 }
