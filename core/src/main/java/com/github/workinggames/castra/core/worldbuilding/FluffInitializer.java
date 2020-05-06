@@ -49,7 +49,7 @@ class FluffInitializer
 
     public void initialize()
     {
-        random = new RandomXS128(world.getSeed());
+        random = new RandomXS128(world.getGameConfiguration().getSeed());
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 

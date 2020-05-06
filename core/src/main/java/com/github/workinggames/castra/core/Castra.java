@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.screen.MainMenuScreen;
+import com.github.workinggames.castra.core.stage.GameConfiguration;
 import com.github.workinggames.castra.core.worldbuilding.FluffLoader;
 
 public class Castra extends Game
@@ -28,6 +29,9 @@ public class Castra extends Game
     private final Skin skin = new Skin();
 
     @Getter
+    private GameConfiguration gameConfiguration;
+
+    @Getter
     private FontProvider fontProvider;
 
     @Getter
@@ -39,6 +43,8 @@ public class Castra extends Game
     @Override
     public void create()
     {
+        gameConfiguration = new GameConfiguration();
+
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT);
 
         inputMultiplexer = new InputMultiplexer();
@@ -75,6 +81,8 @@ public class Castra extends Game
         addToAtlas("SmallCastleFlags");
         addToAtlas("armySplit");
         addToAtlas("armySplitOuterRim");
+        addToAtlas("uncheckedBox");
+        addToAtlas("checkedBox");
         FluffLoader.addFluffToAtlas(textureAtlas);
     }
 

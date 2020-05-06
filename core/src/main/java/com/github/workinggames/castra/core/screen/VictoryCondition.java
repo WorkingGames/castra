@@ -17,7 +17,7 @@ public class VictoryCondition
         boolean lost = true;
         for (Settlement settlement : world.getSettlements())
         {
-            if (settlement.getOwner().equals(world.getPlayer1()))
+            if (settlement.getOwner().equals(world.getGameConfiguration().getPlayer1()))
             {
                 lost = false;
                 break;
@@ -27,7 +27,7 @@ public class VictoryCondition
         {
             for (Army army : world.getArmies())
             {
-                if (army.getOwner().equals(world.getPlayer1()))
+                if (army.getOwner().equals(world.getGameConfiguration().getPlayer1()))
                 {
                     lost = false;
                     break;
@@ -38,7 +38,7 @@ public class VictoryCondition
         {
             for (Battle battle : world.getBattles())
             {
-                if (battle.getArmy().getOwner().equals(world.getPlayer1()))
+                if (battle.getArmy().getOwner().equals(world.getGameConfiguration().getPlayer1()))
                 {
                     lost = false;
                     break;
@@ -53,7 +53,7 @@ public class VictoryCondition
         boolean won = true;
         for (Settlement settlement : world.getSettlements())
         {
-            if (settlement.getOwner().equals(world.getPlayer2()))
+            if (settlement.getOwner().equals(world.getGameConfiguration().getPlayer2()))
             {
                 won = false;
                 break;
@@ -63,7 +63,7 @@ public class VictoryCondition
         {
             for (Army army : world.getArmies())
             {
-                if (army.getOwner().equals(world.getPlayer2()))
+                if (army.getOwner().equals(world.getGameConfiguration().getPlayer2()))
                 {
                     won = false;
                     break;
@@ -74,7 +74,7 @@ public class VictoryCondition
         {
             for (Battle battle : world.getBattles())
             {
-                if (battle.getArmy().getOwner().equals(world.getPlayer2()))
+                if (battle.getArmy().getOwner().equals(world.getGameConfiguration().getPlayer2()))
                 {
                     won = false;
                     break;

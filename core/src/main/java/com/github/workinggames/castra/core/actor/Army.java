@@ -15,6 +15,7 @@ import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.ArmySize;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
+import com.github.workinggames.castra.core.stage.GameConfiguration;
 import com.github.workinggames.castra.core.texture.AnimationUtil;
 import com.github.workinggames.castra.core.texture.ColorizingTextureAtlasAdapter;
 
@@ -43,7 +44,8 @@ public class Army extends Group
         Settlement target,
         LinePath path,
         TextureAtlas textureAtlas,
-        FontProvider fontProvider)
+        FontProvider fontProvider,
+        GameConfiguration gameConfiguration)
     {
         this.soldiers = soldiers;
         this.owner = owner;
@@ -65,7 +67,8 @@ public class Army extends Group
             image.setScaleX(-1);
         }
 
-        this.label = createLabel(fontProvider);
+        boolean detailsVisible = gameConfiguration.isOpponentArmyDetailsVisible() || !owner.isAi();
+        this.label = createLabel(fontProvider, detailsVisible);
 
         addAction(MoveAlongAction.obtain(path));
     }
@@ -89,12 +92,13 @@ public class Army extends Group
         return textureAtlas.findRegion(size.getTextureName(), owner.getColor()).getTexture();
     }
 
-    private Label createLabel(FontProvider fontProvider)
+    private Label createLabel(FontProvider fontProvider, boolean visible)
     {
         Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.WHITE);
         Label result = new Label(String.valueOf(soldiers), labelStyle);
         result.setX(image.getWidth() / 2);
         addActor(result);
+        result.setVisible(visible);
         return result;
     }
 

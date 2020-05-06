@@ -20,9 +20,6 @@ public class MainMenuScreen extends ScreenAdapter
     private final Castra game;
     private final Stage stage;
     private final TextButton startGame;
-    private final WorldOptions worldOptions;
-    private final PlayerOptions player1Options;
-    private final PlayerOptions player2Options;
 
     public MainMenuScreen(Castra game)
     {
@@ -38,15 +35,19 @@ public class MainMenuScreen extends ScreenAdapter
         startGame.setPosition(600, 400);
         stage.addActor(startGame);
 
-        worldOptions = new WorldOptions(game);
+        WorldOptions worldOptions = new WorldOptions(game);
         worldOptions.setPosition(600, 500);
         stage.addActor(worldOptions);
 
-        player1Options = new PlayerOptions(game, "Player1", PlayerColorSchema.BLUE, PlayerType.HUMAN);
+        PlayerOptions player1Options = new PlayerOptions(game,
+            "Player1",
+            PlayerColorSchema.BLUE,
+            PlayerType.HUMAN,
+            true);
         player1Options.setPosition(400, 200);
         stage.addActor(player1Options);
-
-        player2Options = new PlayerOptions(game, "Player2", PlayerColorSchema.RED, PlayerType.AI);
+        
+        PlayerOptions player2Options = new PlayerOptions(game, "Player2", PlayerColorSchema.RED, PlayerType.AI, false);
         player2Options.setPosition(900, 200);
         stage.addActor(player2Options);
     }
@@ -74,10 +75,7 @@ public class MainMenuScreen extends ScreenAdapter
 
         if (startGame.isChecked())
         {
-            game.setScreen(new GameScreen(game,
-                worldOptions.getSeed(),
-                player1Options.getPlayer(),
-                player2Options.getPlayer()));
+            game.setScreen(new GameScreen(game));
             dispose();
         }
     }

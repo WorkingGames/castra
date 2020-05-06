@@ -49,8 +49,7 @@ public class SimpleAi
         Settlement destination = randomDestination();
         if (origin != null && destination != null)
         {
-            world.getPlayer2()
-                .setSendTroopPercentage(MathUtils.random(MINIMUM_TROOP_PERCENTAGE, MAXIMUM_TROOP_PERCENTAGE));
+            player.setSendTroopPercentage(MathUtils.random(MINIMUM_TROOP_PERCENTAGE, MAXIMUM_TROOP_PERCENTAGE));
             world.createArmy(origin, destination);
         }
         stateMachine.changeState(SimpleAiState.WAIT);

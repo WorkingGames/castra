@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.ai.SimpleAi;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
-import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.BattleProcessor;
@@ -29,22 +28,23 @@ public class GameScreen extends ScreenAdapter
     private SimpleAi ai1;
     private SimpleAi ai2;
 
-    public GameScreen(Castra game, long seed, Player player1, Player player2)
+    public GameScreen(Castra game)
     {
         this.game = game;
-        log.info("Starting game with seed: " + seed);
+        log.info("Starting game with seed: " + game.getGameConfiguration().getSeed());
         worldStage = new World(game.getViewport(),
             game.getTextureAtlas(),
             game.getFontProvider(),
-            seed,
-            player1,
-            player2);
+            game.getGameConfiguration());
         game.getInputMultiplexer().addProcessor(worldStage);
 
-        armySplitInputProcessor = new ArmySplitInputProcessor(worldStage.getPlayer1(), worldStage.getArmySplit());
+        armySplitInputProcessor = new ArmySplitInputProcessor(game.getGameConfiguration().getPlayer1(),
+            worldStage.getArmySplit());
         game.getInputMultiplexer().addProcessor(armySplitInputProcessor);
 
-        new WorldInitializer(game.getViewport(), game.getTextureAtlas(), seed).initialize(worldStage);
+        new WorldInitializer(game.getViewport(),
+            game.getTextureAtlas(),
+            game.getGameConfiguration().getSeed()).initialize(worldStage);
 
         soldierSpawner = new SoldierSpawner(worldStage.getSettlements());
         soldierSpawner.startSpawn();
@@ -53,13 +53,13 @@ public class GameScreen extends ScreenAdapter
 
         victoryCondition = new VictoryCondition(worldStage);
 
-        if (player1.getType().equals(PlayerType.AI))
+        if (game.getGameConfiguration().getPlayer1().getType().equals(PlayerType.AI))
         {
-            ai1 = new SimpleAi(worldStage, player1);
+            ai1 = new SimpleAi(worldStage, game.getGameConfiguration().getPlayer1());
         }
-        if (player2.getType().equals(PlayerType.AI))
+        if (game.getGameConfiguration().getPlayer2().getType().equals(PlayerType.AI))
         {
-            ai2 = new SimpleAi(worldStage, player2);
+            ai2 = new SimpleAi(worldStage, game.getGameConfiguration().getPlayer2());
         }
     }
 

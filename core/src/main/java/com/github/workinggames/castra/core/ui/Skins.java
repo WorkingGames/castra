@@ -3,6 +3,7 @@ package com.github.workinggames.castra.core.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.github.workinggames.castra.core.Castra;
 
 public class Skins
@@ -67,5 +69,16 @@ public class Skins
 
         ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
         skin.add("default", imageButtonStyle);
+
+        CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
+        checkBoxStyle.font = skin.getFont("default");
+        checkBoxStyle.fontColor = Color.WHITE;
+        checkBoxStyle.checkboxOff = new TextureRegionDrawable(game.getTextureAtlas()
+            .findRegion("uncheckedBox")
+            .getTexture());
+        checkBoxStyle.checkboxOn = new TextureRegionDrawable(game.getTextureAtlas()
+            .findRegion("checkedBox")
+            .getTexture());
+        skin.add("default", checkBoxStyle);
     }
 }

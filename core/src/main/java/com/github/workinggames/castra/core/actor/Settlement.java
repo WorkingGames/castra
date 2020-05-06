@@ -17,6 +17,7 @@ import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.SettlementSize;
+import com.github.workinggames.castra.core.stage.GameConfiguration;
 import com.github.workinggames.castra.core.texture.AnimationUtil;
 import com.github.workinggames.castra.core.texture.ColorizingTextureAtlasAdapter;
 
@@ -57,7 +58,8 @@ public class Settlement extends Group
         int soldiers,
         Player owner,
         TextureAtlas textureAtlas,
-        FontProvider fontProvider)
+        FontProvider fontProvider,
+        GameConfiguration gameConfiguration)
     {
         this.textureAtlas = new ColorizingTextureAtlasAdapter(textureAtlas);
         this.animationUtil = new AnimationUtil();
@@ -86,7 +88,8 @@ public class Settlement extends Group
             flags.setVisible(false);
         }
 
-        label = createLabel(fontProvider);
+        boolean detailsVisible = gameConfiguration.isOpponentSettlementDetailsVisible() || !owner.isAi();
+        label = createLabel(fontProvider, detailsVisible);
 
         hitbox = createHitbox();
     }
@@ -98,12 +101,12 @@ public class Settlement extends Group
         return result;
     }
 
-    private Label createLabel(FontProvider fontProvider)
+    private Label createLabel(FontProvider fontProvider, boolean visible)
     {
         Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.BLACK);
         Label result = new Label(String.valueOf(soldiers), labelStyle);
         applyOffset(result);
-        result.setVisible(!owner.isAi());
+        result.setVisible(visible);
         addActor(result);
         return result;
     }

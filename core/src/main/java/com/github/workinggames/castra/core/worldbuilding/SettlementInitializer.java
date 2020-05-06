@@ -48,7 +48,7 @@ class SettlementInitializer
 
     public void initialize()
     {
-        random = new RandomXS128(world.getSeed());
+        random = new RandomXS128(world.getGameConfiguration().getSeed());
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
@@ -63,9 +63,12 @@ class SettlementInitializer
         createSettlement(positionIterator.next(),
             SettlementSize.LARGE,
             INITIAL_SOLDIER_SIZE_HQ,
-            world.getPlayer1());
+            world.getGameConfiguration().getPlayer1());
 
-        createSettlement(positionIterator.next(), SettlementSize.LARGE, INITIAL_SOLDIER_SIZE_HQ, world.getPlayer2());
+        createSettlement(positionIterator.next(),
+            SettlementSize.LARGE,
+            INITIAL_SOLDIER_SIZE_HQ,
+            world.getGameConfiguration().getPlayer2());
 
         for (int i = 2; i < largeSettlements; i++)
         {

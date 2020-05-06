@@ -26,15 +26,24 @@ public class PlayerOptions extends Table
     @Getter
     private final Player player;
 
-    public PlayerOptions(Castra game, String title, PlayerColorSchema color, PlayerType playerType)
+    public PlayerOptions(Castra game, String title, PlayerColorSchema color, PlayerType playerType, boolean player1)
     {
         super(game.getSkin());
         Skin skin = game.getSkin();
         player = new Player(color.getPlayerColor(), title, playerType);
 
+        if (player1)
+        {
+            game.getGameConfiguration().setPlayer1(player);
+        }
+        else
+        {
+            game.getGameConfiguration().setPlayer2(player);
+        }
+
         addTitle(title, skin);
         addNameInput(title, skin);
-        addTypeInput(skin, playerType);
+        addTypeInput(skin, playerType, player1);
         addColor(color, skin);
     }
 
@@ -93,12 +102,20 @@ public class PlayerOptions extends Table
         row();
     }
 
-    private void addTypeInput(Skin skin, PlayerType initial)
+    private void addTypeInput(Skin skin, PlayerType initial, boolean player1)
     {
         Label playerTypeLabel = new Label("Player type: ", skin);
         add(playerTypeLabel);
+
         SelectBox<PlayerType> playerTypeSelectBox = new SelectBox<>(skin);
-        playerTypeSelectBox.setItems(PlayerType.HUMAN, PlayerType.AI);
+        if (player1)
+        {
+            playerTypeSelectBox.setItems(PlayerType.HUMAN, PlayerType.AI);
+        }
+        else
+        {
+            playerTypeSelectBox.setItems(PlayerType.AI);
+        }
         playerTypeSelectBox.setSelected(initial);
         playerTypeSelectBox.addListener(new ChangeListener()
         {

@@ -35,12 +35,6 @@ public class World extends Stage
     private final ZAwareActorComparator actorComparator;
 
     @Getter
-    private final Player player1;
-
-    @Getter
-    private final Player player2;
-
-    @Getter
     private final Array<Settlement> settlements;
 
     @Getter
@@ -59,22 +53,15 @@ public class World extends Stage
     private ArmySplit armySplit;
 
     @Getter
-    private final long seed;
+    private final GameConfiguration gameConfiguration;
 
     public World(
-        Viewport viewport,
-        TextureAtlas textureAtlas,
-        FontProvider fontProvider,
-        long seed,
-        Player player1,
-        Player player2)
+        Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, GameConfiguration gameConfiguration)
     {
         super(viewport);
         this.textureAtlas = textureAtlas;
         this.fontProvider = fontProvider;
-        this.seed = seed;
-        this.player1 = player1;
-        this.player2 = player2;
+        this.gameConfiguration = gameConfiguration;
 
         actorComparator = new ZAwareActorComparator();
 
@@ -84,9 +71,9 @@ public class World extends Stage
         battles = new Array<>();
         timepiece = new DefaultTimepiece();
 
-        if (player1.getType().equals(PlayerType.HUMAN) || player2.getType().equals(PlayerType.HUMAN))
+        if (gameConfiguration.getPlayer1().getType().equals(PlayerType.HUMAN))
         {
-            armySplit = new ArmySplit(textureAtlas, fontProvider, player1);
+            armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer1());
             armySplit.setZIndex(0);
             addActor(armySplit);
         }
@@ -103,7 +90,14 @@ public class World extends Stage
 
     public void createSettlement(SettlementSize size, int x, int y, int soldiers, Player owner)
     {
-        Settlement settlement = new Settlement(size, x, y, soldiers, owner, textureAtlas, fontProvider);
+        Settlement settlement = new Settlement(size,
+            x,
+            y,
+            soldiers,
+            owner,
+            textureAtlas,
+            fontProvider,
+            gameConfiguration);
         settlement.setZIndex(0);
         addActor(settlement);
         settlements.add(settlement);
@@ -115,7 +109,13 @@ public class World extends Stage
         if (count > 0)
         {
             LinePath path = paths.get(origin, destination);
-            Army army = new Army(count, origin.getOwner(), destination, path, textureAtlas, fontProvider);
+            Army army = new Army(count,
+                origin.getOwner(),
+                destination,
+                path,
+                textureAtlas,
+                fontProvider,
+                gameConfiguration);
             army.setZIndex(100);
             addActor(army);
             armies.add(army);
