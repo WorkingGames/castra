@@ -25,7 +25,7 @@ public enum ArmySize
         return result;
     }
 
-    @Getter(AccessLevel.PRIVATE)
+    @Getter
     private final int minimumSoldiers;
 
     private final String textureName;

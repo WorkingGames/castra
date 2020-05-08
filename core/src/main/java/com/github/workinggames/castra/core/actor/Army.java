@@ -30,6 +30,9 @@ public class Army extends Group
     private final Player owner;
 
     @Getter
+    private final Settlement source;
+
+    @Getter
     private final Settlement target;
 
     @Getter
@@ -38,25 +41,35 @@ public class Army extends Group
     @Getter
     private LinePath path;
 
+    @Getter
+    private ArmySize armySize;
+
+    @Getter
+    private int armyId;
+
     public Army(
+        int armyId,
         int soldiers,
         Player owner,
+        Settlement source,
         Settlement target,
         LinePath path,
         TextureAtlas textureAtlas,
         FontProvider fontProvider,
         GameConfiguration gameConfiguration)
     {
+        this.armyId = armyId;
         this.soldiers = soldiers;
         this.owner = owner;
+        this.source = source;
         this.target = target;
         this.path = path;
         this.textureAtlas = new ColorizingTextureAtlasAdapter(textureAtlas);
         this.animationUtil = new AnimationUtil();
 
-        ArmySize size = ArmySize.bySoldierCount(soldiers);
+        armySize = ArmySize.bySoldierCount(soldiers);
 
-        image = createAnimatedImage(getAnimation(getArmyTexture(size)));
+        image = createAnimatedImage(getAnimation(getArmyTexture(armySize)));
 
         setSize(image.getWidth(), image.getHeight());
 

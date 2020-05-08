@@ -55,6 +55,8 @@ public class World extends Stage
     @Getter
     private final GameConfiguration gameConfiguration;
 
+    private int armyId = 1;
+
     public World(
         Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, GameConfiguration gameConfiguration)
     {
@@ -103,15 +105,17 @@ public class World extends Stage
         settlements.add(settlement);
     }
 
-    public void createArmy(Settlement origin, Settlement destination)
+    public void createArmy(Settlement source, Settlement target)
     {
-        int count = origin.getSoldiers() * origin.getOwner().getSendTroopPercentage() / 100;
+        int count = source.getSoldiers() * source.getOwner().getSendTroopPercentage() / 100;
         if (count > 0)
         {
-            LinePath path = paths.get(origin, destination);
-            Army army = new Army(count,
-                origin.getOwner(),
-                destination,
+            LinePath path = paths.get(source, target);
+            Army army = new Army(armyId,
+                count,
+                source.getOwner(),
+                source,
+                target,
                 path,
                 textureAtlas,
                 fontProvider,
@@ -119,7 +123,8 @@ public class World extends Stage
             army.setZIndex(100);
             addActor(army);
             armies.add(army);
-            origin.removeSoldiers(count);
+            source.removeSoldiers(count);
+            armyId++;
 
             StatisticsEventCreator.sendSoldiers(army);
         }
