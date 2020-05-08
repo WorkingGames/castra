@@ -6,39 +6,43 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.workinggames.castra.core.Castra;
 
 public class GameOverScreen extends ScreenAdapter
 {
     private final Castra game;
     private final Stage stage;
-    private final Label.LabelStyle labelStyle;
+    private final TextButton reMatch;
+    private final TextButton mainMenu;
 
     public GameOverScreen(Castra game, boolean won)
     {
         this.game = game;
 
         stage = new Stage(game.getViewport());
+        game.getInputMultiplexer().addProcessor(stage);
 
-        labelStyle = new Label.LabelStyle(game.getFontProvider().getDefaultFont(), Color.WHITE);
-
-        if (won)
+        String message = "You Won!";
+        if (!won)
         {
-            stage.addActor(createLabel("You Won!", 600, 400));
-        }
-        else
-        {
-            stage.addActor(createLabel("You Lost!", 600, 400));
+            message = "You Loose!";
         }
 
-        stage.addActor(createLabel("Tap anywhere to start again!", 600, 350));
-    }
+        Label label = new Label(message, game.getSkin());
+        label.setPosition(600, 600);
+        stage.addActor(label);
 
-    private Label createLabel(String text, int x, int y)
-    {
-        Label label = new Label(text, labelStyle);
-        label.setPosition(x, y);
-        return label;
+        reMatch = new TextButton("Rematch", game.getSkin());
+        reMatch.addListener(new ClickListener());
+        reMatch.setPosition(600, 500);
+        stage.addActor(reMatch);
+
+        mainMenu = new TextButton("Main Menu", game.getSkin());
+        mainMenu.addListener(new ClickListener());
+        mainMenu.setPosition(600, 450);
+        stage.addActor(mainMenu);
     }
 
     @Override
@@ -62,9 +66,14 @@ public class GameOverScreen extends ScreenAdapter
 
         stage.draw();
 
-        if (Gdx.input.isTouched())
+        if (reMatch.isChecked())
         {
             game.setScreen(new GameScreen(game));
+            dispose();
+        }
+        if (mainMenu.isChecked())
+        {
+            game.setScreen(new MainMenuScreen(game));
             dispose();
         }
     }
