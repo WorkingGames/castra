@@ -110,9 +110,17 @@ public class World extends Stage
         int count = source.getSoldiers() * source.getOwner().getSendTroopPercentage() / 100;
         if (count > 0)
         {
+            createArmy(source, target, count);
+        }
+    }
+
+    public void createArmy(Settlement source, Settlement target, int soldiers)
+    {
+        if (soldiers > 0)
+        {
             LinePath path = paths.get(source, target);
             Army army = new Army(armyId,
-                count,
+                soldiers,
                 source.getOwner(),
                 source,
                 target,
@@ -123,7 +131,7 @@ public class World extends Stage
             army.setZIndex(100);
             addActor(army);
             armies.add(army);
-            source.removeSoldiers(count);
+            source.removeSoldiers(soldiers);
             armyId++;
 
             StatisticsEventCreator.sendSoldiers(army);

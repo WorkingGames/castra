@@ -23,32 +23,38 @@ public class SettlementInfo implements Comparable<SettlementInfo>
 
         if (settlement.getOwner().isNeutral())
         {
-            cost = settlement.getSize().getSpawnIntervalInSeconds() * settlement.getSoldiers();
             soldiersPresent = settlement.getSoldiers();
         }
         else
         {
-            cost = settlement.getSize().getSpawnIntervalInSeconds() * initialArmySize;
             soldiersPresent = initialArmySize;
         }
+        cost = settlement.getSize().getSpawnIntervalInSeconds() * soldiersPresent;
     }
 
     @Override
     public int compareTo(SettlementInfo o)
     {
-        // reversed as lowest cost should be first after sorting
-        return Float.compare(o.getCost(), this.getCost());
+        // lowest cost should be on top
+        return Float.compare(this.getCost(), o.getCost());
     }
 
-    public void updateCosts(Player aiPlayer, boolean settlementDetailsVisible)
+    public void update(int lastTickTime, Player aiPlayer, boolean settlementDetailsVisible)
     {
+        float spawnIntervalInSeconds = settlement.getSize().getSpawnIntervalInSeconds();
         if (settlement.getOwner().equals(aiPlayer) || settlementDetailsVisible)
         {
-            setCost(settlement.getSize().getSpawnIntervalInSeconds() * settlement.getSoldiers());
+            setCost(settlement.getSoldiers() + getOpponentSoldiersInbound() -
+                getPlayerSoldiersInbound() * spawnIntervalInSeconds);
         }
         else
         {
-            setCost(getCost() + getSettlement().getSize().getSpawnIntervalInSeconds());
+            if (lastTickTime % (int) spawnIntervalInSeconds == 0)
+            {
+                soldiersPresent++;
+            }
+            setCost(soldiersPresent + getOpponentSoldiersInbound() -
+                getPlayerSoldiersInbound() * spawnIntervalInSeconds);
         }
     }
 }
