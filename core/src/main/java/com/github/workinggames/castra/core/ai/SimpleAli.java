@@ -10,7 +10,7 @@ import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
-public class SimpleAi
+public class SimpleAli implements Ali
 {
     private static final float MINIMUM_IDLE_TIME = 1;
     private static final float MAXIMUM_IDLE_TIME = 4;
@@ -18,13 +18,13 @@ public class SimpleAi
     private static final int MAXIMUM_TROOP_PERCENTAGE = 80;
 
     @Getter
-    private final StateMachine<SimpleAi, SimpleAiState> stateMachine;
+    private final StateMachine<SimpleAli, SimpleAiState> stateMachine;
     private final World world;
     private final AiUtils aiUtils;
     private float nextActionTime;
     private final Player player;
 
-    public SimpleAi(World world, Player aiPlayer)
+    public SimpleAli(World world, Player aiPlayer)
     {
         this.world = world;
         this.player = aiPlayer;

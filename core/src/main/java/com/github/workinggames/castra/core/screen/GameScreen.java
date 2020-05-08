@@ -7,7 +7,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.github.workinggames.castra.core.Castra;
-import com.github.workinggames.castra.core.ai.SimpleAi;
+import com.github.workinggames.castra.core.ai.SimpleAli;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
 import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.stage.World;
@@ -25,8 +25,8 @@ public class GameScreen extends ScreenAdapter
     private final VictoryCondition victoryCondition;
     private final ArmySplitInputProcessor armySplitInputProcessor;
 
-    private SimpleAi ai1;
-    private SimpleAi ai2;
+    private SimpleAli ai1;
+    private SimpleAli ai2;
 
     public GameScreen(Castra game)
     {
@@ -55,11 +55,11 @@ public class GameScreen extends ScreenAdapter
 
         if (game.getGameConfiguration().getPlayer1().getType().equals(PlayerType.AI))
         {
-            ai1 = new SimpleAi(worldStage, game.getGameConfiguration().getPlayer1());
+            ai1 = new SimpleAli(worldStage, game.getGameConfiguration().getPlayer1());
         }
         if (game.getGameConfiguration().getPlayer2().getType().equals(PlayerType.AI))
         {
-            ai2 = new SimpleAi(worldStage, game.getGameConfiguration().getPlayer2());
+            ai2 = new SimpleAli(worldStage, game.getGameConfiguration().getPlayer2());
         }
     }
 
