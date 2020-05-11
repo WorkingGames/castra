@@ -38,20 +38,17 @@ public class SettlementInfo implements Comparable<SettlementInfo>
         return Float.compare(this.getCost(), o.getCost());
     }
 
-    public void update(int lastTickTime, Player aiPlayer, boolean settlementDetailsVisible)
+    public void updateCosts(Player aiPlayer, boolean settlementDetailsVisible)
     {
         float spawnIntervalInSeconds = settlement.getSize().getSpawnIntervalInSeconds();
-        if (settlement.getOwner().equals(aiPlayer) || settlementDetailsVisible)
+        if (settlement.getOwner().equals(aiPlayer) || settlement.getOwner().isNeutral() || settlementDetailsVisible)
         {
+            setSoldiersPresent(settlement.getSoldiers());
             setCost(settlement.getSoldiers() + getOpponentSoldiersInbound() -
                 getPlayerSoldiersInbound() * spawnIntervalInSeconds);
         }
         else
         {
-            if (lastTickTime % (int) spawnIntervalInSeconds == 0)
-            {
-                soldiersPresent++;
-            }
             setCost(soldiersPresent + getOpponentSoldiersInbound() -
                 getPlayerSoldiersInbound() * spawnIntervalInSeconds);
         }

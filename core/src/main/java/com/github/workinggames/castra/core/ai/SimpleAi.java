@@ -30,7 +30,7 @@ public class SimpleAi implements Ai
         this.player = aiPlayer;
         aiUtils = new AiUtils(world);
         stateMachine = new DefaultStateMachine<>(this, SimpleAiState.ATTACK);
-        nextActionTime = 0;
+        nextActionTime = 1;
     }
 
     public void update()

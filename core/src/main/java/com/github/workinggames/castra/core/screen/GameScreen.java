@@ -7,11 +7,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.github.workinggames.castra.core.Castra;
-import com.github.workinggames.castra.core.ai.Ai;
-import com.github.workinggames.castra.core.ai.FooAi;
-import com.github.workinggames.castra.core.ai.SimpleAi;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
-import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.BattleProcessor;
 import com.github.workinggames.castra.core.task.SoldierSpawner;
@@ -26,9 +22,6 @@ public class GameScreen extends ScreenAdapter
     private final BattleProcessor battleProcessor;
     private final VictoryCondition victoryCondition;
     private final ArmySplitInputProcessor armySplitInputProcessor;
-
-    private Ai ai1 = null;
-    private Ai ai2 = null;
 
     public GameScreen(Castra game)
     {
@@ -47,35 +40,18 @@ public class GameScreen extends ScreenAdapter
         new WorldInitializer(game.getViewport(),
             game.getTextureAtlas(),
             game.getGameConfiguration().getSeed()).initialize(worldStage);
+        worldStage.initializeAi();
 
         soldierSpawner = new SoldierSpawner(worldStage.getSettlements());
         soldierSpawner.startSpawn();
         battleProcessor = new BattleProcessor(worldStage.getBattles());
         battleProcessor.startBattles();
-
         victoryCondition = new VictoryCondition(worldStage);
-
-        if (game.getGameConfiguration().getPlayer1().getType().equals(PlayerType.AI))
-        {
-            ai1 = new SimpleAi(worldStage, game.getGameConfiguration().getPlayer1());
-        }
-        if (game.getGameConfiguration().getPlayer2().getType().equals(PlayerType.AI))
-        {
-            ai2 = new FooAi(worldStage, game.getGameConfiguration().getPlayer2());
-        }
     }
 
     @Override
     public void render(float delta)
     {
-        if (ai1 != null)
-        {
-            ai1.update();
-        }
-        if (ai2 != null)
-        {
-            ai2.update();
-        }
         draw(delta);
         checkGameOver();
     }
@@ -95,9 +71,7 @@ public class GameScreen extends ScreenAdapter
                 (int) game.getViewport().getWorldWidth(),
                 (int) game.getViewport().getWorldHeight());
         worldStage.getBatch().end();
-
         worldStage.act(delta);
-
         worldStage.draw();
     }
 

@@ -22,13 +22,17 @@ import com.github.workinggames.castra.core.stage.World;
 @Slf4j
 public class FooAi implements Ai, Telegraph
 {
+    private static final int MAX_ACTIONS_PER_TICK = 3;
+
     private final World world;
-    private int lastTickTime;
     private final Player aiPlayer;
     private final Array<SettlementInfo> settlementInfos;
     private final Map<Settlement, SettlementInfo> settlementInfosMap;
     private final Map<Army, ArmyInfo> armyInfoMap;
     private final RandomXS128 random = new RandomXS128();
+
+    private int actionsSinceLastTick;
+    private int lastTickTime;
 
     public FooAi(World world, Player aiPlayer)
     {
@@ -42,7 +46,7 @@ public class FooAi implements Ai, Telegraph
         subscribeMessages();
     }
 
-    private void initializeSettlementInfos()
+    public void initializeSettlementInfos()
     {
         // TODO get game configuration for initial army size, as soon as it is configurable
         int initialArmySize = 100;
@@ -58,6 +62,7 @@ public class FooAi implements Ai, Telegraph
     private void subscribeMessages()
     {
         MessageManager messageManager = MessageManager.getInstance();
+        messageManager.addListener(this, MessageType.SOLDIER_SPAWNED);
         messageManager.addListener(this, MessageType.ARMY_CREATED);
         messageManager.addListener(this, MessageType.BATTLE_STARTED);
         messageManager.addListener(this, MessageType.BATTLE_JOINED);
@@ -71,24 +76,23 @@ public class FooAi implements Ai, Telegraph
         if (time - lastTickTime >= 1)
         {
             lastTickTime = MathUtils.floor(time);
-            // update opponent ticks and estimations based on armies deployed
-            updateSettlementInfo(lastTickTime);
+            calculateSettlementCosts();
+            actionsSinceLastTick = 0;
         }
+
         // sort destinations by cost
         settlementInfos.sort();
-        makeDecisions();
+        if (!settlementInfos.isEmpty())
+        {
+            makeDecisions();
+        }
     }
 
-    private void updateSettlementInfo(int lastTickTime)
+    private void calculateSettlementCosts()
     {
         for (SettlementInfo settlement : settlementInfos)
         {
-            if (!settlement.getSettlement().getOwner().isNeutral())
-            {
-                settlement.update(lastTickTime,
-                    aiPlayer,
-                    world.getGameConfiguration().isOpponentSettlementDetailsVisible());
-            }
+            settlement.updateCosts(aiPlayer, world.getGameConfiguration().isOpponentSettlementDetailsVisible());
         }
     }
 
@@ -96,7 +100,7 @@ public class FooAi implements Ai, Telegraph
     {
         // most valuable settlements are listed first, decide action
         int availableSoldiers = getAvailableSoldiers();
-        boolean finished = false;
+        boolean finished = actionsSinceLastTick == MAX_ACTIONS_PER_TICK;
         while (!finished)
         {
             for (SettlementInfo settlementInfo : settlementInfos)
@@ -133,6 +137,11 @@ public class FooAi implements Ai, Telegraph
                     {
                         moveSoldiers(requiredSoldiers, settlementInfo);
                         availableSoldiers = availableSoldiers - requiredSoldiers;
+                        actionsSinceLastTick++;
+                        if (actionsSinceLastTick == MAX_ACTIONS_PER_TICK)
+                        {
+                            return;
+                        }
                     }
                     else
                     {
@@ -180,7 +189,6 @@ public class FooAi implements Ai, Telegraph
                 }
                 if (moving > 0)
                 {
-                    source.setSoldiersPresent(source.getSoldiersPresent() - moving);
                     world.createArmy(source.getSettlement(), target.getSettlement(), moving);
                     moved = moved + moving;
                 }
@@ -197,6 +205,12 @@ public class FooAi implements Ai, Telegraph
     {
         switch (msg.message)
         {
+            case MessageType.SOLDIER_SPAWNED:
+            {
+                Settlement settlement = (Settlement) msg.extraInfo;
+                processSoldierSpawn(settlement);
+                break;
+            }
             case MessageType.ARMY_CREATED:
             {
                 Army army = (Army) msg.extraInfo;
@@ -227,6 +241,12 @@ public class FooAi implements Ai, Telegraph
             }
         }
         return true;
+    }
+
+    private void processSoldierSpawn(Settlement settlement)
+    {
+        SettlementInfo settlementInfo = settlementInfosMap.get(settlement);
+        settlementInfo.setSoldiersPresent(settlementInfo.getSoldiersPresent() + 1);
     }
 
     private void processNewArmy(Army army)

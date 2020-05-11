@@ -18,7 +18,10 @@ import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.ArmySplit;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.ai.Ai;
+import com.github.workinggames.castra.core.ai.FooAi;
 import com.github.workinggames.castra.core.ai.MessageType;
+import com.github.workinggames.castra.core.ai.SimpleAi;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.Paths;
 import com.github.workinggames.castra.core.model.Player;
@@ -59,6 +62,10 @@ public class World extends Stage
 
     private final MessageManager messageManager = MessageManager.getInstance();
 
+    private Ai ai1 = null;
+    private Ai ai2 = null;
+    private int settlementId = 0;
+
     public World(
         Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, GameConfiguration gameConfiguration)
     {
@@ -83,6 +90,18 @@ public class World extends Stage
         }
     }
 
+    public void initializeAi()
+    {
+        if (gameConfiguration.getPlayer1().getType().equals(PlayerType.AI))
+        {
+            ai1 = new SimpleAi(this, gameConfiguration.getPlayer1());
+        }
+        if (gameConfiguration.getPlayer2().getType().equals(PlayerType.AI))
+        {
+            ai2 = new FooAi(this, gameConfiguration.getPlayer2());
+        }
+    }
+
     @Override
     public void act(float deltaTime)
     {
@@ -90,11 +109,25 @@ public class World extends Stage
         processArmies();
         super.act(deltaTime);
         getActors().sort(actorComparator);
+        // 1 second head start for players, otherwise the AI starts moving before the world is rendered
+        if (timepiece.getTime() > 1)
+        {
+            if (ai1 != null)
+            {
+                ai1.update();
+            }
+            if (ai2 != null)
+            {
+
+                ai2.update();
+            }
+        }
     }
 
     public void createSettlement(SettlementSize size, int x, int y, int soldiers, Player owner)
     {
-        Settlement settlement = new Settlement(size,
+        Settlement settlement = new Settlement(settlementId,
+            size,
             x,
             y,
             soldiers,
@@ -105,6 +138,7 @@ public class World extends Stage
         settlement.setZIndex(0);
         addActor(settlement);
         settlements.add(settlement);
+        settlementId++;
     }
 
     public void createArmy(Settlement source, Settlement target)
@@ -118,7 +152,7 @@ public class World extends Stage
 
     public void createArmy(Settlement source, Settlement target, int soldiers)
     {
-        if (soldiers > 0)
+        if (soldiers > 0 && source.getSoldiers() >= soldiers)
         {
             LinePath path = paths.get(source, target);
             Army army = new Army(soldiers,

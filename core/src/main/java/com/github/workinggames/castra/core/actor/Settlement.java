@@ -35,6 +35,9 @@ public class Settlement extends Group
     private final GameConfiguration gameConfiguration;
 
     @Getter
+    private final int id;
+
+    @Getter
     private final SettlementSize size;
 
     @Getter
@@ -53,6 +56,7 @@ public class Settlement extends Group
     private float centerY;
 
     public Settlement(
+        int id,
         SettlementSize size,
         float x,
         float y,
@@ -62,6 +66,7 @@ public class Settlement extends Group
         FontProvider fontProvider,
         GameConfiguration gameConfiguration)
     {
+        this.id = id;
         this.textureAtlas = new ColorizingTextureAtlasAdapter(textureAtlas);
         this.animationUtil = new AnimationUtil();
         this.size = size;
