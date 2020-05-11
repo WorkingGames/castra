@@ -10,7 +10,7 @@ import com.github.workinggames.castra.core.pathfinding.LinePath;
 
 public class MoveAlongAction extends TemporalAction
 {
-    private static final int PIXEL_PER_SECOND = 300;
+    public static final int PIXEL_PER_SECOND = 300;
 
     /**
      * Moves the actor along the absolute Points from the path

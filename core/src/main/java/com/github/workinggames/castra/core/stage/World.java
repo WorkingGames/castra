@@ -19,7 +19,7 @@ import com.github.workinggames.castra.core.actor.ArmySplit;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.ai.Ai;
-import com.github.workinggames.castra.core.ai.FooAi;
+import com.github.workinggames.castra.core.ai.BarAi;
 import com.github.workinggames.castra.core.ai.MessageType;
 import com.github.workinggames.castra.core.ai.SimpleAi;
 import com.github.workinggames.castra.core.font.FontProvider;
@@ -65,6 +65,7 @@ public class World extends Stage
     private Ai ai1 = null;
     private Ai ai2 = null;
     private int settlementId = 0;
+    private int armyId = 0;
 
     public World(
         Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, GameConfiguration gameConfiguration)
@@ -98,7 +99,7 @@ public class World extends Stage
         }
         if (gameConfiguration.getPlayer2().getType().equals(PlayerType.AI))
         {
-            ai2 = new FooAi(this, gameConfiguration.getPlayer2());
+            ai2 = new BarAi(this, gameConfiguration.getPlayer2());
         }
     }
 
@@ -118,7 +119,6 @@ public class World extends Stage
             }
             if (ai2 != null)
             {
-
                 ai2.update();
             }
         }
@@ -155,7 +155,8 @@ public class World extends Stage
         if (soldiers > 0 && source.getSoldiers() >= soldiers)
         {
             LinePath path = paths.get(source, target);
-            Army army = new Army(soldiers,
+            Army army = new Army(armyId,
+                soldiers,
                 source.getOwner(),
                 source,
                 target,
@@ -163,6 +164,8 @@ public class World extends Stage
                 textureAtlas,
                 fontProvider,
                 gameConfiguration);
+            armyId++;
+
             army.setZIndex(100);
             addActor(army);
             armies.add(army);

@@ -21,6 +21,9 @@ import com.github.workinggames.castra.core.texture.ColorizingTextureAtlasAdapter
 
 public class Army extends Group
 {
+    @Getter
+    private final int id;
+    
     private final AnimatedImage image;
     private final Label label;
     private final ColorizingTextureAtlasAdapter textureAtlas;
@@ -45,6 +48,7 @@ public class Army extends Group
     private ArmySize armySize;
 
     public Army(
+        int id,
         int soldiers,
         Player owner,
         Settlement source,
@@ -54,6 +58,7 @@ public class Army extends Group
         FontProvider fontProvider,
         GameConfiguration gameConfiguration)
     {
+        this.id = id;
         this.soldiers = soldiers;
         this.owner = owner;
         this.source = source;
