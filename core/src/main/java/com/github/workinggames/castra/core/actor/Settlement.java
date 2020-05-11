@@ -32,6 +32,7 @@ public class Settlement extends Group
     private final Label label;
     private final ColorizingTextureAtlasAdapter textureAtlas;
     private final AnimationUtil animationUtil;
+    private final GameConfiguration gameConfiguration;
 
     @Getter
     private final SettlementSize size;
@@ -66,6 +67,8 @@ public class Settlement extends Group
         this.size = size;
         this.soldiers = soldiers;
         this.owner = owner;
+        this.gameConfiguration = gameConfiguration;
+
         setPosition(x, y);
 
         if (owner.isNeutral())
@@ -169,7 +172,7 @@ public class Settlement extends Group
 
         highlight.setAnimation(getHighlightAnimation());
 
-        label.setVisible(!owner.isAi());
+        label.setVisible(gameConfiguration.isOpponentSettlementDetailsVisible() || !owner.isAi());
     }
 
     private TextureRegion getCastleTexture()

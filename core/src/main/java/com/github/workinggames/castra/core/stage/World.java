@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.badlogic.gdx.ai.DefaultTimepiece;
 import com.badlogic.gdx.ai.Timepiece;
+import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -17,6 +18,7 @@ import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.ArmySplit;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.ai.MessageType;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.Paths;
 import com.github.workinggames.castra.core.model.Player;
@@ -55,7 +57,7 @@ public class World extends Stage
     @Getter
     private final GameConfiguration gameConfiguration;
 
-    private int armyId = 1;
+    private final MessageManager messageManager = MessageManager.getInstance();
 
     public World(
         Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, GameConfiguration gameConfiguration)
@@ -119,8 +121,7 @@ public class World extends Stage
         if (soldiers > 0)
         {
             LinePath path = paths.get(source, target);
-            Army army = new Army(armyId,
-                soldiers,
+            Army army = new Army(soldiers,
                 source.getOwner(),
                 source,
                 target,
@@ -132,8 +133,8 @@ public class World extends Stage
             addActor(army);
             armies.add(army);
             source.removeSoldiers(soldiers);
-            armyId++;
 
+            messageManager.dispatchMessage(0, null, null, MessageType.ARMY_CREATED, army);
             StatisticsEventCreator.sendSoldiers(army);
         }
     }
@@ -173,6 +174,8 @@ public class World extends Stage
                 {
                     battle.getArmy().addSoldiers(army.getSoldiers());
                     joinedBattle = true;
+
+                    messageManager.dispatchMessage(0, null, null, MessageType.BATTLE_JOINED, army);
                     StatisticsEventCreator.joinedBattle(army);
                     break;
                 }
@@ -183,6 +186,8 @@ public class World extends Stage
             Battle battle = new Battle(army, textureAtlas);
             addActor(battle);
             battles.add(battle);
+
+            messageManager.dispatchMessage(0, null, null, MessageType.BATTLE_STARTED, battle);
             StatisticsEventCreator.battle(army);
         }
     }

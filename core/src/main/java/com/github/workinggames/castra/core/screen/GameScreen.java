@@ -27,8 +27,8 @@ public class GameScreen extends ScreenAdapter
     private final VictoryCondition victoryCondition;
     private final ArmySplitInputProcessor armySplitInputProcessor;
 
-    private Ai ai1;
-    private Ai ai2;
+    private Ai ai1 = null;
+    private Ai ai2 = null;
 
     public GameScreen(Castra game)
     {

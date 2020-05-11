@@ -44,11 +44,7 @@ public class Army extends Group
     @Getter
     private ArmySize armySize;
 
-    @Getter
-    private int armyId;
-
     public Army(
-        int armyId,
         int soldiers,
         Player owner,
         Settlement source,
@@ -58,7 +54,6 @@ public class Army extends Group
         FontProvider fontProvider,
         GameConfiguration gameConfiguration)
     {
-        this.armyId = armyId;
         this.soldiers = soldiers;
         this.owner = owner;
         this.source = source;

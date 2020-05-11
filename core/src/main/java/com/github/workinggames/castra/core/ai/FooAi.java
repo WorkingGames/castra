@@ -1,11 +1,13 @@
 package com.github.workinggames.castra.core.ai;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 
+import com.badlogic.gdx.ai.msg.MessageManager;
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
@@ -18,17 +20,15 @@ import com.github.workinggames.castra.core.model.SettlementSize;
 import com.github.workinggames.castra.core.stage.World;
 
 @Slf4j
-public class FooAi implements Ai
+public class FooAi implements Ai, Telegraph
 {
     private final World world;
     private int lastTickTime;
     private final Player aiPlayer;
     private final Array<SettlementInfo> settlementInfos;
     private final Map<Settlement, SettlementInfo> settlementInfosMap;
-    private final Map<Integer, ArmyInfo> armyInfoMap;
+    private final Map<Army, ArmyInfo> armyInfoMap;
     private final RandomXS128 random = new RandomXS128();
-
-    private int lastProcessedArmyId;
 
     public FooAi(World world, Player aiPlayer)
     {
@@ -39,6 +39,7 @@ public class FooAi implements Ai
         settlementInfosMap = new HashMap<>();
         armyInfoMap = new HashMap<>();
         initializeSettlementInfos();
+        subscribeMessages();
     }
 
     private void initializeSettlementInfos()
@@ -54,6 +55,15 @@ public class FooAi implements Ai
         }
     }
 
+    private void subscribeMessages()
+    {
+        MessageManager messageManager = MessageManager.getInstance();
+        messageManager.addListener(this, MessageType.ARMY_CREATED);
+        messageManager.addListener(this, MessageType.BATTLE_STARTED);
+        messageManager.addListener(this, MessageType.BATTLE_JOINED);
+        messageManager.addListener(this, MessageType.BATTLE_ENDED);
+    }
+
     public void update()
     {
         float time = world.getTimepiece().getTime();
@@ -62,16 +72,24 @@ public class FooAi implements Ai
         {
             lastTickTime = MathUtils.floor(time);
             // update opponent ticks and estimations based on armies deployed
-            addSpawnedSoldierToSettlementInfo(lastTickTime);
+            updateSettlementInfo(lastTickTime);
         }
-        discoverArmies();
-        discoverBattles();
-
         // sort destinations by cost
         settlementInfos.sort();
-
-        // TODO debug
         makeDecisions();
+    }
+
+    private void updateSettlementInfo(int lastTickTime)
+    {
+        for (SettlementInfo settlement : settlementInfos)
+        {
+            if (!settlement.getSettlement().getOwner().isNeutral())
+            {
+                settlement.update(lastTickTime,
+                    aiPlayer,
+                    world.getGameConfiguration().isOpponentSettlementDetailsVisible());
+            }
+        }
     }
 
     private void makeDecisions()
@@ -93,7 +111,7 @@ public class FooAi implements Ai
                         // neutral owner, no soldier spawn
                         requiredSoldiers = settlementInfo.getSoldiersPresent() -
                             settlementInfo.getOpponentSoldiersInbound() -
-                            settlementInfo.getPlayerSoldiersInbound();
+                            settlementInfo.getPlayerSoldiersInbound() + 1;
                     }
                     else if (settlementInfo.getSettlement().getOwner().equals(aiPlayer))
                     {
@@ -125,28 +143,6 @@ public class FooAi implements Ai
         }
     }
 
-    private void moveSoldiers(int required, SettlementInfo target)
-    {
-        Array<SettlementInfo> reversed = new Array<>(this.settlementInfos);
-        reversed.reverse();
-        int moved = 0;
-        while (moved != required)
-        {
-            for (SettlementInfo settlementInfo : reversed)
-            {
-                if (settlementInfo.getSettlement().getOwner().equals(aiPlayer))
-                {
-                    int available = settlementInfo.getSoldiersPresent() - settlementInfo.getOpponentSoldiersInbound();
-                    if (available > 0)
-                    {
-                        world.createArmy(settlementInfo.getSettlement(), target.getSettlement(), available);
-                        moved = moved + available;
-                    }
-                }
-            }
-        }
-    }
-
     private int getAvailableSoldiers()
     {
         int result = 0;
@@ -167,62 +163,103 @@ public class FooAi implements Ai
         return settlementSize.getSpawnIntervalInSeconds() % minBattleTime;
     }
 
-    public void addSpawnedSoldierToSettlementInfo(int lastTickTime)
+    private void moveSoldiers(int required, SettlementInfo target)
     {
-        for (SettlementInfo settlement : settlementInfos)
+        Array<SettlementInfo> reversed = new Array<>(this.settlementInfos);
+        reversed.reverse();
+        int moved = 0;
+        for (SettlementInfo source : reversed)
         {
-            if (!settlement.getSettlement().getOwner().isNeutral())
+            if (source.getSettlement().getOwner().equals(aiPlayer) && !source.equals(target))
             {
-                settlement.update(lastTickTime,
-                    aiPlayer,
-                    world.getGameConfiguration().isOpponentSettlementDetailsVisible());
+                int available = source.getSoldiersPresent() - source.getOpponentSoldiersInbound();
+                int moving = required;
+                if (available < required)
+                {
+                    moving = available;
+                }
+                if (moving > 0)
+                {
+                    source.setSoldiersPresent(source.getSoldiersPresent() - moving);
+                    world.createArmy(source.getSettlement(), target.getSettlement(), moving);
+                    moved = moved + moving;
+                }
+                if (moving == 0 || moved == required)
+                {
+                    return;
+                }
             }
         }
     }
 
-    private void discoverArmies()
+    @Override
+    public boolean handleMessage(Telegram msg)
     {
-        Array<Army> armies = world.getArmies();
-        armies.sort(Comparator.comparingInt(Army::getArmyId));
-
-        for (Army army : armies)
+        switch (msg.message)
         {
-            if (!army.getOwner().equals(aiPlayer) && lastProcessedArmyId < army.getArmyId())
+            case MessageType.ARMY_CREATED:
             {
-                log.info("New opponent Army discovered");
-
-                SettlementInfo sourceSettlementInfo = settlementInfosMap.get(army.getSource());
-                SettlementInfo targetSettlementInfo = settlementInfosMap.get(army.getTarget());
-
-                int soldiers;
-                if (world.getGameConfiguration().isOpponentArmyDetailsVisible())
-                {
-                    soldiers = army.getSoldiers();
-                }
-                else
-                {
-                    soldiers = randomSoldiersBasedOnArmySizeAndTargetSoldiers(army.getArmySize(),
-                        sourceSettlementInfo,
-                        targetSettlementInfo);
-                }
-
-                ArmyInfo armyInfo = new ArmyInfo(army, soldiers);
-                armyInfoMap.put(army.getArmyId(), armyInfo);
-
-                // reduce soldiers stationed in source settlement by soldier count/estimate
-                sourceSettlementInfo.setSoldiersPresent(sourceSettlementInfo.getSoldiersPresent() - soldiers);
-                targetSettlementInfo.setOpponentSoldiersInbound(targetSettlementInfo.getOpponentSoldiersInbound() +
-                    soldiers);
-
-                lastProcessedArmyId = army.getArmyId();
+                Army army = (Army) msg.extraInfo;
+                processNewArmy(army);
+                break;
+            }
+            case MessageType.BATTLE_JOINED:
+            {
+                Army army = (Army) msg.extraInfo;
+                processJoinedArmy(army);
+                break;
+            }
+            case MessageType.BATTLE_STARTED:
+            {
+                Battle battle = (Battle) msg.extraInfo;
+                processNewBattle(battle);
+                break;
+            }
+            case MessageType.BATTLE_ENDED:
+            {
+                Battle battle = (Battle) msg.extraInfo;
+                processFinishedBattle(battle);
+                break;
+            }
+            default:
+            {
+                break;
             }
         }
+        return true;
     }
 
-    private void discoverBattles()
+    private void processNewArmy(Army army)
     {
-        // update settlementInfo and estimate who will win
-        Array<Battle> battles = world.getBattles();
+        SettlementInfo sourceSettlementInfo = settlementInfosMap.get(army.getSource());
+        SettlementInfo targetSettlementInfo = settlementInfosMap.get(army.getTarget());
+
+        int soldiers;
+        if (army.getOwner().equals(aiPlayer) || world.getGameConfiguration().isOpponentArmyDetailsVisible())
+        {
+            soldiers = army.getSoldiers();
+        }
+        else
+        {
+            soldiers = randomSoldiersBasedOnArmySizeAndTargetSoldiers(army.getArmySize(),
+                sourceSettlementInfo,
+                targetSettlementInfo);
+        }
+
+        ArmyInfo armyInfo = new ArmyInfo(army, null, soldiers);
+        armyInfoMap.put(army, armyInfo);
+
+        // reduce soldiers stationed in source settlement by soldier count/estimate
+        sourceSettlementInfo.setSoldiersPresent(sourceSettlementInfo.getSoldiersPresent() - soldiers);
+        if (!army.getOwner().equals(aiPlayer))
+        {
+            targetSettlementInfo.setOpponentSoldiersInbound(targetSettlementInfo.getOpponentSoldiersInbound() +
+                soldiers);
+        }
+        else
+        {
+            targetSettlementInfo.setPlayerSoldiersInbound(targetSettlementInfo.getPlayerSoldiersInbound() + soldiers);
+        }
     }
 
     private int randomSoldiersBasedOnArmySizeAndTargetSoldiers(
@@ -266,5 +303,47 @@ public class FooAi implements Ai
     private int getRandomValueInclusive(int minimum, int maximum)
     {
         return minimum + random.nextInt(maximum - minimum + 1);
+    }
+
+    private void processJoinedArmy(Army army)
+    {
+        ArmyInfo armyInfo = armyInfoMap.get(army);
+        // if opponent army, find the battle which was joined and add the soldier estimate before removing this army
+    }
+
+    private void processNewBattle(Battle battle)
+    {
+        Army army = battle.getArmy();
+        ArmyInfo armyInfo = armyInfoMap.get(army);
+        armyInfo.setBattle(battle);
+    }
+
+    private void processFinishedBattle(Battle battle)
+    {
+        Army army = battle.getArmy();
+        ArmyInfo armyInfo = armyInfoMap.get(army);
+        SettlementInfo targetSettlementInfo = settlementInfosMap.get(army.getTarget());
+        if (army.getOwner().equals(aiPlayer))
+        {
+            targetSettlementInfo.setPlayerSoldiersInbound(targetSettlementInfo.getPlayerSoldiersInbound() -
+                armyInfo.getSoldierEstimate());
+        }
+        else
+        {
+            targetSettlementInfo.setOpponentSoldiersInbound(targetSettlementInfo.getOpponentSoldiersInbound() -
+                armyInfo.getSoldierEstimate());
+        }
+        // owner changed
+        if (!targetSettlementInfo.getLastOwner().equals(targetSettlementInfo.getSettlement().getOwner()))
+        {
+            targetSettlementInfo.setLastOwner(targetSettlementInfo.getSettlement().getOwner());
+            if (!targetSettlementInfo.getSettlement().getOwner().equals(aiPlayer))
+            {
+                targetSettlementInfo.setSoldiersPresent(armyInfo.getSoldierEstimate() -
+                    targetSettlementInfo.getSoldiersPresent());
+            }
+        }
+
+        armyInfoMap.remove(army);
     }
 }

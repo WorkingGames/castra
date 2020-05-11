@@ -4,11 +4,14 @@ import java.util.Iterator;
 
 import lombok.RequiredArgsConstructor;
 
+import com.badlogic.gdx.ai.msg.MessageDispatcher;
+import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.ai.MessageType;
 import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 
 @RequiredArgsConstructor
@@ -21,6 +24,8 @@ public class BattleProcessTask extends Timer.Task
     @Override
     public void run()
     {
+        MessageDispatcher messageManager = MessageManager.getInstance();
+
         Iterator<Battle> battleIterator = battles.iterator();
         while (battleIterator.hasNext())
         {
@@ -28,7 +33,6 @@ public class BattleProcessTask extends Timer.Task
 
             Army army = battle.getArmy();
             Settlement settlement = army.getTarget();
-
             if (army.getOwner().equals(settlement.getOwner()))
             {
                 settlement.addSoldier();
@@ -52,6 +56,8 @@ public class BattleProcessTask extends Timer.Task
             {
                 battle.remove();
                 battleIterator.remove();
+
+                messageManager.dispatchMessage(0, null, null, MessageType.BATTLE_ENDED, battle);
                 StatisticsEventCreator.BattleEnded(army, defended);
             }
         }
