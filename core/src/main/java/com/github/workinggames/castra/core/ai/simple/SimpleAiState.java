@@ -1,4 +1,4 @@
-package com.github.workinggames.castra.core.ai;
+package com.github.workinggames.castra.core.ai.simple;
 
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;

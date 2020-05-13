@@ -8,7 +8,7 @@ import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
 @RequiredArgsConstructor
-class AiUtils
+public class AiUtils
 {
     private final World world;
 

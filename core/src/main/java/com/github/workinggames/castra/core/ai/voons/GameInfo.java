@@ -1,4 +1,4 @@
-package com.github.workinggames.castra.core.ai;
+package com.github.workinggames.castra.core.ai.voons;
 
 import lombok.Getter;
 
@@ -11,14 +11,15 @@ import com.github.workinggames.castra.core.action.MoveAlongAction;
 import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.ai.AiUtils;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
-public class Quux
+public class GameInfo
 {
     private final boolean isOpponentArmyDetailsVisible;
     private final boolean isOpponentSettlementDetailsVisible;
-    private final ArrayMap<Integer, SettlementFoo> fooMap = new ArrayMap<>();
+    private final ArrayMap<Integer, SettlementInfo> settlementInfoBySettlementId = new ArrayMap<>();
     private final Player aiPlayer;
     private final Timepiece timepiece;
     private final AiUtils aiUtils;
@@ -29,7 +30,7 @@ public class Quux
     @Getter
     private int soldiersAvailable = 100;
 
-    public Quux(World world, Player aiPlayer)
+    public GameInfo(World world, Player aiPlayer)
     {
         isOpponentArmyDetailsVisible = world.getGameConfiguration().isOpponentArmyDetailsVisible();
         isOpponentSettlementDetailsVisible = world.getGameConfiguration().isOpponentSettlementDetailsVisible();
@@ -39,7 +40,7 @@ public class Quux
 
         for (Settlement settlement : world.getSettlements())
         {
-            SettlementFoo foo = new SettlementFoo(settlement, aiPlayer);
+            SettlementInfo foo = new SettlementInfo(settlement, aiPlayer);
             Array<Settlement> others = new Array<>(world.getSettlements());
             others.removeValue(settlement, true);
             for (Settlement otherSettlement : others)
@@ -50,56 +51,56 @@ public class Quux
             }
             // initial strength is always known, even from opponent
             foo.setDefenders(foo.getSettlement().getSoldiers());
-            fooMap.put(settlement.getId(), foo);
+            settlementInfoBySettlementId.put(settlement.getId(), foo);
         }
     }
 
-    public void updateSettlementFoo()
+    public void updateSettlementInfos()
     {
         opponentArmyEstimate = 0;
         soldiersAvailable = 0;
 
-        for (SettlementFoo settlementFoo : fooMap.values().toArray())
+        for (SettlementInfo settlementInfo : settlementInfoBySettlementId.values().toArray())
         {
-            if (settlementFoo.isOwnedByPlayer())
+            if (settlementInfo.isOwnedByPlayer())
             {
-                soldiersAvailable = soldiersAvailable + settlementFoo.getDefenders();
+                soldiersAvailable = soldiersAvailable + settlementInfo.getDefenders();
             }
-            else if (!settlementFoo.getSettlement().getOwner().isNeutral())
+            else if (!settlementInfo.getSettlement().getOwner().isNeutral())
             {
-                opponentArmyEstimate = opponentArmyEstimate + settlementFoo.getDefenders();
+                opponentArmyEstimate = opponentArmyEstimate + settlementInfo.getDefenders();
             }
             // armies and battle forecast
-            int defenders = settlementFoo.getDefenders();
-            for (ArmyFoo armyFoo : settlementFoo.getInboundArmies().values())
+            int defenders = settlementInfo.getDefenders();
+            for (ArmyInfo armyInfo : settlementInfo.getInboundArmies().values())
             {
                 // reinforce
-                if (armyFoo.getOwner().equals(settlementFoo.getSettlement().getOwner()))
+                if (armyInfo.getOwner().equals(settlementInfo.getSettlement().getOwner()))
                 {
-                    if (armyFoo.getOwner().equals(aiPlayer))
+                    if (armyInfo.getOwner().equals(aiPlayer))
                     {
-                        soldiersAvailable = soldiersAvailable + armyFoo.getSoldiers();
+                        soldiersAvailable = soldiersAvailable + armyInfo.getSoldiers();
                     }
                     else
                     {
-                        opponentArmyEstimate = opponentArmyEstimate + armyFoo.getSoldiers();
+                        opponentArmyEstimate = opponentArmyEstimate + armyInfo.getSoldiers();
                     }
                 }
                 // attack and winning
-                else if (defenders < armyFoo.getSoldiers())
+                else if (defenders < armyInfo.getSoldiers())
                 {
-                    if (armyFoo.getOwner().equals(aiPlayer))
+                    if (armyInfo.getOwner().equals(aiPlayer))
                     {
-                        soldiersAvailable = soldiersAvailable + armyFoo.getSoldiers() - defenders;
-                        if (!settlementFoo.getSettlement().getOwner().isNeutral())
+                        soldiersAvailable = soldiersAvailable + armyInfo.getSoldiers() - defenders;
+                        if (!settlementInfo.getSettlement().getOwner().isNeutral())
                         {
                             opponentArmyEstimate = opponentArmyEstimate - defenders;
                         }
                     }
                     else
                     {
-                        opponentArmyEstimate = opponentArmyEstimate + armyFoo.getSoldiers() - defenders;
-                        if (!settlementFoo.getSettlement().getOwner().isNeutral())
+                        opponentArmyEstimate = opponentArmyEstimate + armyInfo.getSoldiers() - defenders;
+                        if (!settlementInfo.getSettlement().getOwner().isNeutral())
                         {
                             soldiersAvailable = soldiersAvailable - defenders;
                         }
@@ -111,45 +112,35 @@ public class Quux
 
     public Settlement getSettlement(int settlementId)
     {
-        return fooMap.get(settlementId).getSettlement();
+        return settlementInfoBySettlementId.get(settlementId).getSettlement();
     }
 
-    public Array<Attack> getAttackOptions(int invest)
+    public Array<Attack> getNeutralAttackOptions(int invest)
     {
         Array<Attack> attackOptions = new Array<>();
         Array<Settlement> sources = aiUtils.getOwnedSettlements(aiPlayer);
-        Array<SettlementFoo> settlementFoos = fooMap.values().toArray();
-        for (SettlementFoo foo : settlementFoos)
+        Array<SettlementInfo> settlementFoos = settlementInfoBySettlementId.values().toArray();
+        for (SettlementInfo foo : settlementFoos)
         {
-            // only attack targets
-            if (!foo.getSettlement().getOwner().equals(aiPlayer) && !alreadyWinning(foo))
+            if (foo.getSettlement().getOwner().isNeutral() && !alreadyWinning(foo))
             {
                 int requestedSoldiers = 0;
                 Array<AttackSource> attackSources = new Array<>();
-
-                float requiredSoldiers = foo.getDefenders();
-                if (!foo.getSettlement().getOwner().isNeutral())
-                {
-                    requiredSoldiers = requiredSoldiers +
-                        foo.getBattleSoldierSpawn(foo.getDefenders(), foo.getSettlement().getSize());
-                }
+                float requiredSoldiers = foo.getDefenders() + 1;
                 sources.sort(new SettlementDistanceComparator(foo));
                 // Settlements with least distance first
                 for (Settlement source : sources)
                 {
-                    float soldierSpawnUntilReached = foo.getSoldierSpawnUntilReached(foo.getSettlementDistancesInTicks()
-                        .get(source.getId()));
-                    int availableSoldiers = fooMap.get(source.getId()).getAvailableSoldiers();
-                    if (availableSoldiers >= requiredSoldiers + soldierSpawnUntilReached)
+                    int availableSoldiers = settlementInfoBySettlementId.get(source.getId()).getAvailableSoldiers();
+                    if (availableSoldiers >= requiredSoldiers)
                     {
                         attackSources.add(new AttackSource(source.getId(),
-                            MathUtils.ceil(requiredSoldiers - requestedSoldiers + soldierSpawnUntilReached)));
+                            MathUtils.ceil(requiredSoldiers - requestedSoldiers)));
                         break;
                     }
                     else
                     {
                         attackSources.add(new AttackSource(source.getId(), availableSoldiers));
-                        requiredSoldiers = requiredSoldiers + soldierSpawnUntilReached;
                         requestedSoldiers = requestedSoldiers + availableSoldiers;
                     }
                 }
@@ -165,14 +156,62 @@ public class Quux
         return attackOptions;
     }
 
-    private boolean alreadyWinning(SettlementFoo foo)
+    public Array<Attack> getOpponentAttackOptions()
+    {
+        Array<Attack> attackOptions = new Array<>();
+        Array<Settlement> sources = aiUtils.getOwnedSettlements(aiPlayer);
+        Array<SettlementInfo> settlementFoos = settlementInfoBySettlementId.values().toArray();
+        for (SettlementInfo foo : settlementFoos)
+        {
+            Player owner = foo.getSettlement().getOwner();
+            if (!owner.equals(aiPlayer) && !owner.isNeutral() && !alreadyWinning(foo))
+            {
+                int requestedSoldiers = 0;
+                Array<AttackSource> attackSources = new Array<>();
+
+                float requiredSoldiers = foo.getDefenders() +
+                    1 +
+                    foo.getBattleSoldierSpawn(foo.getDefenders(), foo.getSettlement().getSize());
+                sources.sort(new SettlementDistanceComparator(foo));
+                // Settlements with least distance first
+                for (Settlement source : sources)
+                {
+                    float soldierSpawnUntilReached = foo.getSoldierSpawnUntilReached(foo.getSettlementDistancesInTicks()
+                        .get(source.getId()));
+                    int availableSoldiers = settlementInfoBySettlementId.get(source.getId()).getAvailableSoldiers();
+                    if (availableSoldiers >= requiredSoldiers + soldierSpawnUntilReached)
+                    {
+                        attackSources.add(new AttackSource(source.getId(),
+                            MathUtils.ceil(requiredSoldiers - requestedSoldiers + soldierSpawnUntilReached)));
+                        break;
+                    }
+                    else
+                    {
+                        attackSources.add(new AttackSource(source.getId(), availableSoldiers));
+                        requiredSoldiers = requiredSoldiers + soldierSpawnUntilReached;
+                        requestedSoldiers = requestedSoldiers + availableSoldiers;
+                    }
+                }
+                if (requiredSoldiers <= soldiersAvailable)
+                {
+                    Attack attack = new Attack(attackSources, foo.getSettlement().getId());
+                    float breakEvenInSeconds = foo.getBreakEvenInSeconds(requiredSoldiers);
+                    attack.setBreakEvenInSeconds(breakEvenInSeconds);
+                    attackOptions.add(attack);
+                }
+            }
+        }
+        return attackOptions;
+    }
+
+    private boolean alreadyWinning(SettlementInfo foo)
     {
         // this should be improved later on, by including battle times and army travel times etc.
         int inboundPlayerSoldiers = 0;
         int inboundOpponentSoldiers = 0;
         int battlingPlayerSoldiers = 0;
         int battlingOpponentSoldiers = 0;
-        for (ArmyFoo armyfoo : foo.getInboundArmies().values())
+        for (ArmyInfo armyfoo : foo.getInboundArmies().values())
         {
             if (armyfoo.getOwner().equals(aiPlayer))
             {
@@ -183,20 +222,20 @@ public class Quux
                 inboundOpponentSoldiers = inboundOpponentSoldiers + armyfoo.getSoldiers();
             }
         }
-        for (BattleFoo battlefoo : foo.getBattles().values())
+        for (BattleInfo battlefoo : foo.getBattles().values())
         {
             if (battlefoo.getArmyFoos().first().getOwner().equals(aiPlayer))
             {
-                for (ArmyFoo armyFoo : battlefoo.getArmyFoos())
+                for (ArmyInfo armyInfo : battlefoo.getArmyFoos())
                 {
-                    battlingPlayerSoldiers = battlingPlayerSoldiers + armyFoo.getSoldiers();
+                    battlingPlayerSoldiers = battlingPlayerSoldiers + armyInfo.getSoldiers();
                 }
             }
             else
             {
-                for (ArmyFoo armyFoo : battlefoo.getArmyFoos())
+                for (ArmyInfo armyInfo : battlefoo.getArmyFoos())
                 {
-                    battlingOpponentSoldiers = battlingOpponentSoldiers + armyFoo.getSoldiers();
+                    battlingOpponentSoldiers = battlingOpponentSoldiers + armyInfo.getSoldiers();
                 }
             }
         }
@@ -205,7 +244,7 @@ public class Quux
 
     void soldierSpawned(int settlementId)
     {
-        SettlementFoo foo = fooMap.get(settlementId);
+        SettlementInfo foo = settlementInfoBySettlementId.get(settlementId);
         foo.setDefenders(foo.getDefenders() + 1);
     }
 
@@ -220,33 +259,33 @@ public class Quux
         {
             // TODO guess the soldier count based on army size, target soldiers and source soldiers
         }
-        SettlementFoo sourceFoo = fooMap.get(army.getSource().getId());
+        SettlementInfo sourceFoo = settlementInfoBySettlementId.get(army.getSource().getId());
         sourceFoo.setDefenders(sourceFoo.getDefenders() - soldierEstimate);
 
-        ArmyFoo armyFoo = new ArmyFoo(army.getId(),
+        ArmyInfo armyInfo = new ArmyInfo(army.getId(),
             soldierEstimate,
             army.getOwner(),
             army.getArmySize(),
             army.getPath().getDistance(),
             timepiece.getTime());
-        SettlementFoo targetFoo = fooMap.get(army.getTarget().getId());
-        targetFoo.getInboundArmies().put(army.getId(), armyFoo);
+        SettlementInfo targetFoo = settlementInfoBySettlementId.get(army.getTarget().getId());
+        targetFoo.getInboundArmies().put(army.getId(), armyInfo);
     }
 
     void battleJoined(Army army)
     {
-        SettlementFoo settlementFoo = fooMap.get(army.getTarget().getId());
-        ArmyFoo armyFoo;
+        SettlementInfo settlementInfo = settlementInfoBySettlementId.get(army.getTarget().getId());
+        ArmyInfo armyInfo;
         int armyId = army.getId();
-        armyFoo = settlementFoo.getInboundArmies().get(armyId);
-        settlementFoo.getInboundArmies().removeKey(armyId);
+        armyInfo = settlementInfo.getInboundArmies().get(armyId);
+        settlementInfo.getInboundArmies().removeKey(armyId);
 
-        Array<BattleFoo> battleFoos = settlementFoo.getBattles().values().toArray();
-        for (BattleFoo battleFoo : battleFoos)
+        Array<BattleInfo> battleFoos = settlementInfo.getBattles().values().toArray();
+        for (BattleInfo battleInfo : battleFoos)
         {
-            if (battleFoo.getArmyFoos().first().getOwner().equals(army.getOwner()))
+            if (battleInfo.getArmyFoos().first().getOwner().equals(army.getOwner()))
             {
-                battleFoo.getArmyFoos().add(armyFoo);
+                battleInfo.getArmyFoos().add(armyInfo);
                 break;
             }
         }
@@ -254,26 +293,26 @@ public class Quux
 
     public void battleStarted(Battle battle)
     {
-        SettlementFoo settlementFoo = fooMap.get(battle.getArmy().getTarget().getId());
+        SettlementInfo settlementInfo = settlementInfoBySettlementId.get(battle.getArmy().getTarget().getId());
 
-        ArmyFoo armyFoo;
+        ArmyInfo armyInfo;
         int armyId = battle.getArmy().getId();
-        armyFoo = settlementFoo.getInboundArmies().get(armyId);
-        settlementFoo.getInboundArmies().removeKey(armyId);
-        BattleFoo battleFoo = new BattleFoo(Array.with(armyFoo), timepiece.getTime());
-        settlementFoo.getBattles().put(armyId, battleFoo);
+        armyInfo = settlementInfo.getInboundArmies().get(armyId);
+        settlementInfo.getInboundArmies().removeKey(armyId);
+        BattleInfo battleInfo = new BattleInfo(Array.with(armyInfo), timepiece.getTime());
+        settlementInfo.getBattles().put(armyId, battleInfo);
     }
 
     public void battleEnded(Battle battle)
     {
-        SettlementFoo settlementFoo = fooMap.get(battle.getArmy().getTarget().getId());
+        SettlementInfo settlementInfo = settlementInfoBySettlementId.get(battle.getArmy().getTarget().getId());
         int armyId = battle.getArmy().getId();
 
-        BattleFoo battleFoo = settlementFoo.getBattles().get(armyId);
-        settlementFoo.getBattles().removeKey(armyId);
-        if (isOpponentSettlementDetailsVisible || settlementFoo.isOwnedByPlayer())
+        BattleInfo battleInfo = settlementInfo.getBattles().get(armyId);
+        settlementInfo.getBattles().removeKey(armyId);
+        if (isOpponentSettlementDetailsVisible || settlementInfo.isOwnedByPlayer())
         {
-            settlementFoo.setDefenders(settlementFoo.getSettlement().getSoldiers());
+            settlementInfo.setDefenders(settlementInfo.getSettlement().getSoldiers());
         }
         else
         {

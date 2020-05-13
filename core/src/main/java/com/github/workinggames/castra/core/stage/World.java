@@ -19,9 +19,9 @@ import com.github.workinggames.castra.core.actor.ArmySplit;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.ai.Ai;
-import com.github.workinggames.castra.core.ai.BarAi;
-import com.github.workinggames.castra.core.ai.MessageType;
-import com.github.workinggames.castra.core.ai.SimpleAi;
+import com.github.workinggames.castra.core.ai.voons.BasicAi;
+import com.github.workinggames.castra.core.ai.voons.MessageType;
+import com.github.workinggames.castra.core.ai.simple.SimpleAi;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.Paths;
 import com.github.workinggames.castra.core.model.Player;
@@ -99,7 +99,7 @@ public class World extends Stage
         }
         if (gameConfiguration.getPlayer2().getType().equals(PlayerType.AI))
         {
-            ai2 = new BarAi(this, gameConfiguration.getPlayer2());
+            ai2 = new BasicAi(this, gameConfiguration.getPlayer2());
         }
     }
 

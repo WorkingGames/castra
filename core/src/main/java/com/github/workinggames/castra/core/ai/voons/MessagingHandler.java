@@ -1,4 +1,4 @@
-package com.github.workinggames.castra.core.ai;
+package com.github.workinggames.castra.core.ai.voons;
 
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.ai.msg.Telegram;
@@ -9,12 +9,12 @@ import com.github.workinggames.castra.core.actor.Settlement;
 
 public class MessagingHandler
 {
-    private final Quux quux;
+    private final GameInfo gameInfo;
 
-    public MessagingHandler(BarAi barAi, Quux quux)
+    public MessagingHandler(BasicAi basicAi, GameInfo gameInfo)
     {
-        this.quux = quux;
-        subscribeMessages(barAi);
+        this.gameInfo = gameInfo;
+        subscribeMessages(basicAi);
     }
 
     public void subscribeMessages(Telegraph telegraph)
@@ -34,31 +34,31 @@ public class MessagingHandler
             case MessageType.SOLDIER_SPAWNED:
             {
                 Settlement settlement = (Settlement) msg.extraInfo;
-                quux.soldierSpawned(settlement.getId());
+                gameInfo.soldierSpawned(settlement.getId());
                 break;
             }
             case MessageType.ARMY_CREATED:
             {
                 Army army = (Army) msg.extraInfo;
-                quux.armyCreated(army);
+                gameInfo.armyCreated(army);
                 break;
             }
             case MessageType.BATTLE_JOINED:
             {
                 Army army = (Army) msg.extraInfo;
-                quux.battleJoined(army);
+                gameInfo.battleJoined(army);
                 break;
             }
             case MessageType.BATTLE_STARTED:
             {
                 Battle battle = (Battle) msg.extraInfo;
-                quux.battleStarted(battle);
+                gameInfo.battleStarted(battle);
                 break;
             }
             case MessageType.BATTLE_ENDED:
             {
                 Battle battle = (Battle) msg.extraInfo;
-                quux.battleEnded(battle);
+                gameInfo.battleEnded(battle);
                 break;
             }
         }

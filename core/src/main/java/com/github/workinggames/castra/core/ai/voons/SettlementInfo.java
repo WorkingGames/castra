@@ -1,4 +1,4 @@
-package com.github.workinggames.castra.core.ai;
+package com.github.workinggames.castra.core.ai.voons;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +16,14 @@ import com.github.workinggames.castra.core.task.BattleProcessor;
 
 @Getter
 @RequiredArgsConstructor
-public class SettlementFoo
+public class SettlementInfo
 {
     private final Settlement settlement;
     private final Player aiPlayer;
     private final Map<Integer, Float> settlementDistancesInTicks = new HashMap<>();
 
-    private final ArrayMap<Integer, ArmyFoo> inboundArmies = new ArrayMap<>();
-    private final ArrayMap<Integer, BattleFoo> battles = new ArrayMap<>();
+    private final ArrayMap<Integer, ArmyInfo> inboundArmies = new ArrayMap<>();
+    private final ArrayMap<Integer, BattleInfo> battles = new ArrayMap<>();
 
     @Setter
     private int defenders;
@@ -53,15 +53,15 @@ public class SettlementFoo
                 getSoldierSpawnUntilReached(targetDistanceInTicks) +
                 getBattleSoldierSpawn(requiredSoldiers, settlement.getSize());
         }
-        for (ArmyFoo armyFoo : inboundArmies.values())
+        for (ArmyInfo armyInfo : inboundArmies.values())
         {
-            if (armyFoo.getOwner().equals(aiPlayer))
+            if (armyInfo.getOwner().equals(aiPlayer))
             {
-                requiredSoldiers = requiredSoldiers - armyFoo.getSoldiers();
+                requiredSoldiers = requiredSoldiers - armyInfo.getSoldiers();
             }
             else
             {
-                requiredSoldiers = requiredSoldiers + armyFoo.getSoldiers();
+                requiredSoldiers = requiredSoldiers + armyInfo.getSoldiers();
             }
         }
         // let's round up
@@ -71,15 +71,15 @@ public class SettlementFoo
     int getAvailableSoldiers()
     {
         int available = settlement.getSoldiers();
-        for (ArmyFoo armyFoo : inboundArmies.values())
+        for (ArmyInfo armyInfo : inboundArmies.values())
         {
-            if (armyFoo.getOwner().equals(aiPlayer))
+            if (armyInfo.getOwner().equals(aiPlayer))
             {
-                available = available + armyFoo.getSoldiers();
+                available = available + armyInfo.getSoldiers();
             }
             else
             {
-                available = available - armyFoo.getSoldiers();
+                available = available - armyInfo.getSoldiers();
             }
         }
         return MathUtils.ceil(settlement.getSoldiers());

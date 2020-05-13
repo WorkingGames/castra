@@ -1,4 +1,4 @@
-package com.github.workinggames.castra.core.ai;
+package com.github.workinggames.castra.core.ai.voons;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +7,8 @@ import com.badlogic.gdx.utils.Array;
 
 @Getter
 @RequiredArgsConstructor
-public class BattleFoo
+public class BattleInfo
 {
-    private final Array<ArmyFoo> armyFoos;
+    private final Array<ArmyInfo> armyFoos;
     private final float battleStartedTimestamp;
 }

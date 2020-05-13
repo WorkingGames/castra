@@ -1,4 +1,4 @@
-package com.github.workinggames.castra.core.ai;
+package com.github.workinggames.castra.core.ai.voons;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

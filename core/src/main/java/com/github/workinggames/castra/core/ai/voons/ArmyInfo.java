@@ -1,4 +1,4 @@
-package com.github.workinggames.castra.core.ai;
+package com.github.workinggames.castra.core.ai.voons;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import com.github.workinggames.castra.core.model.Player;
 
 @Getter
 @RequiredArgsConstructor
-public class ArmyFoo implements Comparable<ArmyFoo>
+public class ArmyInfo implements Comparable<ArmyInfo>
 {
     private final int armyId;
     private final int soldiers;
@@ -19,7 +19,7 @@ public class ArmyFoo implements Comparable<ArmyFoo>
     private final float createdAtTimestamp;
 
     // order by arrival
-    public int compareTo(ArmyFoo o)
+    public int compareTo(ArmyInfo o)
     {
         return Float.compare(getArrivalTimestamp(), o.getArrivalTimestamp());
     }

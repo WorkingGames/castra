@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
-import com.github.workinggames.castra.core.ai.MessageType;
+import com.github.workinggames.castra.core.ai.voons.MessageType;
 import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 
 @RequiredArgsConstructor

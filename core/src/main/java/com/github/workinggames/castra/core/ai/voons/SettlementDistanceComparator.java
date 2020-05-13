@@ -1,4 +1,4 @@
-package com.github.workinggames.castra.core.ai;
+package com.github.workinggames.castra.core.ai.voons;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -10,7 +10,7 @@ import com.github.workinggames.castra.core.actor.Settlement;
 @RequiredArgsConstructor
 public class SettlementDistanceComparator implements Comparator<Settlement>
 {
-    private final SettlementFoo target;
+    private final SettlementInfo target;
 
     @Override
     public int compare(Settlement o1, Settlement o2)

@@ -6,7 +6,7 @@ import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.github.workinggames.castra.core.actor.Settlement;
-import com.github.workinggames.castra.core.ai.MessageType;
+import com.github.workinggames.castra.core.ai.voons.MessageType;
 
 @RequiredArgsConstructor
 public class SoldierSpawnTask extends Timer.Task
