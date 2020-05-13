@@ -2,17 +2,22 @@ package com.github.workinggames.castra.core.ai;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+
+import com.badlogic.gdx.utils.Array;
+import com.github.workinggames.castra.core.AttackSource;
 
 @Getter
 @ToString
 @RequiredArgsConstructor
 public class Attack implements Comparable<Attack>
 {
-    private final int sourceSettlementId;
+    private final Array<AttackSource> attackSources;
     private final int targetSettlementId;
-    private final int requiredSoldiers;
-    private final float breakEvenInSeconds;
+
+    @Setter
+    private float breakEvenInSeconds;
 
     @Override
     public int compareTo(Attack o)

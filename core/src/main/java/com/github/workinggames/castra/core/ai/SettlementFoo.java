@@ -28,7 +28,7 @@ public class SettlementFoo
     @Setter
     private int defenders;
 
-    float getBreakEvenInSeconds(int requiredSoldiers)
+    float getBreakEvenInSeconds(float requiredSoldiers)
     {
         float secondsUntilReimbursed = requiredSoldiers * settlement.getSize().getSpawnIntervalInSeconds();
         float ownerScore;
@@ -68,9 +68,20 @@ public class SettlementFoo
         return MathUtils.ceil(requiredSoldiers);
     }
 
-    int getRequiredSoldiersToDefend()
+    int getAvailableSoldiers()
     {
-        // laters
+        int available = settlement.getSoldiers();
+        for (ArmyFoo armyFoo : inboundArmies.values())
+        {
+            if (armyFoo.getOwner().equals(aiPlayer))
+            {
+                available = available + armyFoo.getSoldiers();
+            }
+            else
+            {
+                available = available - armyFoo.getSoldiers();
+            }
+        }
         return MathUtils.ceil(settlement.getSoldiers());
     }
 

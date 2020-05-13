@@ -3,8 +3,10 @@ package com.github.workinggames.castra.core.ai;
 import lombok.Getter;
 
 import com.badlogic.gdx.ai.Timepiece;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
+import com.github.workinggames.castra.core.AttackSource;
 import com.github.workinggames.castra.core.action.MoveAlongAction;
 import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.Battle;
@@ -115,7 +117,6 @@ public class Quux
     public Array<Attack> getAttackOptions(int invest)
     {
         Array<Attack> attackOptions = new Array<>();
-        // no combined attacks from multiple sources in the first try
         Array<Settlement> sources = aiUtils.getOwnedSettlements(aiPlayer);
         Array<SettlementFoo> settlementFoos = fooMap.values().toArray();
         for (SettlementFoo foo : settlementFoos)
@@ -123,18 +124,41 @@ public class Quux
             // only attack targets
             if (!foo.getSettlement().getOwner().equals(aiPlayer) && !alreadyWinning(foo))
             {
+                int requestedSoldiers = 0;
+                Array<AttackSource> attackSources = new Array<>();
+
+                float requiredSoldiers = foo.getDefenders();
+                if (!foo.getSettlement().getOwner().isNeutral())
+                {
+                    requiredSoldiers = requiredSoldiers +
+                        foo.getBattleSoldierSpawn(foo.getDefenders(), foo.getSettlement().getSize());
+                }
+                sources.sort(new SettlementDistanceComparator(foo));
+                // Settlements with least distance first
                 for (Settlement source : sources)
                 {
-                    int requiredSoldiers = foo.getRequiredSoldiersToTakeOver(foo.getSettlementDistancesInTicks()
+                    float soldierSpawnUntilReached = foo.getSoldierSpawnUntilReached(foo.getSettlementDistancesInTicks()
                         .get(source.getId()));
-                    if (requiredSoldiers <= invest)
+                    int availableSoldiers = fooMap.get(source.getId()).getAvailableSoldiers();
+                    if (availableSoldiers >= requiredSoldiers + soldierSpawnUntilReached)
                     {
-                        float breakEvenInSeconds = foo.getBreakEvenInSeconds(requiredSoldiers);
-                        attackOptions.add(new Attack(source.getId(),
-                            foo.getSettlement().getId(),
-                            requiredSoldiers,
-                            breakEvenInSeconds));
+                        attackSources.add(new AttackSource(source.getId(),
+                            MathUtils.ceil(requiredSoldiers - requestedSoldiers + soldierSpawnUntilReached)));
+                        break;
                     }
+                    else
+                    {
+                        attackSources.add(new AttackSource(source.getId(), availableSoldiers));
+                        requiredSoldiers = requiredSoldiers + soldierSpawnUntilReached;
+                        requestedSoldiers = requestedSoldiers + availableSoldiers;
+                    }
+                }
+                if (requiredSoldiers <= invest)
+                {
+                    Attack attack = new Attack(attackSources, foo.getSettlement().getId());
+                    float breakEvenInSeconds = foo.getBreakEvenInSeconds(requiredSoldiers);
+                    attack.setBreakEvenInSeconds(breakEvenInSeconds);
+                    attackOptions.add(attack);
                 }
             }
         }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.utils.Array;
+import com.github.workinggames.castra.core.AttackSource;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
@@ -69,7 +70,7 @@ public class BarAi implements Ai, Telegraph
             {
                 log.info(attackOptions.toString(", "));
                 Attack attack = attackOptions.first();
-                createArmy(attack);
+                createArmies(attack);
             }
             else
             {
@@ -82,10 +83,13 @@ public class BarAi implements Ai, Telegraph
         }
     }
 
-    private void createArmy(Attack attack)
+    private void createArmies(Attack attack)
     {
-        world.createArmy(quux.getSettlement(attack.getSourceSettlementId()),
-            quux.getSettlement(attack.getTargetSettlementId()),
-            attack.getRequiredSoldiers());
+        for (AttackSource source : attack.getAttackSources())
+        {
+            world.createArmy(quux.getSettlement(source.getSettlementId()),
+                quux.getSettlement(attack.getTargetSettlementId()),
+                source.getSoldiers());
+        }
     }
 }
