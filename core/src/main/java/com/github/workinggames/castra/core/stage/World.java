@@ -19,9 +19,8 @@ import com.github.workinggames.castra.core.actor.ArmySplit;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.ai.Ai;
-import com.github.workinggames.castra.core.ai.voons.BasicAi;
+import com.github.workinggames.castra.core.ai.AiInitializer;
 import com.github.workinggames.castra.core.ai.voons.MessageType;
-import com.github.workinggames.castra.core.ai.simple.SimpleAi;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.Paths;
 import com.github.workinggames.castra.core.model.Player;
@@ -61,6 +60,7 @@ public class World extends Stage
     private final GameConfiguration gameConfiguration;
 
     private final MessageManager messageManager = MessageManager.getInstance();
+    private final AiInitializer aiInitializer = new AiInitializer();
 
     private Ai ai1 = null;
     private Ai ai2 = null;
@@ -95,11 +95,11 @@ public class World extends Stage
     {
         if (gameConfiguration.getPlayer1().getType().equals(PlayerType.AI))
         {
-            ai1 = new SimpleAi(this, gameConfiguration.getPlayer1());
+            ai1 = aiInitializer.initialize(this, gameConfiguration.getPlayer1());
         }
         if (gameConfiguration.getPlayer2().getType().equals(PlayerType.AI))
         {
-            ai2 = new BasicAi(this, gameConfiguration.getPlayer2());
+            ai2 = aiInitializer.initialize(this, gameConfiguration.getPlayer2());
         }
     }
 

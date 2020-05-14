@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.github.workinggames.castra.core.Castra;
+import com.github.workinggames.castra.core.ai.AiType;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.PlayerColorSchema;
 import com.github.workinggames.castra.core.model.PlayerType;
@@ -25,6 +26,13 @@ public class PlayerOptions extends Table
 {
     @Getter
     private final Player player;
+
+    private SelectBox<AiType> aiTypeSelectBox;
+    private Label aiTypeLabel;
+    private Label aiDifficultyLabel;
+    private Label aiDifficultyValue;
+    private Label aiDescriptionLabel;
+    private Label aiDescriptionValue;
 
     public PlayerOptions(Castra game, String title, PlayerColorSchema color, PlayerType playerType, boolean player1)
     {
@@ -43,8 +51,10 @@ public class PlayerOptions extends Table
 
         addTitle(title, skin);
         addNameInput(title, skin);
-        addTypeInput(skin, playerType, player1);
         addColor(color, skin);
+        addTypeInput(skin, playerType, player1);
+        addAiTypeInput(skin);
+        showAiTypeOption(!player1);
     }
 
     private void addColor(PlayerColorSchema color, Skin skin)
@@ -123,10 +133,68 @@ public class PlayerOptions extends Table
             public void changed(ChangeEvent event, Actor actor)
             {
                 SelectBox<PlayerType> selectBox = (SelectBox<PlayerType>) actor;
-                player.setType(selectBox.getSelected());
+                PlayerType selected = selectBox.getSelected();
+                player.setType(selected);
+                
+                boolean aiPlayer = selected.equals(PlayerType.AI);
+                showAiTypeOption(aiPlayer);
+                if (aiPlayer)
+                {
+                    player.setAiType(aiTypeSelectBox.getSelected());
+                }
+                else
+                {
+                    player.setAiType(null);
+                }
             }
         });
         add(playerTypeSelectBox);
+        row();
+    }
+
+    private void showAiTypeOption(boolean visible)
+    {
+        aiTypeSelectBox.setVisible(visible);
+        aiTypeLabel.setVisible(visible);
+        aiDifficultyLabel.setVisible(visible);
+        aiDifficultyValue.setVisible(visible);
+        aiDescriptionLabel.setVisible(visible);
+        aiDescriptionValue.setVisible(visible);
+    }
+
+    private void addAiTypeInput(Skin skin)
+    {
+        aiTypeLabel = new Label("Ai Player: ", skin);
+        add(aiTypeLabel);
+
+        aiTypeSelectBox = new SelectBox<>(skin);
+        aiTypeSelectBox.setItems(AiType.values());
+        aiTypeSelectBox.setSelected(AiType.RANDY);
+        aiTypeSelectBox.addListener(new ChangeListener()
+        {
+            @Override
+            public void changed(ChangeEvent event, Actor actor)
+            {
+                SelectBox<AiType> selectBox = (SelectBox<AiType>) actor;
+                AiType selected = selectBox.getSelected();
+                player.setAiType(selected);
+                aiDifficultyValue.setText(selected.getDifficulty());
+                aiDescriptionValue.setText(selected.getDescription());
+            }
+        });
+        add(aiTypeSelectBox);
+        row();
+
+        aiDifficultyLabel = new Label("Difficulty: ", skin);
+        add(aiDifficultyLabel);
+        aiDifficultyValue = new Label(AiType.RANDY.getDifficulty(), skin);
+        add(aiDifficultyValue);
+        row();
+
+        aiDescriptionLabel = new Label("Ai Player: ", skin);
+        add(aiDescriptionLabel);
+        aiDescriptionValue = new Label(AiType.RANDY.getDescription(), skin);
+        add(aiDescriptionValue);
         row();
     }
 

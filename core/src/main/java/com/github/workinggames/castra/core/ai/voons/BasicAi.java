@@ -7,6 +7,7 @@ import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.msg.Telegraph;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.github.workinggames.castra.core.AttackSource;
 import com.github.workinggames.castra.core.ai.Ai;
@@ -18,7 +19,8 @@ public class BasicAi implements Ai, Telegraph
 {
     private static final int FIRST_ACTION_TIME = 1;
     private static final int MAXIMUM_SOLDIER_INVEST_IN_NEUTRAL = 5;
-    private static final float ACTION_SPEED = 0.5f;
+    private static final float MINIMUM_IDLE_TIME = 0.5f;
+    private static final float MAXIMUM_IDLE_TIME = 1.5f;
 
     @Getter
     private final StateMachine<BasicAi, BasicAiState> stateMachine;
@@ -47,22 +49,23 @@ public class BasicAi implements Ai, Telegraph
         float time = world.getTimepiece().getTime();
 
         gameInfo.updateSettlementInfos();
-        
+
         if (time >= nextActionTime)
         {
             stateMachine.changeState(BasicAiState.ATTACK);
-            nextActionTime = nextActionTime + ACTION_SPEED;
+            nextActionTime = time + MathUtils.random(MINIMUM_IDLE_TIME, MAXIMUM_IDLE_TIME);
         }
     }
 
     public void attack()
     {
-        /* don't be the player which looses all his soldiers to neutral armies, only invest the defined value if
-         * there is a neutral settlements with less soldiers in reach.
-         */
         int opponentArmyEstimate = gameInfo.getOpponentArmyEstimate();
         int soldiersAvailable = gameInfo.getSoldiersAvailable();
         log.info("OpponentArmyEstimate: {}, SoldiersAvailable: {}", opponentArmyEstimate, soldiersAvailable);
+
+        /* don't be the player which looses all his soldiers to neutral armies, only invest the defined value if
+         * there is a neutral settlements with less soldiers in reach.
+         */
         int invest = soldiersAvailable - opponentArmyEstimate + MAXIMUM_SOLDIER_INVEST_IN_NEUTRAL;
         Array<Attack> attackOptions = gameInfo.getOpponentAttackOptions();
         if (invest > 0)

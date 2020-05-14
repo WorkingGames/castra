@@ -17,17 +17,17 @@ public class GameOverScreen extends ScreenAdapter
     private final TextButton reMatch;
     private final TextButton mainMenu;
 
-    public GameOverScreen(Castra game, boolean won)
+    public GameOverScreen(Castra game, boolean player1Won)
     {
         this.game = game;
 
         stage = new Stage(game.getViewport());
         game.getInputMultiplexer().addProcessor(stage);
 
-        String message = "You Won!";
-        if (!won)
+        String message = game.getGameConfiguration().getPlayer1().getName() + " Won!";
+        if (!player1Won)
         {
-            message = "You Loose!";
+            message = game.getGameConfiguration().getPlayer2().getName() + " Won!";
         }
 
         Label label = new Label(message, game.getSkin());

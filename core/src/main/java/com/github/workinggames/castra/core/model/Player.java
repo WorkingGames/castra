@@ -3,11 +3,14 @@ package com.github.workinggames.castra.core.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.github.workinggames.castra.core.ai.AiType;
+
 @Data
 @NoArgsConstructor
 public class Player
 {
     private PlayerType type;
+    private AiType aiType;
     private PlayerColor color;
     private String name;
     private int sendTroopPercentage = 50;
