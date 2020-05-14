@@ -135,7 +135,7 @@ public class PlayerOptions extends Table
                 SelectBox<PlayerType> selectBox = (SelectBox<PlayerType>) actor;
                 PlayerType selected = selectBox.getSelected();
                 player.setType(selected);
-                
+
                 boolean aiPlayer = selected.equals(PlayerType.AI);
                 showAiTypeOption(aiPlayer);
                 if (aiPlayer)

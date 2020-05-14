@@ -11,10 +11,10 @@ public class MessagingHandler
 {
     private final GameInfo gameInfo;
 
-    public MessagingHandler(BasicAi basicAi, GameInfo gameInfo)
+    public MessagingHandler(Telegraph telegraph, GameInfo gameInfo)
     {
         this.gameInfo = gameInfo;
-        subscribeMessages(basicAi);
+        subscribeMessages(telegraph);
     }
 
     public void subscribeMessages(Telegraph telegraph)

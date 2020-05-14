@@ -9,6 +9,6 @@ import com.badlogic.gdx.utils.Array;
 @RequiredArgsConstructor
 public class BattleInfo
 {
-    private final Array<ArmyInfo> armyFoos;
+    private final Array<ArmyInfo> armyInfos;
     private final float battleStartedTimestamp;
 }

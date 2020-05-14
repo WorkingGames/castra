@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum AiType
 {
     RANDY("Easiest", "Attacks randomly."),
-    BILLY("Medium", "Attacks cautiously.");
+    BILLY("Medium", "Attacks cautiously."),
+    FRANK("Medium", "Will hunt you.");
 
     private final String difficulty;
     private final String description;

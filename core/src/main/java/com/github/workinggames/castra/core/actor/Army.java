@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.github.workinggames.castra.core.Castra;
@@ -23,7 +24,7 @@ public class Army extends Group
 {
     @Getter
     private final int id;
-    
+
     private final AnimatedImage image;
     private final Label label;
     private final ColorizingTextureAtlasAdapter textureAtlas;
@@ -82,6 +83,10 @@ public class Army extends Group
 
         boolean detailsVisible = gameConfiguration.isOpponentArmyDetailsVisible() || !owner.isAi();
         this.label = createLabel(fontProvider, detailsVisible);
+
+        // without this sometimes the armies would flash in the lower left corner until the movement is started
+        Vector2 initialPosition = path.valueAt(0);
+        setPosition(initialPosition.x, initialPosition.y);
 
         addAction(MoveAlongAction.obtain(path));
     }

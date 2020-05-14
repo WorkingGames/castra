@@ -17,10 +17,12 @@ import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
 @Slf4j
-public class BasicAi implements Ai, Telegraph
+public class ConfrontingAi implements Ai, Telegraph
 {
     private static final int FIRST_ACTION_TIME = 1;
-    private static final int MAXIMUM_SOLDIER_INVEST_IN_NEUTRAL = 5;
+    private static final int MAXIMUM_SOLDIER_INVEST_IN_NEUTRAL = 30;
+    private static final int MINIMUM_TURNS_WITHOUT_ATTACKING_NEUTRAL = 15;
+    private static final int MAXIMUM_TURNS_WITHOUT_ATTACKING_NEUTRAL = 30;
     private static final float MINIMUM_IDLE_TIME = 0.5f;
     private static final float MAXIMUM_IDLE_TIME = 1.5f;
 
@@ -32,8 +34,10 @@ public class BasicAi implements Ai, Telegraph
     private final AttackGeneral attackGeneral;
 
     private float nextActionTime;
+    private boolean attacked;
+    private int turnsWithoutAttacking = 0;
 
-    public BasicAi(World world, Player aiPlayer)
+    public ConfrontingAi(World world, Player aiPlayer)
     {
         this.world = world;
         stateMachine = new DefaultStateMachine<>(this, AiState.WAIT);
@@ -64,27 +68,30 @@ public class BasicAi implements Ai, Telegraph
 
     public void attack()
     {
-        int opponentArmyEstimate = gameInfo.getOpponentArmyEstimate();
-        int soldiersAvailable = gameInfo.getSoldiersAvailable();
-        /* don't be the player which looses all his soldiers to neutral armies, only invest the defined value if
-         * there is a neutral settlements with less soldiers in reach.
-         */
-        int invest = soldiersAvailable - opponentArmyEstimate + MAXIMUM_SOLDIER_INVEST_IN_NEUTRAL;
         ArrayMap<Integer, SettlementInfo> settlementInfos = gameInfo.getSettlementInfoBySettlementId();
+        // This Ai won't bother with neutral Settlements and only attack the opponent and run after his armies
+        int soldiersAvailable = gameInfo.getSoldiersAvailable();
         Array<Attack> attackOptions = attackGeneral.getOpponentAttackOptions(settlementInfos, soldiersAvailable);
-        if (invest > 0)
-        {
-            attackOptions.addAll(attackGeneral.getNeutralAttackOptions(settlementInfos, invest));
-        }
+        attackOptions.addAll(attackGeneral.getOpponentArmyOptions(settlementInfos, soldiersAvailable));
         attackOptions.sort();
+
+        // To prevent a stare off contest when facing the same Ai, it will loose its temper and will once attack a neutral settlement to break the tie
+        if (!attacked &&
+            turnsWithoutAttacking >
+                MathUtils.random(MINIMUM_TURNS_WITHOUT_ATTACKING_NEUTRAL, MAXIMUM_TURNS_WITHOUT_ATTACKING_NEUTRAL))
+        {
+            attackOptions = attackGeneral.getNeutralAttackOptions(settlementInfos, MAXIMUM_SOLDIER_INVEST_IN_NEUTRAL);
+        }
 
         if (!attackOptions.isEmpty())
         {
             Attack attack = attackOptions.first();
             createArmies(attack);
+            attacked = true;
         }
         else
         {
+            turnsWithoutAttacking++;
             stateMachine.changeState(AiState.WAIT);
         }
     }
