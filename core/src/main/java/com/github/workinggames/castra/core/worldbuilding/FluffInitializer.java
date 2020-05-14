@@ -100,7 +100,7 @@ class FluffInitializer
                 retries++;
             }
             // if finding a valid position fails too often we remove a random position
-            if (retries == 20)
+            if (retries == 20 && !result.isEmpty())
             {
                 int index = getRandomValueInclusive(0, result.size - 1);
                 result.removeIndex(index);

@@ -24,6 +24,8 @@ import com.github.workinggames.castra.core.model.PlayerType;
 
 public class PlayerOptions extends Table
 {
+    private static final AiType DEFAULT_AI_TYPE = AiType.RANDY;
+
     @Getter
     private final Player player;
 
@@ -125,6 +127,7 @@ public class PlayerOptions extends Table
         else
         {
             playerTypeSelectBox.setItems(PlayerType.AI);
+            player.setAiType(DEFAULT_AI_TYPE);
         }
         playerTypeSelectBox.setSelected(initial);
         playerTypeSelectBox.addListener(new ChangeListener()
@@ -169,7 +172,7 @@ public class PlayerOptions extends Table
 
         aiTypeSelectBox = new SelectBox<>(skin);
         aiTypeSelectBox.setItems(AiType.values());
-        aiTypeSelectBox.setSelected(AiType.RANDY);
+        aiTypeSelectBox.setSelected(DEFAULT_AI_TYPE);
         aiTypeSelectBox.addListener(new ChangeListener()
         {
             @Override
@@ -187,13 +190,13 @@ public class PlayerOptions extends Table
 
         aiDifficultyLabel = new Label("Difficulty: ", skin);
         add(aiDifficultyLabel);
-        aiDifficultyValue = new Label(AiType.RANDY.getDifficulty(), skin);
+        aiDifficultyValue = new Label(DEFAULT_AI_TYPE.getDifficulty(), skin);
         add(aiDifficultyValue);
         row();
 
         aiDescriptionLabel = new Label("Ai Player: ", skin);
         add(aiDescriptionLabel);
-        aiDescriptionValue = new Label(AiType.RANDY.getDescription(), skin);
+        aiDescriptionValue = new Label(DEFAULT_AI_TYPE.getDescription(), skin);
         add(aiDescriptionValue);
         row();
     }
