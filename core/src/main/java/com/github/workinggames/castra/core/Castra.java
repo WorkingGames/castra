@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.screen.MainMenuScreen;
 import com.github.workinggames.castra.core.stage.GameConfiguration;
-import com.github.workinggames.castra.core.worldbuilding.FluffLoader;
+import com.github.workinggames.castra.core.texture.TextureAtlasInitializer;
 
 public class Castra extends Game
 {
@@ -50,7 +50,8 @@ public class Castra extends Game
         inputMultiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        initializeAtlasContent();
+        new TextureAtlasInitializer().initializeAtlasContent(textureAtlas);
+
         textureAtlas.findRegion("Background256")
             .getTexture()
             .setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -58,38 +59,6 @@ public class Castra extends Game
         fontProvider = new FontProvider();
 
         this.setScreen(new MainMenuScreen(this));
-    }
-
-    private void initializeAtlasContent()
-    {
-        addToAtlas("soldier");
-        addToAtlas("soldiers");
-        addToAtlas("horsesAndSoldiers");
-        addToAtlas("Background256");
-        addToAtlas("cloud");
-        addToAtlas("LargeCastlePink");
-        addToAtlas("LargeCastleHighlight");
-        addToAtlas("LargeCastleNeutralHighlight");
-        addToAtlas("LargeCastleFlags");
-        addToAtlas("MediumCastlePink");
-        addToAtlas("MediumCastleHighlight");
-        addToAtlas("MediumCastleNeutralHighlight");
-        addToAtlas("MediumCastleFlags");
-        addToAtlas("SmallCastlePink");
-        addToAtlas("SmallCastleHighlight");
-        addToAtlas("SmallCastleNeutralHighlight");
-        addToAtlas("SmallCastleFlags");
-        addToAtlas("armySplit");
-        addToAtlas("armySplitOuterRim");
-        addToAtlas("uncheckedBox");
-        addToAtlas("checkedBox");
-        FluffLoader.addFluffToAtlas(textureAtlas);
-    }
-
-    private void addToAtlas(String name)
-    {
-        Texture texture = new Texture(Gdx.files.internal(name + ".png"));
-        textureAtlas.addRegion(name, texture, 0, 0, texture.getWidth(), texture.getHeight());
     }
 
     @Override

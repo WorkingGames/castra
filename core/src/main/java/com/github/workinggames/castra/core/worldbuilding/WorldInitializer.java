@@ -13,7 +13,6 @@ public class WorldInitializer
 {
     private final Viewport viewport;
     private final TextureAtlas textureAtlas;
-    private final long seed;
 
     public void initialize(World world)
     {

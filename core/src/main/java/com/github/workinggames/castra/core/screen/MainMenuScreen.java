@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -20,6 +21,7 @@ public class MainMenuScreen extends ScreenAdapter
     private final Castra game;
     private final Stage stage;
     private final TextButton startGame;
+    private final Texture backgroundTexture;
 
     public MainMenuScreen(Castra game)
     {
@@ -46,10 +48,12 @@ public class MainMenuScreen extends ScreenAdapter
             true);
         player1Options.setPosition(400, 200);
         stage.addActor(player1Options);
-        
+
         PlayerOptions player2Options = new PlayerOptions(game, "Player2", PlayerColorSchema.RED, PlayerType.AI, false);
         player2Options.setPosition(900, 200);
         stage.addActor(player2Options);
+
+        backgroundTexture = game.getTextureAtlas().findRegion("Background256").getTexture();
     }
 
     @Override
@@ -61,7 +65,7 @@ public class MainMenuScreen extends ScreenAdapter
         Batch stageBatch = stage.getBatch();
         stageBatch.begin();
         stageBatch.setColor(Color.WHITE);
-        stageBatch.draw(game.getTextureAtlas().findRegion("Background256").getTexture(),
+        stageBatch.draw(backgroundTexture,
             0,
             0,
             0,

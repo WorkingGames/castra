@@ -18,15 +18,16 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.math.Rectangles;
 import com.github.workinggames.castra.core.stage.World;
+import com.github.workinggames.castra.core.texture.TextureAtlasInitializer;
 
 @Slf4j
 @RequiredArgsConstructor
 class FluffInitializer
 {
-    private static final int PADDING_LEFT = 25;
+    private static final int PADDING_LEFT = 5;
     private static final int PADDING_RIGHT = 100;
-    private static final int PADDING_BOTTOM = 25;
-    private static final int PADDING_TOP = 120;
+    private static final int PADDING_BOTTOM = 5;
+    private static final int PADDING_TOP = 105;
 
     private static final int MINIMUM_SPACING_TO_SETTLEMENTS = 30;
     private static final int MINIMUM_SPACING_TO_OTHER_FLUFF = 10;
@@ -53,7 +54,7 @@ class FluffInitializer
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
-        for (String name : FluffLoader.ALL)
+        for (String name : TextureAtlasInitializer.FLUFF_ALL)
         {
             fluffTextures.put(name, world.getTextureAtlas().findRegion(name).getTexture());
         }
@@ -63,9 +64,9 @@ class FluffInitializer
         int other = getRandomValueInclusive(MINIMUM_OTHER, MAXIMUM_OTHER);
 
         Array<Image> fluff = new Array<>();
-        addFluff(fluff, FluffLoader.TREES, trees);
-        addFluff(fluff, FluffLoader.STONES, stones);
-        addFluff(fluff, FluffLoader.OTHER, other);
+        addFluff(fluff, TextureAtlasInitializer.FLUFF_TREES, trees);
+        addFluff(fluff, TextureAtlasInitializer.FLUFF_STONES, stones);
+        addFluff(fluff, TextureAtlasInitializer.FLUFF_OTHER, other);
         addSpecialFluff(fluff);
 
         for (Image image : fluff)

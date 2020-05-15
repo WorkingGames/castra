@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
 import com.github.workinggames.castra.core.stage.World;
@@ -22,6 +23,7 @@ public class GameScreen extends ScreenAdapter
     private final BattleProcessor battleProcessor;
     private final VictoryCondition victoryCondition;
     private final ArmySplitInputProcessor armySplitInputProcessor;
+    private final Texture backgroundTexture;
 
     public GameScreen(Castra game)
     {
@@ -37,9 +39,7 @@ public class GameScreen extends ScreenAdapter
             worldStage.getArmySplit());
         game.getInputMultiplexer().addProcessor(armySplitInputProcessor);
 
-        new WorldInitializer(game.getViewport(),
-            game.getTextureAtlas(),
-            game.getGameConfiguration().getSeed()).initialize(worldStage);
+        new WorldInitializer(game.getViewport(), game.getTextureAtlas()).initialize(worldStage);
         worldStage.initializeAi();
 
         soldierSpawner = new SoldierSpawner(worldStage.getSettlements());
@@ -47,6 +47,8 @@ public class GameScreen extends ScreenAdapter
         battleProcessor = new BattleProcessor(worldStage.getBattles());
         battleProcessor.startBattles();
         victoryCondition = new VictoryCondition(worldStage);
+
+        backgroundTexture = game.getTextureAtlas().findRegion("Background256").getTexture();
     }
 
     @Override
@@ -63,7 +65,7 @@ public class GameScreen extends ScreenAdapter
         worldStage.getBatch().begin();
         worldStage.getBatch().setColor(Color.WHITE);
         worldStage.getBatch()
-            .draw(game.getTextureAtlas().findRegion("Background256").getTexture(),
+            .draw(backgroundTexture,
                 0,
                 0,
                 0,
