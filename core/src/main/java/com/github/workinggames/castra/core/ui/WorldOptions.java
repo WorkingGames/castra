@@ -44,6 +44,7 @@ public class WorldOptions extends Table
         });
         add(seedInputField);
         row();
+        row();
     }
 
     private void addOpponentSettlementDetailsVisible(Castra game)
