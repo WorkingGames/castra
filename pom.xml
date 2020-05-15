@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>android</module>
         <module>core</module>
         <module>desktop</module>
     </modules>

@@ -3,7 +3,7 @@ package com.github.workinggames.castra.android;
 import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import de.incub8.castra.core.Castra;
+import com.github.workinggames.castra.core.Castra;
 
 public class AndroidLauncher extends AndroidApplication
 {

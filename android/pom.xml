@@ -44,12 +44,12 @@
             <classifier>natives-x86_64</classifier>
         </dependency>
         <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>android</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.workinggames.castra</groupId>
             <artifactId>castra-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
         </dependency>
     </dependencies>
 
@@ -86,7 +86,7 @@
                     <assetsDirectory>${project.basedir}/../assets</assetsDirectory>
                     <resourceDirectory>${project.basedir}/res</resourceDirectory>
                     <sdk>
-                        <platform>24</platform>
+                        <platform>29</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                     <dex>
