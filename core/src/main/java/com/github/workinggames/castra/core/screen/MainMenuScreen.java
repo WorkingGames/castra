@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.workinggames.castra.core.Castra;
@@ -32,6 +33,10 @@ public class MainMenuScreen extends ScreenAdapter
 
         Skins.initialize(game);
 
+        Image title = new Image(game.getTextureAtlas().findRegion("title"));
+        title.setPosition(600, 700);
+        stage.addActor(title);
+
         startGame = new TextButton("Start Game", game.getSkin());
         startGame.addListener(new ClickListener());
         startGame.setPosition(600, 400);
@@ -53,7 +58,8 @@ public class MainMenuScreen extends ScreenAdapter
         player2Options.setPosition(900, 200);
         stage.addActor(player2Options);
 
-        backgroundTexture = game.getTextureAtlas().findRegion("Background256").getTexture();
+        backgroundTexture = game.getTextureAtlas().findRegion("Bricks").getTexture();
+        backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
     }
 
     @Override

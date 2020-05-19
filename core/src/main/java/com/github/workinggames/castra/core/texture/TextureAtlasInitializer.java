@@ -59,6 +59,8 @@ public class TextureAtlasInitializer
         addToAtlas("armySplitOuterRim", textureAtlas);
         addToAtlas("uncheckedBox", textureAtlas);
         addToAtlas("checkedBox", textureAtlas);
+        addToAtlas("Bricks", textureAtlas);
+        addToAtlas("title", textureAtlas);
         for (String name : FLUFF_ALL)
         {
             addToAtlas(name, textureAtlas);
