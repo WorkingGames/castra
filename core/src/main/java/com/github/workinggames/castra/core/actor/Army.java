@@ -3,22 +3,15 @@ package com.github.workinggames.castra.core.actor;
 import lombok.Getter;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.action.MoveAlongAction;
-import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.ArmySize;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
-import com.github.workinggames.castra.core.stage.GameConfiguration;
-import com.github.workinggames.castra.core.texture.AnimationUtil;
-import com.github.workinggames.castra.core.texture.ColorizingTextureAtlasAdapter;
 
 public class Army extends Group
 {
@@ -26,9 +19,6 @@ public class Army extends Group
     private final int id;
 
     private final AnimatedImage image;
-    private final Label label;
-    private final ColorizingTextureAtlasAdapter textureAtlas;
-    private final AnimationUtil animationUtil;
 
     @Getter
     private final Player owner;
@@ -40,13 +30,13 @@ public class Army extends Group
     private final Settlement target;
 
     @Getter
+    private final ArmySize armySize;
+
+    @Getter
+    private final LinePath path;
+
+    @Getter
     private int soldiers;
-
-    @Getter
-    private LinePath path;
-
-    @Getter
-    private ArmySize armySize;
 
     public Army(
         int id,
@@ -55,9 +45,9 @@ public class Army extends Group
         Settlement source,
         Settlement target,
         LinePath path,
-        TextureAtlas textureAtlas,
-        FontProvider fontProvider,
-        GameConfiguration gameConfiguration)
+        BitmapFont font,
+        AnimatedImage animatedImage,
+        boolean soldierCountVisible)
     {
         this.id = id;
         this.soldiers = soldiers;
@@ -65,14 +55,13 @@ public class Army extends Group
         this.source = source;
         this.target = target;
         this.path = path;
-        this.textureAtlas = new ColorizingTextureAtlasAdapter(textureAtlas);
-        this.animationUtil = new AnimationUtil();
 
         armySize = ArmySize.bySoldierCount(soldiers);
 
-        image = createAnimatedImage(getAnimation(getArmyTexture(armySize)));
+        image = animatedImage.copy();
 
         setSize(image.getWidth(), image.getHeight());
+        setZIndex(100);
 
         // flip image, moving from right to left
         if (path.valueAt(0).x > path.valueAt(1).x)
@@ -80,9 +69,11 @@ public class Army extends Group
             image.setOriginX(image.getWidth() / 2);
             image.setScaleX(-1);
         }
+        addActor(image);
 
-        boolean detailsVisible = gameConfiguration.isOpponentArmyDetailsVisible() || !owner.isAi();
-        this.label = createLabel(fontProvider, detailsVisible);
+        boolean detailsVisible = soldierCountVisible || !owner.isAi();
+        Label label = createLabel(font, detailsVisible);
+        addActor(label);
 
         // without this sometimes the armies would flash in the lower left corner until the movement is started
         Vector2 initialPosition = path.valueAt(0);
@@ -91,31 +82,11 @@ public class Army extends Group
         addAction(MoveAlongAction.obtain(path));
     }
 
-    private AnimatedImage createAnimatedImage(Animation<TextureRegion> animation)
+    private Label createLabel(BitmapFont font, boolean visible)
     {
-        AnimatedImage animatedImage = new AnimatedImage(animation);
-        addActor(animatedImage);
-        return animatedImage;
-    }
-
-    private Animation<TextureRegion> getAnimation(Texture texture)
-    {
-        Animation<TextureRegion> animation = animationUtil.createAnimation(texture, 4, 1, 0.05f);
-        animation.setPlayMode(Animation.PlayMode.LOOP);
-        return animation;
-    }
-
-    private Texture getArmyTexture(ArmySize size)
-    {
-        return textureAtlas.findRegion(size.getTextureName(), owner.getColor()).getTexture();
-    }
-
-    private Label createLabel(FontProvider fontProvider, boolean visible)
-    {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.WHITE);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
         Label result = new Label(String.valueOf(soldiers), labelStyle);
         result.setX(image.getWidth() / 2);
-        addActor(result);
         result.setVisible(visible);
         return result;
     }
@@ -131,22 +102,15 @@ public class Army extends Group
     public void removeSoldier()
     {
         soldiers--;
-        updateLabel();
     }
 
     public void addSoldiers(int count)
     {
         this.soldiers += count;
-        updateLabel();
     }
 
     public boolean isEmpty()
     {
         return soldiers == 0;
-    }
-
-    private void updateLabel()
-    {
-        label.setText(String.valueOf(soldiers));
     }
 }

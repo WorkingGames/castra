@@ -34,6 +34,7 @@ public class ArmySplit extends Group
         this.player = player;
 
         setPosition(0, 0);
+        setZIndex(0);
         Image outerRim = createImage("armySplitOuterRim");
         Label firstInfo = createInfoLabel(155, 62, "25%");
         Label secondInfo = createInfoLabel(100, 105, "50%");

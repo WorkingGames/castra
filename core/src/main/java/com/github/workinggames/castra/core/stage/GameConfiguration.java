@@ -2,12 +2,18 @@ package com.github.workinggames.castra.core.stage;
 
 import lombok.Data;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.github.workinggames.castra.core.model.Player;
+import com.github.workinggames.castra.core.model.PlayerColor;
+import com.github.workinggames.castra.core.model.PlayerType;
 
 @Data
 public class GameConfiguration
 {
+    public static final Player NEUTRAL_PLAYER = new Player(new PlayerColor(new Color(0xc8c8c8ff),
+        new Color(0x4b4b4bff)), "NEUTRAL", PlayerType.NEUTRAL);
+
     private long seed = MathUtils.random(978234L);
 
     private Player player1;

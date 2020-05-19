@@ -10,10 +10,10 @@ import com.badlogic.gdx.ai.Timepiece;
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.workinggames.castra.core.actor.ActorCreator;
 import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.ArmySplit;
 import com.github.workinggames.castra.core.actor.Battle;
@@ -35,7 +35,6 @@ public class World extends Stage
     @Getter
     private final TextureAtlas textureAtlas;
 
-    private final FontProvider fontProvider;
     private final ZAwareActorComparator actorComparator;
 
     @Getter
@@ -61,18 +60,16 @@ public class World extends Stage
 
     private final MessageManager messageManager = MessageManager.getInstance();
     private final AiInitializer aiInitializer = new AiInitializer();
+    private final ActorCreator actorCreator;
 
     private Ai ai1 = null;
     private Ai ai2 = null;
-    private int settlementId = 0;
-    private int armyId = 0;
 
     public World(
         Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, GameConfiguration gameConfiguration)
     {
         super(viewport);
         this.textureAtlas = textureAtlas;
-        this.fontProvider = fontProvider;
         this.gameConfiguration = gameConfiguration;
 
         actorComparator = new ZAwareActorComparator();
@@ -86,9 +83,10 @@ public class World extends Stage
         if (gameConfiguration.getPlayer1().getType().equals(PlayerType.HUMAN))
         {
             armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer1());
-            armySplit.setZIndex(0);
             addActor(armySplit);
         }
+
+        actorCreator = new ActorCreator(gameConfiguration, textureAtlas, fontProvider);
     }
 
     public void initializeAi()
@@ -126,19 +124,9 @@ public class World extends Stage
 
     public void createSettlement(SettlementSize size, int x, int y, int soldiers, Player owner)
     {
-        Settlement settlement = new Settlement(settlementId,
-            size,
-            x,
-            y,
-            soldiers,
-            owner,
-            textureAtlas,
-            fontProvider,
-            gameConfiguration);
-        settlement.setZIndex(0);
+        Settlement settlement = actorCreator.createSettlement(size, x, y, soldiers, owner);
         addActor(settlement);
         settlements.add(settlement);
-        settlementId++;
     }
 
     public void createArmy(Settlement source, Settlement target)
@@ -155,18 +143,7 @@ public class World extends Stage
         if (soldiers > 0 && source.getSoldiers() >= soldiers)
         {
             LinePath path = paths.get(source, target);
-            Army army = new Army(armyId,
-                soldiers,
-                source.getOwner(),
-                source,
-                target,
-                path,
-                textureAtlas,
-                fontProvider,
-                gameConfiguration);
-            armyId++;
-
-            army.setZIndex(100);
+            Army army = actorCreator.createArmy(source, target, path, soldiers);
             addActor(army);
             armies.add(army);
             source.removeSoldiers(soldiers);
@@ -178,8 +155,6 @@ public class World extends Stage
 
     public void createFluff(Image fluff)
     {
-        fluff.setZIndex(1000);
-        fluff.setTouchable(Touchable.disabled);
         addActor(fluff);
     }
 
@@ -220,7 +195,7 @@ public class World extends Stage
         }
         if (!joinedBattle)
         {
-            Battle battle = new Battle(army, textureAtlas);
+            Battle battle = actorCreator.createBattle(army);
             addActor(battle);
             battles.add(battle);
 

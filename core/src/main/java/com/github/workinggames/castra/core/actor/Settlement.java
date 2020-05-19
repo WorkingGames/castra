@@ -1,38 +1,28 @@
 package com.github.workinggames.castra.core.actor;
 
+import java.util.Map;
+
 import lombok.Getter;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.github.workinggames.castra.core.Castra;
-import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.SettlementSize;
-import com.github.workinggames.castra.core.stage.GameConfiguration;
-import com.github.workinggames.castra.core.texture.AnimationUtil;
-import com.github.workinggames.castra.core.texture.ColorizingTextureAtlasAdapter;
 
 public class Settlement extends Group
 {
-    private static final int FLAG_ANIMATION_COLUMNS = 6;
-    private static final int HIGHLIGHT_ANIMATION_COLUMNS = 6;
-
+    private final Map<Player, SettlementImage> settlementImageMap;
+    private final Label label;
     private final Image image;
     private final AnimatedImage highlight;
     private final AnimatedImage flags;
-    private final Label label;
-    private final ColorizingTextureAtlasAdapter textureAtlas;
-    private final AnimationUtil animationUtil;
-    private final GameConfiguration gameConfiguration;
+    private final boolean soldierCountVisible;
 
     @Getter
     private final int id;
@@ -62,75 +52,51 @@ public class Settlement extends Group
         float y,
         int soldiers,
         Player owner,
-        TextureAtlas textureAtlas,
-        FontProvider fontProvider,
-        GameConfiguration gameConfiguration)
+        BitmapFont font,
+        boolean soldierCountVisible,
+        Map<Player, SettlementImage> settlementImageMap)
     {
         this.id = id;
-        this.textureAtlas = new ColorizingTextureAtlasAdapter(textureAtlas);
-        this.animationUtil = new AnimationUtil();
         this.size = size;
         this.soldiers = soldiers;
         this.owner = owner;
-        this.gameConfiguration = gameConfiguration;
+        this.soldierCountVisible = soldierCountVisible;
+        this.settlementImageMap = settlementImageMap;
 
         setPosition(x, y);
-
-        if (owner.isNeutral())
-        {
-            highlight = createAnimatedImage(getNeutralHighlightTexture());
-        }
-        else
-        {
-            highlight = createAnimatedImage(getHighlightAnimation());
-        }
-        highlight.setVisible(false);
-
-        image = createImage(getCastleTexture());
+        SettlementImage settlementImage = settlementImageMap.get(owner);
+        image = new Image(settlementImage.getImage().getDrawable());
 
         setSize(image.getWidth(), image.getHeight());
 
-        flags = createAnimatedImage(getFlagAnimation());
+        highlight = settlementImage.getHighlight().copy();
+        highlight.setVisible(false);
+
+        flags = settlementImage.getFlags().copy();
         if (owner.isNeutral())
         {
             flags.setVisible(false);
         }
 
-        boolean detailsVisible = gameConfiguration.isOpponentSettlementDetailsVisible() || !owner.isAi();
-        label = createLabel(fontProvider, detailsVisible);
+        boolean detailsVisible = soldierCountVisible || !owner.isAi();
+        label = createLabel(font, detailsVisible);
+
+        addActor(highlight);
+        addActor(image);
+        addActor(flags);
+        addActor(label);
 
         hitbox = createHitbox();
+        setZIndex(1);
     }
 
-    private Image createImage(TextureRegion textureRegion)
+    private Label createLabel(BitmapFont font, boolean visible)
     {
-        Image result = new Image(textureRegion);
-        addActor(result);
-        return result;
-    }
-
-    private Label createLabel(FontProvider fontProvider, boolean visible)
-    {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.BLACK);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
         Label result = new Label(String.valueOf(soldiers), labelStyle);
         applyOffset(result);
         result.setVisible(visible);
-        addActor(result);
         return result;
-    }
-
-    private AnimatedImage createAnimatedImage(Animation<TextureRegion> animation)
-    {
-        AnimatedImage animatedImage = new AnimatedImage(animation);
-        addActor(animatedImage);
-        return animatedImage;
-    }
-
-    private AnimatedImage createAnimatedImage(TextureRegion textureRegion)
-    {
-        AnimatedImage animatedImage = new AnimatedImage(textureRegion);
-        addActor(animatedImage);
-        return animatedImage;
     }
 
     private void applyOffset(Label label)
@@ -170,56 +136,15 @@ public class Settlement extends Group
     public void changeOwner(Player newOwner)
     {
         owner = newOwner;
-        image.setDrawable(new TextureRegionDrawable(getCastleTexture()));
+        SettlementImage settlementImage = settlementImageMap.get(newOwner);
+        image.setDrawable(settlementImage.getImage().getDrawable());
 
-        flags.setAnimation(getFlagAnimation());
+        flags.setAnimation(settlementImage.getFlags().getAnimation());
         flags.setVisible(true);
 
-        highlight.setAnimation(getHighlightAnimation());
+        highlight.setAnimation(settlementImage.getHighlight().getAnimation());
 
-        label.setVisible(gameConfiguration.isOpponentSettlementDetailsVisible() || !owner.isAi());
-    }
-
-    private TextureRegion getCastleTexture()
-    {
-        Texture allCastleColors = textureAtlas.findRegion(size.getTextureName(), owner.getColor()).getTexture();
-        return new TextureRegion(allCastleColors);
-    }
-
-    private Animation<TextureRegion> getHighlightAnimation()
-    {
-        Animation<TextureRegion> highlightAnimation = animationUtil.createAnimation(getHighlightAnimationTexture(),
-            1,
-            HIGHLIGHT_ANIMATION_COLUMNS,
-            0.2f);
-        highlightAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        return highlightAnimation;
-    }
-
-    private Animation<TextureRegion> getFlagAnimation()
-    {
-        Animation<TextureRegion> flagAnimation = animationUtil.createAnimation(getFlagTexture(),
-            1,
-            FLAG_ANIMATION_COLUMNS,
-            0.2f);
-        flagAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        return flagAnimation;
-    }
-
-    private Texture getFlagTexture()
-    {
-        return textureAtlas.findRegion(size.getFlagAnimationName(), owner.getColor()).getTexture();
-    }
-
-    private TextureRegion getNeutralHighlightTexture()
-    {
-        Texture neutralHighlight = textureAtlas.findRegion(size.getNeutralHighlight(), owner.getColor()).getTexture();
-        return new TextureRegion(neutralHighlight);
-    }
-
-    private Texture getHighlightAnimationTexture()
-    {
-        return textureAtlas.findRegion(size.getHighlightAnimationName(), owner.getColor()).getTexture();
+        label.setVisible(soldierCountVisible || !owner.isAi());
     }
 
     public void addSoldier()

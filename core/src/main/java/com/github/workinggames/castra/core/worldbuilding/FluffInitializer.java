@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -94,6 +95,8 @@ class FluffInitializer
             if (validFluffPosition(fluff, position, allPreviousFluffs))
             {
                 fluff.setPosition(position.x, position.y);
+                fluff.setZIndex(1000);
+                fluff.setTouchable(Touchable.disabled);
                 result.add(fluff);
             }
             else

@@ -1,17 +1,16 @@
 package com.github.workinggames.castra.core.worldbuilding;
 
+import static com.github.workinggames.castra.core.stage.GameConfiguration.NEUTRAL_PLAYER;
+
 import java.util.Iterator;
 
 import lombok.RequiredArgsConstructor;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.model.Player;
-import com.github.workinggames.castra.core.model.PlayerColor;
-import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.model.SettlementSize;
 import com.github.workinggames.castra.core.stage.World;
 
@@ -36,9 +35,6 @@ class SettlementInitializer
     private static final int INITIAL_SOLDIER_SIZE_HQ = 100;
     private static final int MINIMUM_NEUTRAL_SOLDIER_SIZE = 1;
     private static final int MAXIMUM_NEUTRAL_SOLDIER_SIZE = 30;
-
-    private static final Player NEUTRAL_PLAYER = new Player(new PlayerColor(new Color(0xc8c8c8ff),
-        new Color(0x4b4b4bff)), "NEUTRAL", PlayerType.NEUTRAL);
 
     private final World world;
     private final Viewport viewport;

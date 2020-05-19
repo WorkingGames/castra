@@ -1,12 +1,14 @@
 package com.github.workinggames.castra.core.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.github.workinggames.castra.core.ai.AiType;
 
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = "sendTroopPercentage")
 public class Player
 {
     private PlayerType type;
