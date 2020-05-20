@@ -137,7 +137,8 @@ public class ActorCreator
 
     private TextureRegion getCastleTexture(SettlementSize size, Player player)
     {
-        return new TextureRegion(colorizingTextureAtlasAdapter.findRegion(size.getTextureName(), player.getColor()));
+        return new TextureRegion(colorizingTextureAtlasAdapter.findRegion(size.getTextureName(),
+            player.getColorSchema()));
     }
 
     private Animation<TextureRegion> getAnimation(
@@ -153,22 +154,22 @@ public class ActorCreator
 
     private Animation<TextureRegion> getFlagAnimation(SettlementSize size, Player player)
     {
-        Texture texture = colorizingTextureAtlasAdapter.findRegion(size.getFlagAnimationName(), player.getColor())
+        Texture texture = colorizingTextureAtlasAdapter.findRegion(size.getFlagAnimationName(), player.getColorSchema())
             .getTexture();
         return getAnimation(texture, FLAG_ANIMATION_ROWS, FLAG_ANIMATION_COLUMNS, SLOW_ANIMATION_SPEED);
     }
 
     private Animation<TextureRegion> getHighlightAnimation(SettlementSize size, Player player)
     {
-        Texture texture = colorizingTextureAtlasAdapter.findRegion(size.getHighlightAnimationName(), player.getColor())
-            .getTexture();
+        Texture texture = colorizingTextureAtlasAdapter.findRegion(size.getHighlightAnimationName(),
+            player.getColorSchema()).getTexture();
         return getAnimation(texture, HIGHLIGHT_ANIMATION_ROWS, HIGHLIGHT_ANIMATION_COLUMNS, SLOW_ANIMATION_SPEED);
     }
 
     private TextureRegion getNeutralHighlightTexture(SettlementSize size, Player player)
     {
         return new TextureRegion(colorizingTextureAtlasAdapter.findRegion(size.getNeutralHighlight(),
-            player.getColor()));
+            player.getColorSchema()));
     }
 
     public Army createArmy(Settlement source, Settlement target, LinePath path, int soldiers)
@@ -208,7 +209,7 @@ public class ActorCreator
 
     private Texture getArmyTexture(ArmySize size, Player player)
     {
-        return colorizingTextureAtlasAdapter.findRegion(size.getTextureName(), player.getColor()).getTexture();
+        return colorizingTextureAtlasAdapter.findRegion(size.getTextureName(), player.getColorSchema()).getTexture();
     }
 
     public Battle createBattle(Army attacker)

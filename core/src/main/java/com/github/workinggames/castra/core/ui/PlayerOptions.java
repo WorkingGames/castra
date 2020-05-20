@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.ai.AiType;
 import com.github.workinggames.castra.core.model.Player;
@@ -40,7 +41,7 @@ public class PlayerOptions extends Table
     {
         super(game.getSkin());
         Skin skin = game.getSkin();
-        player = new Player(color.getPlayerColor(), title, playerType);
+        player = new Player(color, title, playerType);
 
         if (player1)
         {
@@ -65,7 +66,9 @@ public class PlayerOptions extends Table
         add(playerColorLabel);
 
         SelectBox<PlayerColorSchema> playerColorSelectBox = new SelectBox<>(skin);
-        playerColorSelectBox.setItems(PlayerColorSchema.values());
+        Array<PlayerColorSchema> availableColorSchemas = new Array<>(PlayerColorSchema.values());
+        availableColorSchemas.removeValue(PlayerColorSchema.NEUTRAL, true);
+        playerColorSelectBox.setItems(availableColorSchemas);
         playerColorSelectBox.setSelected(color);
         add(playerColorSelectBox);
         row();
@@ -73,7 +76,7 @@ public class PlayerOptions extends Table
         Label playerColor1Label = new Label("Primary color: ", skin);
         add(playerColor1Label);
 
-        Image playerColor1 = new Image(createColorPreview(player.getColor().getPrimaryColor()));
+        Image playerColor1 = new Image(createColorPreview(player.getColorSchema().getPlayerColor().getPrimaryColor()));
         playerColor1.setSize(20, 10);
         add(playerColor1);
         row();
@@ -81,7 +84,9 @@ public class PlayerOptions extends Table
         Label playerColor2Label = new Label("Secondary color: ", skin);
         add(playerColor2Label);
 
-        Image playerColor2 = new Image(createColorPreview(player.getColor().getSecondaryColor()));
+        Image playerColor2 = new Image(createColorPreview(player.getColorSchema()
+            .getPlayerColor()
+            .getSecondaryColor()));
         playerColor2.setSize(20, 10);
         add(playerColor2);
         row();
@@ -92,9 +97,13 @@ public class PlayerOptions extends Table
             public void changed(ChangeEvent event, Actor actor)
             {
                 SelectBox<PlayerColorSchema> selectBox = (SelectBox<PlayerColorSchema>) actor;
-                player.setColor(selectBox.getSelected().getPlayerColor());
-                playerColor1.setDrawable(createColorPreview(player.getColor().getPrimaryColor()));
-                playerColor2.setDrawable(createColorPreview(player.getColor().getSecondaryColor()));
+                player.setColorSchema(selectBox.getSelected());
+                playerColor1.setDrawable(createColorPreview(player.getColorSchema()
+                    .getPlayerColor()
+                    .getPrimaryColor()));
+                playerColor2.setDrawable(createColorPreview(player.getColorSchema()
+                    .getPlayerColor()
+                    .getSecondaryColor()));
             }
         });
     }

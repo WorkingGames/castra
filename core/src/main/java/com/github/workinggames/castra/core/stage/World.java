@@ -1,6 +1,7 @@
 package com.github.workinggames.castra.core.stage;
 
 import java.util.Iterator;
+import java.util.UUID;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,9 @@ import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 public class World extends Stage
 {
     @Getter
+    private final UUID gameId = UUID.randomUUID();
+
+    @Getter
     private final TextureAtlas textureAtlas;
 
     private final ZAwareActorComparator actorComparator;
@@ -61,16 +65,22 @@ public class World extends Stage
     private final MessageManager messageManager = MessageManager.getInstance();
     private final AiInitializer aiInitializer = new AiInitializer();
     private final ActorCreator actorCreator;
+    private final StatisticsEventCreator statisticsEventCreator;
 
     private Ai ai1 = null;
     private Ai ai2 = null;
 
     public World(
-        Viewport viewport, TextureAtlas textureAtlas, FontProvider fontProvider, GameConfiguration gameConfiguration)
+        Viewport viewport,
+        TextureAtlas textureAtlas,
+        FontProvider fontProvider,
+        GameConfiguration gameConfiguration,
+        StatisticsEventCreator statisticsEventCreator)
     {
         super(viewport);
         this.textureAtlas = textureAtlas;
         this.gameConfiguration = gameConfiguration;
+        this.statisticsEventCreator = statisticsEventCreator;
 
         actorComparator = new ZAwareActorComparator();
 
@@ -149,7 +159,7 @@ public class World extends Stage
             source.removeSoldiers(soldiers);
 
             messageManager.dispatchMessage(0, null, null, MessageType.ARMY_CREATED, army);
-            StatisticsEventCreator.sendSoldiers(army);
+            statisticsEventCreator.armyDeployed(this, army);
         }
     }
 
@@ -184,11 +194,11 @@ public class World extends Stage
                 Player battleOwner = battle.getArmy().getOwner();
                 if (battleOwner.equals(army.getOwner()))
                 {
+                    statisticsEventCreator.battleJoined(this, battle, army);
+
                     battle.getArmy().addSoldiers(army.getSoldiers());
                     joinedBattle = true;
-
                     messageManager.dispatchMessage(0, null, null, MessageType.BATTLE_JOINED, army);
-                    StatisticsEventCreator.joinedBattle(army);
                     break;
                 }
             }
@@ -200,7 +210,7 @@ public class World extends Stage
             battles.add(battle);
 
             messageManager.dispatchMessage(0, null, null, MessageType.BATTLE_STARTED, battle);
-            StatisticsEventCreator.battle(army);
+            statisticsEventCreator.battleStarted(this, battle);
         }
     }
 }

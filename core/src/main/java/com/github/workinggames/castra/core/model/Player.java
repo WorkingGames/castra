@@ -13,13 +13,13 @@ public class Player
 {
     private PlayerType type;
     private AiType aiType;
-    private PlayerColor color;
+    private PlayerColorSchema colorSchema;
     private String name;
     private int sendTroopPercentage = 50;
 
-    public Player(PlayerColor color, String name, PlayerType type)
+    public Player(PlayerColorSchema colorSchema, String name, PlayerType type)
     {
-        this.color = color;
+        this.colorSchema = colorSchema;
         this.name = name;
         this.type = type;
     }

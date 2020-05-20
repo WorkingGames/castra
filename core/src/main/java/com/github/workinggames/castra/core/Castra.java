@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.screen.MainMenuScreen;
 import com.github.workinggames.castra.core.stage.GameConfiguration;
+import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
+import com.github.workinggames.castra.core.task.VortexEventSender;
 import com.github.workinggames.castra.core.texture.TextureAtlasInitializer;
 
 public class Castra extends Game
@@ -40,6 +42,9 @@ public class Castra extends Game
     @Getter
     private InputMultiplexer inputMultiplexer;
 
+    @Getter
+    private StatisticsEventCreator statisticsEventCreator;
+
     @Override
     public void create()
     {
@@ -57,6 +62,8 @@ public class Castra extends Game
             .setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         fontProvider = new FontProvider();
+
+        statisticsEventCreator = new StatisticsEventCreator(new VortexEventSender());
 
         this.setScreen(new MainMenuScreen(this));
     }

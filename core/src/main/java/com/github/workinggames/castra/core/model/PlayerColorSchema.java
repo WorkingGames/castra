@@ -13,7 +13,8 @@ public enum PlayerColorSchema
     GREEN(new PlayerColor(new Color(0x32cd32ff), new Color(0x006400ff))),
     YELLOW(new PlayerColor(new Color(0xffff00ff), new Color(0xffd700ff))),
     PURPLE(new PlayerColor(new Color(0x9370dbff), new Color(0x8a2be2ff))),
-    BLACK(new PlayerColor(new Color(0x383838ff), new Color(0x171717ff)));
+    BLACK(new PlayerColor(new Color(0x383838ff), new Color(0x171717ff))),
+    NEUTRAL(new PlayerColor(new Color(0xc8c8c8ff), new Color(0x4b4b4bff)));
 
     @Getter
     private final PlayerColor playerColor;

@@ -1,6 +1,7 @@
 package com.github.workinggames.castra.core.task;
 
 import java.util.Iterator;
+import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +19,10 @@ import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 public class BattleProcessTask extends Timer.Task
 {
     private final Array<Battle> battles;
+    private final UUID gameId;
+    private final StatisticsEventCreator statisticsEventCreator;
 
-    private boolean defended = true;
+    private boolean captured = false;
 
     @Override
     public void run()
@@ -47,7 +50,7 @@ public class BattleProcessTask extends Timer.Task
                 {
                     settlement.changeOwner(army.getOwner());
                     settlement.addSoldier();
-                    defended = false;
+                    captured = true;
                 }
             }
 
@@ -58,7 +61,7 @@ public class BattleProcessTask extends Timer.Task
                 battleIterator.remove();
 
                 messageManager.dispatchMessage(0, null, null, MessageType.BATTLE_ENDED, battle);
-                StatisticsEventCreator.BattleEnded(army, defended);
+                statisticsEventCreator.battleEnded(gameId, army, captured);
             }
         }
     }

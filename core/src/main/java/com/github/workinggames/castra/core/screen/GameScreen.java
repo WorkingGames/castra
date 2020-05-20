@@ -28,11 +28,12 @@ public class GameScreen extends ScreenAdapter
     public GameScreen(Castra game)
     {
         this.game = game;
-        log.info("Starting game with seed: " + game.getGameConfiguration().getSeed());
+
         worldStage = new World(game.getViewport(),
             game.getTextureAtlas(),
             game.getFontProvider(),
-            game.getGameConfiguration());
+            game.getGameConfiguration(),
+            game.getStatisticsEventCreator());
         game.getInputMultiplexer().addProcessor(worldStage);
 
         armySplitInputProcessor = new ArmySplitInputProcessor(game.getGameConfiguration().getPlayer1(),
@@ -44,11 +45,14 @@ public class GameScreen extends ScreenAdapter
 
         soldierSpawner = new SoldierSpawner(worldStage.getSettlements());
         soldierSpawner.startSpawn();
-        battleProcessor = new BattleProcessor(worldStage.getBattles());
+        battleProcessor = new BattleProcessor(worldStage.getBattles(),
+            worldStage.getGameId(),
+            game.getStatisticsEventCreator());
         battleProcessor.startBattles();
         victoryCondition = new VictoryCondition(worldStage);
 
         backgroundTexture = game.getTextureAtlas().findRegion("Background256").getTexture();
+        game.getStatisticsEventCreator().gameStarted(worldStage);
     }
 
     @Override
@@ -81,11 +85,13 @@ public class GameScreen extends ScreenAdapter
     {
         if (victoryCondition.player1Won())
         {
+            game.getStatisticsEventCreator().gameEnded(worldStage, worldStage.getGameConfiguration().getPlayer1());
             game.setScreen(new GameOverScreen(game, true));
             dispose();
         }
         else if (victoryCondition.player1Lost())
         {
+            game.getStatisticsEventCreator().gameEnded(worldStage, worldStage.getGameConfiguration().getPlayer2());
             game.setScreen(new GameOverScreen(game, false));
             dispose();
         }
