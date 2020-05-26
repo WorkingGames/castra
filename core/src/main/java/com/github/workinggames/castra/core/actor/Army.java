@@ -7,11 +7,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.action.MoveAlongAction;
 import com.github.workinggames.castra.core.model.ArmySize;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
+import com.github.workinggames.castra.core.screen.Screens;
 
 public class Army extends Group
 {
@@ -93,7 +93,7 @@ public class Army extends Group
 
     public boolean isAtTarget()
     {
-        float height = getWidth() * Castra.WIDTH_HEIGHT_RATIO;
+        float height = getWidth() * Screens.WIDTH_HEIGHT_RATIO;
         float centerX = getX() + getWidth() / 2;
         float centerY = getY() + height / 2;
         return target.getHitbox().contains(centerX, centerY);

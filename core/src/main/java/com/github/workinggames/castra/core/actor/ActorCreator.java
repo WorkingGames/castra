@@ -128,7 +128,7 @@ public class ActorCreator
             y,
             soldiers,
             player,
-            fontProvider.getSoldierCountFont(),
+            fontProvider.getSoldierCount(),
             gameConfiguration.isOpponentSettlementDetailsVisible(),
             settlementImageMap);
         settlementId++;
@@ -194,7 +194,7 @@ public class ActorCreator
             source,
             target,
             path,
-            fontProvider.getSoldierCountFont(),
+            fontProvider.getSoldierCount(),
             armyImage,
             gameConfiguration.isOpponentArmyDetailsVisible());
         armyId++;

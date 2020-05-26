@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
-import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.SettlementSize;
+import com.github.workinggames.castra.core.screen.Screens;
 
 public class Settlement extends Group
 {
@@ -127,7 +127,7 @@ public class Settlement extends Group
 
     private Ellipse createHitbox()
     {
-        float height = getWidth() * Castra.WIDTH_HEIGHT_RATIO;
+        float height = getWidth() * Screens.WIDTH_HEIGHT_RATIO;
         centerX = getX() + getWidth() / 2;
         centerY = getY() + height / 2;
         return new Ellipse(centerX, centerY, getWidth(), height);

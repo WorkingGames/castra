@@ -87,7 +87,7 @@ public class ArmySplit extends Group
 
     private Label createLabel()
     {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCountFont(), Color.BLACK);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSoldierCount(), Color.BLACK);
         Label result = new Label(player.getSendTroopPercentage() + "%", labelStyle);
         result.setWidth(60);
         result.setHeight(50);
@@ -98,7 +98,7 @@ public class ArmySplit extends Group
 
     private Label createInfoLabel(float x, float y, String value)
     {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSplitInfoFont(), Color.BLACK);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(fontProvider.getSplitInfo(), Color.BLACK);
         Label result = new Label(value, labelStyle);
         result.setPosition(x, y);
         return result;

@@ -26,31 +26,38 @@ public class Skins
         skin.add("white", new Texture(pixmap));
 
         skin.add("default", game.getFontProvider().getDefaultFont());
+        skin.add("menuLarge", game.getFontProvider().getMenuLarge());
+        skin.add("menuMedium", game.getFontProvider().getMenuMedium());
+
+        Label.LabelStyle titleStyle = new Label.LabelStyle();
+        titleStyle.font = game.getFontProvider().getTitle();
+        titleStyle.fontColor = Color.FIREBRICK;
+        skin.add("title", titleStyle);
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
         textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
+        textButtonStyle.checked = skin.newDrawable("white", Color.DARK_GRAY);
         textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
-        textButtonStyle.font = skin.getFont("default");
+        textButtonStyle.font = skin.getFont("menuLarge");
         skin.add("default", textButtonStyle);
 
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = skin.getFont("default");
+        textFieldStyle.font = skin.getFont("menuMedium");
         textFieldStyle.fontColor = Color.WHITE;
         textFieldStyle.cursor = skin.newDrawable("white", Color.WHITE);
         textFieldStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
-        textFieldStyle.messageFont = skin.getFont("default");
+        textFieldStyle.messageFont = skin.getFont("menuMedium");
         textFieldStyle.messageFontColor = Color.WHITE;
         skin.add("default", textFieldStyle);
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = skin.getFont("default");
+        labelStyle.font = skin.getFont("menuMedium");
         labelStyle.fontColor = Color.WHITE;
         skin.add("default", labelStyle);
 
         List.ListStyle listStyle = new List.ListStyle();
-        listStyle.font = skin.getFont("default");
+        listStyle.font = skin.getFont("menuMedium");
         listStyle.selection = skin.newDrawable("white", Color.GOLD);
         skin.add("default", listStyle);
 
@@ -59,7 +66,7 @@ public class Skins
         skin.add("default", scrollPaneStyle);
 
         SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
-        selectBoxStyle.font = skin.getFont("default");
+        selectBoxStyle.font = skin.getFont("menuMedium");
         selectBoxStyle.fontColor = Color.WHITE;
         selectBoxStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
         selectBoxStyle.backgroundOpen = skin.newDrawable("white", Color.LIGHT_GRAY);
@@ -71,7 +78,7 @@ public class Skins
         skin.add("default", imageButtonStyle);
 
         CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
-        checkBoxStyle.font = skin.getFont("default");
+        checkBoxStyle.font = skin.getFont("menuMedium");
         checkBoxStyle.fontColor = Color.WHITE;
         checkBoxStyle.checkboxOff = new TextureRegionDrawable(game.getTextureAtlas()
             .findRegion("uncheckedBox")

@@ -10,8 +10,7 @@ public class DesktopLauncher
     {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "Charge";
-        config.width = 1366;
-        config.height = 768;
+        config.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
         new LwjglApplication(new Castra(), config);
     }
 }

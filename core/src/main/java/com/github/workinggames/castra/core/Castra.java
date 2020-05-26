@@ -19,11 +19,6 @@ import com.github.workinggames.castra.core.texture.TextureAtlasInitializer;
 
 public class Castra extends Game
 {
-    public static final float WIDTH_HEIGHT_RATIO = 0.6f;
-
-    private static final int WORLD_WIDTH = 1366;
-    private static final int WORLD_HEIGHT = 768;
-
     @Getter
     private final TextureAtlas textureAtlas = new TextureAtlas();
 
@@ -50,7 +45,7 @@ public class Castra extends Game
     {
         gameConfiguration = new GameConfiguration();
 
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT);
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         inputMultiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(inputMultiplexer);

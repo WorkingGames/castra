@@ -1,22 +1,38 @@
 package com.github.workinggames.castra.core.ui;
 
+import lombok.Getter;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.workinggames.castra.core.Castra;
+import com.github.workinggames.castra.core.screen.Screens;
 
-public class WorldOptions extends Table
+public class GameOptions extends Table
 {
-    public WorldOptions(Castra game)
+    @Getter
+    private final TextButton closeOptionsButton;
+
+    public GameOptions(Castra game)
     {
         super(game.getSkin());
-
         addSeedInput(game);
         addOpponentSettlementDetailsVisible(game);
         addOpponentArmyDetailsVisible(game);
+        setBackground(game.getSkin().newDrawable("white", Color.BLACK));
+
+        closeOptionsButton = new TextButton("Close", game.getSkin());
+        closeOptionsButton.getLabel().setFontScale(0.95f);
+        closeOptionsButton.addListener(new ClickListener());
+        closeOptionsButton.setPosition(Screens.getCenterX(closeOptionsButton), Screens.getRelativeY(10));
+        addActor(closeOptionsButton);
     }
 
     private void addSeedInput(Castra game)
@@ -27,6 +43,14 @@ public class WorldOptions extends Table
         TextField seedInputField = new TextField("" + game.getGameConfiguration().getSeed(), game.getSkin());
         seedInputField.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
         seedInputField.setMaxLength(10);
+        seedInputField.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                seedInputField.setText("");
+            }
+        });
         seedInputField.addListener(new ChangeListener()
         {
             @Override
