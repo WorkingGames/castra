@@ -11,6 +11,8 @@ import com.github.workinggames.castra.core.ai.AiType;
 @EqualsAndHashCode(exclude = "sendTroopPercentage")
 public class Player
 {
+    public static final AiType DEFAULT_AI_TYPE = AiType.RANDY;
+
     private PlayerType type;
     private AiType aiType;
     private PlayerColorSchema colorSchema;
@@ -22,6 +24,10 @@ public class Player
         this.colorSchema = colorSchema;
         this.name = name;
         this.type = type;
+        if (isAi())
+        {
+            aiType = DEFAULT_AI_TYPE;
+        }
     }
 
     public boolean isHuman()

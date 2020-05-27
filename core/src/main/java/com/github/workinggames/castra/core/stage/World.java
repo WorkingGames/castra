@@ -97,10 +97,15 @@ public class World extends Stage
             armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer1());
             addActor(armySplit);
         }
-
+        else if (gameConfiguration.getPlayer2().getType().equals(PlayerType.HUMAN))
+        {
+            armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer2());
+            addActor(armySplit);
+        }
+        
         actorCreator = new ActorCreator(gameConfiguration, textureAtlas, fontProvider);
     }
-    
+
     @Override
     public void act(float deltaTime)
     {

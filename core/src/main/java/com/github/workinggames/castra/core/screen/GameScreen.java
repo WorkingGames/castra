@@ -29,9 +29,22 @@ public class GameScreen extends ScreenAdapter
         this.game = game;
         this.world = world;
 
-        armySplitInputProcessor = new ArmySplitInputProcessor(game.getGameConfiguration().getPlayer1(),
-            this.world.getArmySplit());
-        game.getInputMultiplexer().addProcessor(armySplitInputProcessor);
+        if (game.getGameConfiguration().getPlayer1().isHuman())
+        {
+            armySplitInputProcessor = new ArmySplitInputProcessor(game.getGameConfiguration().getPlayer1(),
+                this.world.getArmySplit());
+            game.getInputMultiplexer().addProcessor(armySplitInputProcessor);
+        }
+        else if (game.getGameConfiguration().getPlayer2().isHuman())
+        {
+            armySplitInputProcessor = new ArmySplitInputProcessor(game.getGameConfiguration().getPlayer2(),
+                this.world.getArmySplit());
+            game.getInputMultiplexer().addProcessor(armySplitInputProcessor);
+        }
+        else
+        {
+            armySplitInputProcessor = null;
+        }
 
         soldierSpawner = new SoldierSpawner(this.world.getSettlements());
         battleProcessor = new BattleProcessor(this.world.getBattles(),
@@ -112,6 +125,9 @@ public class GameScreen extends ScreenAdapter
     {
         battleProcessor.dispose();
         soldierSpawner.dispose();
-        game.getInputMultiplexer().removeProcessor(armySplitInputProcessor);
+        if (armySplitInputProcessor != null)
+        {
+            game.getInputMultiplexer().removeProcessor(armySplitInputProcessor);
+        }
     }
 }

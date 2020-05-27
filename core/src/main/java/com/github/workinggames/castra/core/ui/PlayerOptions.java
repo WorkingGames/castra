@@ -25,10 +25,12 @@ import com.github.workinggames.castra.core.model.PlayerType;
 
 public class PlayerOptions extends Table
 {
-    private static final AiType DEFAULT_AI_TYPE = AiType.RANDY;
-
     @Getter
     private final Player player;
+    private final Player opponent;
+    private final Skin skin;
+    private final String title;
+    private final PlayerOptionsGroup optionsGroup;
 
     private SelectBox<AiType> aiTypeSelectBox;
     private Label aiTypeLabel;
@@ -36,41 +38,43 @@ public class PlayerOptions extends Table
     private Label aiDifficultyValue;
     private Label aiDescriptionLabel;
     private Label aiDescriptionValue;
+    private SelectBox<PlayerColorSchema> playerColorSelectBox;
+    private SelectBox<PlayerType> playerTypeSelectBox;
 
-    public PlayerOptions(Castra game, String title, PlayerColorSchema color, PlayerType playerType, boolean player1)
+    public PlayerOptions(Castra game, String title, PlayerOptionsGroup optionsGroup)
     {
         super(game.getSkin());
-        Skin skin = game.getSkin();
-        player = new Player(color, title, playerType);
-
-        if (player1)
+        skin = game.getSkin();
+        this.title = title;
+        this.optionsGroup = optionsGroup;
+        if (isPlayerOne())
         {
-            game.getGameConfiguration().setPlayer1(player);
+            player = game.getGameConfiguration().getPlayer1();
+            opponent = game.getGameConfiguration().getPlayer2();
         }
         else
         {
-            game.getGameConfiguration().setPlayer2(player);
+            player = game.getGameConfiguration().getPlayer2();
+            opponent = game.getGameConfiguration().getPlayer1();
         }
 
-        addTitle(title, skin);
-        addNameInput(title, skin);
-        addColor(color, skin);
-        addTypeInput(skin, playerType, player1);
-        addAiTypeInput(skin);
-        showAiTypeOption(!player1);
+        addTitle();
+        addNameInput();
+        addColor();
+        addTypeInput();
+        addAiTypeInput();
+        showAiTypeOption(player.isAi());
     }
 
-    private void addColor(PlayerColorSchema color, Skin skin)
+    private void addColor()
     {
         Label playerColorLabel = new Label("Color schema: ", skin);
         add(playerColorLabel);
 
-        SelectBox<PlayerColorSchema> playerColorSelectBox = new SelectBox<>(skin);
-        Array<PlayerColorSchema> availableColorSchemas = new Array<>(PlayerColorSchema.values());
-        availableColorSchemas.removeValue(PlayerColorSchema.NEUTRAL, true);
-        playerColorSelectBox.setItems(availableColorSchemas);
-        playerColorSelectBox.setSelected(color);
-        add(playerColorSelectBox);
+        playerColorSelectBox = new SelectBox<>(skin);
+        playerColorSelectBox.setItems(getColorOptions(opponent));
+        playerColorSelectBox.setSelected(player.getColorSchema());
+        add(playerColorSelectBox).minWidth(300);
         row();
 
         Label playerColor1Label = new Label("Primary color: ", skin);
@@ -91,8 +95,22 @@ public class PlayerOptions extends Table
                 playerColor1.setDrawable(createColorPreview(player.getColorSchema()
                     .getPlayerColor()
                     .getPrimaryColor()));
+                optionsGroup.updateOpponentOptions(isPlayerOne());
             }
         });
+    }
+
+    void updateColorOptions()
+    {
+        playerColorSelectBox.setItems(getColorOptions(opponent));
+    }
+
+    private Array<PlayerColorSchema> getColorOptions(Player opponent)
+    {
+        Array<PlayerColorSchema> availableColorSchemas = new Array<>(PlayerColorSchema.values());
+        availableColorSchemas.removeValue(PlayerColorSchema.NEUTRAL, true);
+        availableColorSchemas.removeValue(opponent.getColorSchema(), true);
+        return availableColorSchemas;
     }
 
     private Drawable createColorPreview(Color color)
@@ -103,29 +121,21 @@ public class PlayerOptions extends Table
         return new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
     }
 
-    private void addTitle(String title, Skin skin)
+    private void addTitle()
     {
         Label playerLabel = new Label(title, skin);
         add(playerLabel);
         row().padBottom(10);
     }
 
-    private void addTypeInput(Skin skin, PlayerType initial, boolean player1)
+    private void addTypeInput()
     {
         Label playerTypeLabel = new Label("Player type: ", skin);
         add(playerTypeLabel);
 
-        SelectBox<PlayerType> playerTypeSelectBox = new SelectBox<>(skin);
-        if (player1)
-        {
-            playerTypeSelectBox.setItems(PlayerType.HUMAN, PlayerType.AI);
-        }
-        else
-        {
-            playerTypeSelectBox.setItems(PlayerType.AI);
-            player.setAiType(DEFAULT_AI_TYPE);
-        }
-        playerTypeSelectBox.setSelected(initial);
+        playerTypeSelectBox = new SelectBox<>(skin);
+        playerTypeSelectBox.setItems(getPlayerTypeOptions(opponent));
+        playerTypeSelectBox.setSelected(player.getType());
         playerTypeSelectBox.addListener(new ChangeListener()
         {
             @Override
@@ -134,21 +144,36 @@ public class PlayerOptions extends Table
                 SelectBox<PlayerType> selectBox = (SelectBox<PlayerType>) actor;
                 PlayerType selected = selectBox.getSelected();
                 player.setType(selected);
-
-                boolean aiPlayer = selected.equals(PlayerType.AI);
-                showAiTypeOption(aiPlayer);
-                if (aiPlayer)
-                {
-                    player.setAiType(aiTypeSelectBox.getSelected());
-                }
-                else
+                showAiTypeOption(player.isAi());
+                if (!player.isAi())
                 {
                     player.setAiType(null);
                 }
+                else if (player.getAiType() == null)
+                {
+                    player.setAiType(Player.DEFAULT_AI_TYPE);
+                }
+                optionsGroup.updateOpponentOptions(isPlayerOne());
             }
         });
-        add(playerTypeSelectBox);
+        add(playerTypeSelectBox).minWidth(300);
         row().padTop(10);
+    }
+
+    private Array<PlayerType> getPlayerTypeOptions(Player opponent)
+    {
+        Array<PlayerType> result = new Array<>();
+        result.add(PlayerType.AI);
+        if (opponent.isAi())
+        {
+            result.add(PlayerType.HUMAN);
+        }
+        return result;
+    }
+
+    void updatePlayerTypeOptions()
+    {
+        playerTypeSelectBox.setItems(getPlayerTypeOptions(opponent));
     }
 
     private void showAiTypeOption(boolean visible)
@@ -161,14 +186,18 @@ public class PlayerOptions extends Table
         aiDescriptionValue.setVisible(visible);
     }
 
-    private void addAiTypeInput(Skin skin)
+    private void addAiTypeInput()
     {
         aiTypeLabel = new Label("Ai Player: ", skin);
         add(aiTypeLabel);
 
         aiTypeSelectBox = new SelectBox<>(skin);
         aiTypeSelectBox.setItems(AiType.values());
-        aiTypeSelectBox.setSelected(DEFAULT_AI_TYPE);
+        if (player.getAiType() != null)
+        {
+            aiTypeSelectBox.setSelected(player.getAiType());
+        }
+
         aiTypeSelectBox.addListener(new ChangeListener()
         {
             @Override
@@ -181,26 +210,37 @@ public class PlayerOptions extends Table
                 aiDescriptionValue.setText(selected.getDescription());
             }
         });
-        add(aiTypeSelectBox);
+        add(aiTypeSelectBox).minWidth(300);
         row();
 
         aiDifficultyLabel = new Label("Difficulty: ", skin);
         add(aiDifficultyLabel);
-        aiDifficultyValue = new Label(DEFAULT_AI_TYPE.getDifficulty(), skin);
+        String difficulty = Player.DEFAULT_AI_TYPE.getDifficulty();
+        if (player.getAiType() != null)
+        {
+            difficulty = player.getAiType().getDifficulty();
+        }
+        aiDifficultyValue = new Label(difficulty, skin);
         add(aiDifficultyValue);
         row();
 
         aiDescriptionLabel = new Label("Description: ", skin);
         add(aiDescriptionLabel);
-        aiDescriptionValue = new Label(DEFAULT_AI_TYPE.getDescription(), skin);
+        String description = Player.DEFAULT_AI_TYPE.getDescription();
+        if (player.getAiType() != null)
+        {
+            description = player.getAiType().getDescription();
+        }
+        aiDescriptionValue = new Label(description, skin);
         add(aiDescriptionValue);
     }
 
-    private void addNameInput(String title, Skin skin)
+    private void addNameInput()
     {
         Label playerNameLabel = new Label("Name: ", skin);
         add(playerNameLabel);
-        TextField nameInputField = new TextField(title, skin);
+        TextField nameInputField = new TextField(player.getName(), skin);
+
         nameInputField.setOnlyFontChars(true);
         nameInputField.addListener(new ChangeListener()
         {
@@ -213,5 +253,10 @@ public class PlayerOptions extends Table
         });
         add(nameInputField).minWidth(400);
         row().padBottom(10);
+    }
+
+    private boolean isPlayerOne()
+    {
+        return title.equals(PlayerOptionsGroup.PLAYER_1);
     }
 }

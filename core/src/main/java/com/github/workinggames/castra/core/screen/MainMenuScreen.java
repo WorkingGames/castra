@@ -14,10 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.github.workinggames.castra.core.Castra;
-import com.github.workinggames.castra.core.model.PlayerColorSchema;
-import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.ui.GameOptions;
 import com.github.workinggames.castra.core.ui.PlayerOptions;
+import com.github.workinggames.castra.core.ui.PlayerOptionsGroup;
 import com.github.workinggames.castra.core.ui.Skins;
 
 public class MainMenuScreen extends ScreenAdapter
@@ -28,8 +27,9 @@ public class MainMenuScreen extends ScreenAdapter
     private final TextButton gameOptionsButton;
     private final Texture backgroundTexture;
     private final GameOptions gameOptions;
-    private final PlayerOptions player1Options;
-    private final PlayerOptions player2Options;
+
+    private PlayerOptions player1Options = null;
+    private PlayerOptions player2Options = null;
 
     public MainMenuScreen(Castra game)
     {
@@ -68,6 +68,7 @@ public class MainMenuScreen extends ScreenAdapter
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                LoadingState.reset();
                 game.setScreen(new LoadingScreen(game));
                 dispose();
             }
@@ -93,11 +94,12 @@ public class MainMenuScreen extends ScreenAdapter
         gameOptionsButton.setPosition(Screens.getCenterX(startGameButton), Screens.getRelativeY(52));
         stage.addActor(gameOptionsButton);
 
-        player1Options = new PlayerOptions(game, "Player1", PlayerColorSchema.BLUE, PlayerType.HUMAN, true);
+        PlayerOptionsGroup playerOptionsGroup = new PlayerOptionsGroup(game);
+        player1Options = playerOptionsGroup.getPlayer1Options();
         player1Options.setPosition(Screens.getRelativeX(30), Screens.getRelativeY(20));
         stage.addActor(player1Options);
 
-        player2Options = new PlayerOptions(game, "Player2", PlayerColorSchema.RED, PlayerType.AI, false);
+        player2Options = playerOptionsGroup.getPlayer2Options();
         player2Options.setPosition(Screens.getRelativeX(70), Screens.getRelativeY(20));
         stage.addActor(player2Options);
 
@@ -143,6 +145,7 @@ public class MainMenuScreen extends ScreenAdapter
     @Override
     public void dispose()
     {
+        game.getInputMultiplexer().removeProcessor(stage);
         stage.dispose();
     }
 }

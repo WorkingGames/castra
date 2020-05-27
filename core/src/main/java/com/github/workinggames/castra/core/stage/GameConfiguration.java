@@ -14,8 +14,8 @@ public class GameConfiguration
 
     private long seed = MathUtils.random(978234L);
 
-    private Player player1;
-    private Player player2;
+    private Player player1 = new Player(PlayerColorSchema.RED, "Player 1", PlayerType.HUMAN);
+    private Player player2 = new Player(PlayerColorSchema.BLUE, "Player 2", PlayerType.AI);
 
     private boolean opponentSettlementDetailsVisible = false;
     private boolean opponentArmyDetailsVisible = false;

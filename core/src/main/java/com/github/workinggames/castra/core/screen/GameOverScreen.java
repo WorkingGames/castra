@@ -69,6 +69,7 @@ public class GameOverScreen extends ScreenAdapter
     @Override
     public void dispose()
     {
+        game.getInputMultiplexer().removeProcessor(stage);
         stage.dispose();
     }
 }

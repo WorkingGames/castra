@@ -17,11 +17,6 @@ public class LoadingState
 
     private LoadingState()
     {
-        settlementsInitialized = false;
-        fluffInitialized = false;
-        pathInitialized = false;
-        dragDropInitialized = false;
-        aiInitialized = false;
     }
 
     public static synchronized LoadingState getInstance()
@@ -31,5 +26,15 @@ public class LoadingState
             LoadingState.instance = new LoadingState();
         }
         return LoadingState.instance;
+    }
+
+    public static synchronized void reset()
+    {
+        LoadingState loadingState = getInstance();
+        loadingState.setSettlementsInitialized(false);
+        loadingState.setFluffInitialized(false);
+        loadingState.setPathInitialized(false);
+        loadingState.setDragDropInitialized(false);
+        loadingState.setAiInitialized(false);
     }
 }

@@ -168,5 +168,30 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.simpligility.maven.plugins</groupId>
+                        <artifactId>android-maven-plugin</artifactId>
+                        <configuration>
+                            <!-- not working properly yet
+                            <proguard>
+                                <skip>false</skip>
+                                <config>proguard.cfg</config>
+                                <jvmArguments>
+                                    <jvmArgument>-Xms256m</jvmArgument>
+                                    <jvmArgument>-Xmx1024m</jvmArgument>
+                                </jvmArguments>
+                            </proguard>
+                            <proguardOptions>-dontwarn</proguardOptions>
+                            -->
+                            <release>true</release>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
