@@ -10,19 +10,17 @@ import com.github.workinggames.castra.core.pathfinding.LinePath;
 
 public class MoveAlongAction extends TemporalAction
 {
-    public static final int PIXEL_PER_SECOND = 300;
-
     /**
      * Moves the actor along the absolute Points from the path
      */
-    public static MoveAlongAction obtain(LinePath path)
+    public static MoveAlongAction obtain(LinePath path, float armyTravelSpeedInPixelPerSecond)
     {
         Pool<MoveAlongAction> pool = Pools.get(MoveAlongAction.class);
         MoveAlongAction action = pool.obtain();
         action.setPool(pool);
         action.setPath(path);
 
-        action.setDuration(path.getDistance() / PIXEL_PER_SECOND);
+        action.setDuration(path.getDistance() / armyTravelSpeedInPixelPerSecond);
 
         return action;
     }

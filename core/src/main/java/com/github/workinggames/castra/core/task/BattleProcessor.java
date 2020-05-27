@@ -13,19 +13,17 @@ import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 @RequiredArgsConstructor
 public class BattleProcessor implements Disposable
 {
-    public static final float BATTLE_PROCESSING_INTERVAL = 0.1f;
-
     private final Array<Battle> battles;
     private final UUID gameId;
     private final StatisticsEventCreator statisticsEventCreator;
 
     private Timer.Task battleTask;
 
-    public void startBattles()
+    public void startBattles(float battleProcessingInterval)
     {
         battleTask = Timer.schedule(new BattleProcessTask(battles, gameId, statisticsEventCreator),
             0,
-            BATTLE_PROCESSING_INTERVAL);
+            battleProcessingInterval);
     }
 
     @Override

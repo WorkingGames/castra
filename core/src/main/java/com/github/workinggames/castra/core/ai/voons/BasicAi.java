@@ -39,7 +39,7 @@ public class BasicAi implements Ai, Telegraph
         stateMachine = new DefaultStateMachine<>(this, AiState.WAIT);
         gameInfo = new GameInfo(world, aiPlayer);
         messagingHandler = new MessagingHandler(this, gameInfo);
-        attackGeneral = new AttackGeneral(new AiUtils(world), aiPlayer);
+        attackGeneral = new AttackGeneral(new AiUtils(world), aiPlayer, world.getGameConfiguration());
         nextActionTime = FIRST_ACTION_TIME;
     }
 

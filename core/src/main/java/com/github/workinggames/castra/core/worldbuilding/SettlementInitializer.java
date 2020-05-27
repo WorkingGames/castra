@@ -32,7 +32,6 @@ class SettlementInitializer
     private static final int MINIMUM_MEDIUM_SETTLEMENTS = 3;
     private static final int MAXIMUM_MEDIUM_SETTLEMENTS = 4;
 
-    private static final int INITIAL_SOLDIER_SIZE_HQ = 100;
     private static final int MINIMUM_NEUTRAL_SOLDIER_SIZE = 1;
     private static final int MAXIMUM_NEUTRAL_SOLDIER_SIZE = 30;
 
@@ -58,12 +57,12 @@ class SettlementInitializer
 
         createSettlement(positionIterator.next(),
             SettlementSize.LARGE,
-            INITIAL_SOLDIER_SIZE_HQ,
+            world.getGameConfiguration().getStartingSoldiers(),
             world.getGameConfiguration().getPlayer1());
 
         createSettlement(positionIterator.next(),
             SettlementSize.LARGE,
-            INITIAL_SOLDIER_SIZE_HQ,
+            world.getGameConfiguration().getStartingSoldiers(),
             world.getGameConfiguration().getPlayer2());
 
         for (int i = 2; i < largeSettlements; i++)

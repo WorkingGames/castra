@@ -19,4 +19,7 @@ public class GameConfiguration
 
     private boolean opponentSettlementDetailsVisible = false;
     private boolean opponentArmyDetailsVisible = false;
+    private float armyTravelSpeedInPixelPerSecond = 300;
+    private float battleProcessingInterval = 0.1f;
+    private int startingSoldiers = 100;
 }

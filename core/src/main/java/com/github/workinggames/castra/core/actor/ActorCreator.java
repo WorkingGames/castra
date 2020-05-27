@@ -196,7 +196,8 @@ public class ActorCreator
             path,
             fontProvider.getSoldierCount(),
             armyImage,
-            gameConfiguration.isOpponentArmyDetailsVisible());
+            gameConfiguration.isOpponentArmyDetailsVisible(),
+            gameConfiguration.getArmyTravelSpeedInPixelPerSecond());
         armyId++;
         return army;
     }

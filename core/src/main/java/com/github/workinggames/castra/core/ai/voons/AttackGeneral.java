@@ -7,16 +7,19 @@ import com.github.workinggames.castra.core.AttackSource;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.ai.AiUtils;
 import com.github.workinggames.castra.core.model.Player;
+import com.github.workinggames.castra.core.stage.GameConfiguration;
 
 public class AttackGeneral
 {
     private final AiUtils aiUtils;
     private final Player aiPlayer;
+    private final GameConfiguration gameConfiguration;
 
-    public AttackGeneral(AiUtils aiUtils, Player aiPlayer)
+    public AttackGeneral(AiUtils aiUtils, Player aiPlayer, GameConfiguration gameConfiguration)
     {
         this.aiUtils = aiUtils;
         this.aiPlayer = aiPlayer;
+        this.gameConfiguration = gameConfiguration;
     }
 
     public Array<Attack> getNeutralAttackOptions(
@@ -56,7 +59,8 @@ public class AttackGeneral
                 float requiredSoldiers = settlementInfo.getDefenders() +
                     1 +
                     settlementInfo.getBattleSoldierSpawn(settlementInfo.getDefenders(),
-                        settlementInfo.getSettlement().getSize());
+                        settlementInfo.getSettlement().getSize(),
+                        gameConfiguration.getBattleProcessingInterval());
                 Array<AttackSource> attackSources = getAttackSourcesWithSoldierSpawn(settlementInfoBySettlementId,
                     settlementInfo,
                     requiredSoldiers,

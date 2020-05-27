@@ -47,7 +47,8 @@ public class Army extends Group
         LinePath path,
         BitmapFont font,
         AnimatedImage animatedImage,
-        boolean soldierCountVisible)
+        boolean soldierCountVisible,
+        float armyTravelSpeedInPixelPerSecond)
     {
         this.id = id;
         this.soldiers = soldiers;
@@ -79,7 +80,7 @@ public class Army extends Group
         Vector2 initialPosition = path.valueAt(0);
         setPosition(initialPosition.x, initialPosition.y);
 
-        addAction(MoveAlongAction.obtain(path));
+        addAction(MoveAlongAction.obtain(path, armyTravelSpeedInPixelPerSecond));
     }
 
     private Label createLabel(BitmapFont font, boolean visible)

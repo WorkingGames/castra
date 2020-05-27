@@ -48,7 +48,7 @@ public class GameScreen extends ScreenAdapter
         battleProcessor = new BattleProcessor(worldStage.getBattles(),
             worldStage.getGameId(),
             game.getStatisticsEventCreator());
-        battleProcessor.startBattles();
+        battleProcessor.startBattles(game.getGameConfiguration().getBattleProcessingInterval());
         victoryCondition = new VictoryCondition(worldStage);
 
         backgroundTexture = game.getTextureAtlas().findRegion("Background256").getTexture();

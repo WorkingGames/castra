@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.ArrayMap;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.SettlementSize;
-import com.github.workinggames.castra.core.task.BattleProcessor;
 
 @Getter
 @RequiredArgsConstructor
@@ -44,14 +43,14 @@ public class SettlementInfo
         return ownerScore * secondsUntilReimbursed;
     }
 
-    int getRequiredSoldiersToTakeOver(float targetDistanceInTicks)
+    int getRequiredSoldiersToTakeOver(float targetDistanceInTicks, float battleProcessingInterval)
     {
         float requiredSoldiers = defenders + 1;
         if (!settlement.getOwner().isNeutral())
         {
             requiredSoldiers = requiredSoldiers +
                 getSoldierSpawnUntilReached(targetDistanceInTicks) +
-                getBattleSoldierSpawn(requiredSoldiers, settlement.getSize());
+                getBattleSoldierSpawn(requiredSoldiers, settlement.getSize(), battleProcessingInterval);
         }
         for (ArmyInfo armyInfo : inboundArmies.values())
         {
@@ -90,9 +89,9 @@ public class SettlementInfo
         return targetDistanceInTicks / settlement.getSize().getSpawnIntervalInSeconds();
     }
 
-    float getBattleSoldierSpawn(float soldiers, SettlementSize settlementSize)
+    float getBattleSoldierSpawn(float soldiers, SettlementSize settlementSize, float battleProcessingInterval)
     {
-        float minBattleTime = soldiers * BattleProcessor.BATTLE_PROCESSING_INTERVAL;
+        float minBattleTime = soldiers * battleProcessingInterval;
 
         return minBattleTime / settlementSize.getSpawnIntervalInSeconds();
     }

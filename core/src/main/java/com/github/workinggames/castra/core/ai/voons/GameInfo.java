@@ -5,17 +5,16 @@ import lombok.Getter;
 import com.badlogic.gdx.ai.Timepiece;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
-import com.github.workinggames.castra.core.action.MoveAlongAction;
 import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.model.Player;
+import com.github.workinggames.castra.core.stage.GameConfiguration;
 import com.github.workinggames.castra.core.stage.World;
 
 public class GameInfo
 {
-    private final boolean isOpponentArmyDetailsVisible;
-    private final boolean isOpponentSettlementDetailsVisible;
+    private final GameConfiguration gameConfiguration;
     private final Player aiPlayer;
     private final Timepiece timepiece;
 
@@ -23,17 +22,18 @@ public class GameInfo
     private final ArrayMap<Integer, SettlementInfo> settlementInfoBySettlementId = new ArrayMap<>();
 
     @Getter
-    private int opponentArmyEstimate = 100;
+    private int opponentArmyEstimate;
 
     @Getter
-    private int soldiersAvailable = 100;
+    private int soldiersAvailable;
 
     public GameInfo(World world, Player aiPlayer)
     {
-        isOpponentArmyDetailsVisible = world.getGameConfiguration().isOpponentArmyDetailsVisible();
-        isOpponentSettlementDetailsVisible = world.getGameConfiguration().isOpponentSettlementDetailsVisible();
         timepiece = world.getTimepiece();
         this.aiPlayer = aiPlayer;
+        this.gameConfiguration = world.getGameConfiguration();
+        opponentArmyEstimate = gameConfiguration.getStartingSoldiers();
+        soldiersAvailable = gameConfiguration.getStartingSoldiers();
 
         for (Settlement settlement : world.getSettlements())
         {
@@ -43,7 +43,7 @@ public class GameInfo
             for (Settlement otherSettlement : others)
             {
                 float distance = world.getPaths().get(settlement, otherSettlement).getDistance();
-                float seconds = distance / MoveAlongAction.PIXEL_PER_SECOND;
+                float seconds = distance / gameConfiguration.getArmyTravelSpeedInPixelPerSecond();
                 settlementInfo.getSettlementDistancesInTicks().put(otherSettlement.getId(), seconds);
             }
             // initial strength is always known, even from opponent
@@ -121,7 +121,7 @@ public class GameInfo
     void armyCreated(Army army)
     {
         int soldierEstimate = 0;
-        if (army.getOwner().equals(aiPlayer) || isOpponentArmyDetailsVisible)
+        if (army.getOwner().equals(aiPlayer) || gameConfiguration.isOpponentArmyDetailsVisible())
         {
             soldierEstimate = army.getSoldiers();
         }
@@ -137,7 +137,8 @@ public class GameInfo
             army.getOwner(),
             army.getArmySize(),
             army.getPath().getDistance(),
-            timepiece.getTime());
+            timepiece.getTime(),
+            gameConfiguration.getArmyTravelSpeedInPixelPerSecond());
         SettlementInfo target = settlementInfoBySettlementId.get(army.getTarget().getId());
         target.getInboundArmies().put(army.getId(), armyInfo);
     }
@@ -180,7 +181,7 @@ public class GameInfo
 
         BattleInfo battleInfo = settlementInfo.getBattles().get(armyId);
         settlementInfo.getBattles().removeKey(armyId);
-        if (isOpponentSettlementDetailsVisible || settlementInfo.isOwnedByPlayer())
+        if (gameConfiguration.isOpponentSettlementDetailsVisible() || settlementInfo.isOwnedByPlayer())
         {
             settlementInfo.setDefenders(settlementInfo.getSettlement().getSoldiers());
         }

@@ -10,8 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.github.workinggames.castra.core.Castra;
 
@@ -87,5 +89,18 @@ public class Skins
             .findRegion("checkedBox")
             .getTexture());
         skin.add("default", checkBoxStyle);
+
+        pixmap = new Pixmap(1, 10, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        Texture sliderTexture = new Texture(pixmap);
+        sliderTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        Drawable sliderBar = new TextureRegionDrawable(sliderTexture);
+        Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
+        sliderStyle.knob = new TextureRegionDrawable(game.getTextureAtlas().findRegion("sliderKnob").getTexture());
+        sliderStyle.knobBefore = sliderBar;
+        sliderStyle.knobAfter = sliderBar;
+        sliderStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
+        skin.add("default-horizontal", sliderStyle);
     }
 }
