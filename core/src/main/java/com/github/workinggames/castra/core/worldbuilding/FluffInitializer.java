@@ -18,12 +18,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.math.Rectangles;
+import com.github.workinggames.castra.core.screen.LoadingState;
 import com.github.workinggames.castra.core.stage.World;
+import com.github.workinggames.castra.core.task.AsyncInitializer;
 import com.github.workinggames.castra.core.texture.TextureAtlasInitializer;
 
 @Slf4j
 @RequiredArgsConstructor
-class FluffInitializer
+public class FluffInitializer implements AsyncInitializer
 {
     private static final int PADDING_LEFT = 5;
     private static final int PADDING_RIGHT = 100;
@@ -74,6 +76,7 @@ class FluffInitializer
         {
             world.createFluff(image);
         }
+        LoadingState.getInstance().setFluffInitialized(true);
     }
 
     private void addFluff(Array<Image> fluffs, List<String> names, int amount)

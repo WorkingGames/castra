@@ -61,7 +61,6 @@ public class TextureAtlasInitializer
         addToAtlas("checkedBox", textureAtlas);
         addToAtlas("Bricks", textureAtlas);
         addToAtlas("sliderKnob", textureAtlas);
-        addToAtlas("pauseBackground", textureAtlas);
         for (String name : FLUFF_ALL)
         {
             addToAtlas(name, textureAtlas);

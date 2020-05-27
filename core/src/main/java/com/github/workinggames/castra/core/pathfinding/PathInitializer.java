@@ -1,5 +1,6 @@
 package com.github.workinggames.castra.core.pathfinding;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.ai.pfa.Heuristic;
@@ -13,26 +14,30 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.model.Paths;
+import com.github.workinggames.castra.core.screen.LoadingState;
 import com.github.workinggames.castra.core.stage.World;
+import com.github.workinggames.castra.core.task.AsyncInitializer;
 
-public class PathInitializer
+public class PathInitializer implements AsyncInitializer
 {
     private final Coordinates coordinates;
     private final BlacklistAwareCoordinateGraph blacklistAwareCoordinateGraph;
     private final PathFinder<Vector2> pathFinder;
     private final Heuristic<Vector2> heuristic;
     private final PathUtils pathUtils;
+    private final World world;
 
-    public PathInitializer(Viewport viewport, TextureAtlas textureAtlas)
+    public PathInitializer(Viewport viewport, TextureAtlas textureAtlas, World world)
     {
         coordinates = new Coordinates(viewport);
         blacklistAwareCoordinateGraph = new BlacklistAwareCoordinateGraph(coordinates);
         pathFinder = new IndexedAStarPathFinder<>(blacklistAwareCoordinateGraph);
         heuristic = new StraightLineHeuristic();
         pathUtils = new PathUtils(textureAtlas);
+        this.world = world;
     }
 
-    public void initialize(World world)
+    public void initialize()
     {
         Array<Settlement> settlements = world.getSettlements();
         PathSmoother pathSmoother = new PathSmoother(settlements, pathUtils);
@@ -60,10 +65,18 @@ public class PathInitializer
                 }
                 else
                 {
-                    throw new PathFindingException("Unable to find path between " + origin + " and " + destination);
+                    Gdx.app.error("PathInitializer",
+                        "Can't find path for seed " +
+                            world.getGameConfiguration().getSeed() +
+                            " from settlement " +
+                            origin.getId() +
+                            " to settlement " +
+                            destination.getId());
+                    throw new PathFindingException("Unable to find path between two settlements");
                 }
             }
         }
+        LoadingState.getInstance().setPathInitialized(true);
     }
 
     private void applyBlacklist(Array<Settlement> settlements, Settlement origin, Settlement destination)

@@ -62,7 +62,7 @@ public class PlayerOptions extends Table
 
     private void addColor(PlayerColorSchema color, Skin skin)
     {
-        Label playerColorLabel = new Label("Player color schema: ", skin);
+        Label playerColorLabel = new Label("Color schema: ", skin);
         add(playerColorLabel);
 
         SelectBox<PlayerColorSchema> playerColorSelectBox = new SelectBox<>(skin);
@@ -79,17 +79,7 @@ public class PlayerOptions extends Table
         Image playerColor1 = new Image(createColorPreview(player.getColorSchema().getPlayerColor().getPrimaryColor()));
         playerColor1.setSize(20, 10);
         add(playerColor1);
-        row();
-
-        Label playerColor2Label = new Label("Secondary color: ", skin);
-        add(playerColor2Label);
-
-        Image playerColor2 = new Image(createColorPreview(player.getColorSchema()
-            .getPlayerColor()
-            .getSecondaryColor()));
-        playerColor2.setSize(20, 10);
-        add(playerColor2);
-        row();
+        row().padTop(10);
 
         playerColorSelectBox.addListener(new ChangeListener()
         {
@@ -101,9 +91,6 @@ public class PlayerOptions extends Table
                 playerColor1.setDrawable(createColorPreview(player.getColorSchema()
                     .getPlayerColor()
                     .getPrimaryColor()));
-                playerColor2.setDrawable(createColorPreview(player.getColorSchema()
-                    .getPlayerColor()
-                    .getSecondaryColor()));
             }
         });
     }
@@ -120,7 +107,7 @@ public class PlayerOptions extends Table
     {
         Label playerLabel = new Label(title, skin);
         add(playerLabel);
-        row();
+        row().padBottom(10);
     }
 
     private void addTypeInput(Skin skin, PlayerType initial, boolean player1)
@@ -161,7 +148,7 @@ public class PlayerOptions extends Table
             }
         });
         add(playerTypeSelectBox);
-        row();
+        row().padTop(10);
     }
 
     private void showAiTypeOption(boolean visible)
@@ -203,11 +190,10 @@ public class PlayerOptions extends Table
         add(aiDifficultyValue);
         row();
 
-        aiDescriptionLabel = new Label("Ai Player: ", skin);
+        aiDescriptionLabel = new Label("Description: ", skin);
         add(aiDescriptionLabel);
         aiDescriptionValue = new Label(DEFAULT_AI_TYPE.getDescription(), skin);
         add(aiDescriptionValue);
-        row();
     }
 
     private void addNameInput(String title, Skin skin)
@@ -215,6 +201,7 @@ public class PlayerOptions extends Table
         Label playerNameLabel = new Label("Name: ", skin);
         add(playerNameLabel);
         TextField nameInputField = new TextField(title, skin);
+        nameInputField.setOnlyFontChars(true);
         nameInputField.addListener(new ChangeListener()
         {
             @Override
@@ -224,7 +211,7 @@ public class PlayerOptions extends Table
                 player.setName(textField.getText());
             }
         });
-        add(nameInputField);
-        row();
+        add(nameInputField).minWidth(400);
+        row().padBottom(10);
     }
 }

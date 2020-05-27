@@ -63,7 +63,15 @@ public class MainMenuScreen extends ScreenAdapter
 
         startGameButton = new TextButton("Start Game", game.getSkin());
         startGameButton.getLabel().setFontScale(0.95f);
-        startGameButton.addListener(new ClickListener());
+        startGameButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                game.setScreen(new LoadingScreen(game));
+                dispose();
+            }
+        });
         startGameButton.setPosition(Screens.getCenterX(startGameButton), Screens.getRelativeY(60));
         stage.addActor(startGameButton);
 
@@ -128,15 +136,8 @@ public class MainMenuScreen extends ScreenAdapter
             (int) game.getViewport().getWorldWidth(),
             (int) game.getViewport().getWorldHeight());
         stageBatch.end();
-
         stage.act(delta);
         stage.draw();
-
-        if (startGameButton.isChecked())
-        {
-            game.setScreen(new GameScreen(game));
-            dispose();
-        }
     }
 
     @Override

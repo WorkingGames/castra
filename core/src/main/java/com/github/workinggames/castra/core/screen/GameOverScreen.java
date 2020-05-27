@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -14,13 +15,10 @@ public class GameOverScreen extends ScreenAdapter
 {
     private final Castra game;
     private final Stage stage;
-    private final TextButton reMatch;
-    private final TextButton mainMenu;
 
     public GameOverScreen(Castra game, boolean player1Won)
     {
         this.game = game;
-
         stage = new Stage(game.getViewport());
         game.getInputMultiplexer().addProcessor(stage);
 
@@ -31,17 +29,20 @@ public class GameOverScreen extends ScreenAdapter
         }
 
         Label label = new Label(message, game.getSkin());
-        label.setPosition(600, 600);
+        label.setPosition(Screens.getCenterX(label), Screens.getRelativeY(60));
         stage.addActor(label);
 
-        reMatch = new TextButton("Rematch", game.getSkin());
-        reMatch.addListener(new ClickListener());
-        reMatch.setPosition(600, 500);
-        stage.addActor(reMatch);
-
-        mainMenu = new TextButton("Main Menu", game.getSkin());
-        mainMenu.addListener(new ClickListener());
-        mainMenu.setPosition(600, 450);
+        TextButton mainMenu = new TextButton("Main Menu", game.getSkin());
+        mainMenu.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                game.setScreen(new MainMenuScreen(game));
+                dispose();
+            }
+        });
+        mainMenu.setPosition(Screens.getCenterX(mainMenu), Screens.getRelativeY(50));
         stage.addActor(mainMenu);
     }
 
@@ -61,21 +62,8 @@ public class GameOverScreen extends ScreenAdapter
                 (int) game.getViewport().getWorldWidth(),
                 (int) game.getViewport().getWorldHeight());
         stage.getBatch().end();
-
         stage.act(delta);
-
         stage.draw();
-
-        if (reMatch.isChecked())
-        {
-            game.setScreen(new GameScreen(game));
-            dispose();
-        }
-        if (mainMenu.isChecked())
-        {
-            game.setScreen(new MainMenuScreen(game));
-            dispose();
-        }
     }
 
     @Override

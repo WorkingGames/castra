@@ -20,6 +20,9 @@ public class VortexEventSender
     public void send(VortexEvent event)
     {
         String eventJson = json.toJson(event);
-        Timer.post(new VortexEventSendTask(VORTEX_ENDPOINT, eventJson));
+        if (!ApiKey.API_KEY.equals("${castra.apikey}"))
+        {
+            Timer.post(new VortexEventSendTask(VORTEX_ENDPOINT, eventJson));
+        }
     }
 }

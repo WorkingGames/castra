@@ -12,10 +12,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.SettlementSize;
+import com.github.workinggames.castra.core.screen.LoadingState;
 import com.github.workinggames.castra.core.stage.World;
+import com.github.workinggames.castra.core.task.AsyncInitializer;
 
 @RequiredArgsConstructor
-class SettlementInitializer
+public class SettlementInitializer implements AsyncInitializer
 {
     private static final int PADDING_LEFT = 25;
     private static final int PADDING_RIGHT = 225;
@@ -82,6 +84,7 @@ class SettlementInitializer
             int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE, MAXIMUM_NEUTRAL_SOLDIER_SIZE);
             createSettlement(positionIterator.next(), SettlementSize.SMALL, soldiers, NEUTRAL_PLAYER);
         }
+        LoadingState.getInstance().setSettlementsInitialized(true);
     }
 
     private void createSettlement(GridPoint2 position, SettlementSize size, int soldiers, Player owner)

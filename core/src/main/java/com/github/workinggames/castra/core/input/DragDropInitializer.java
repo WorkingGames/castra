@@ -1,12 +1,19 @@
 package com.github.workinggames.castra.core.input;
 
+import lombok.RequiredArgsConstructor;
+
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.screen.LoadingState;
 import com.github.workinggames.castra.core.stage.World;
+import com.github.workinggames.castra.core.task.AsyncInitializer;
 
-public class DragDropInitializer
+@RequiredArgsConstructor
+public class DragDropInitializer implements AsyncInitializer
 {
-    public void initialize(World world)
+    private final World world;
+
+    public void initialize()
     {
         DragAndDrop dragAndDrop = new DragAndDrop();
 
@@ -15,5 +22,6 @@ public class DragDropInitializer
             dragAndDrop.addSource(new SettlementDragSource(settlement));
             dragAndDrop.addTarget(new SettlementDragTarget(settlement, world));
         }
+        LoadingState.getInstance().setDragDropInitialized(true);
     }
 }
