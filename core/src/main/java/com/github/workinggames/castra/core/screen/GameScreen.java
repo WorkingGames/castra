@@ -44,11 +44,9 @@ public class GameScreen extends ScreenAdapter
         worldStage.initializeAi();
 
         soldierSpawner = new SoldierSpawner(worldStage.getSettlements());
-        soldierSpawner.startSpawn();
         battleProcessor = new BattleProcessor(worldStage.getBattles(),
             worldStage.getGameId(),
             game.getStatisticsEventCreator());
-        battleProcessor.startBattles(game.getGameConfiguration().getBattleProcessingInterval());
         victoryCondition = new VictoryCondition(worldStage);
 
         backgroundTexture = game.getTextureAtlas().findRegion("Background256").getTexture();
@@ -60,6 +58,22 @@ public class GameScreen extends ScreenAdapter
     {
         draw(delta);
         checkGameOver();
+    }
+
+    @Override
+    public void pause()
+    {
+        super.pause();
+        soldierSpawner.stopSpawn();
+        battleProcessor.stopBattles();
+    }
+
+    @Override
+    public void resume()
+    {
+        super.resume();
+        soldierSpawner.startSpawn();
+        battleProcessor.startBattles(game.getGameConfiguration().getBattleProcessingInterval());
     }
 
     private void draw(float delta)
@@ -77,7 +91,11 @@ public class GameScreen extends ScreenAdapter
                 (int) game.getViewport().getWorldWidth(),
                 (int) game.getViewport().getWorldHeight());
         worldStage.getBatch().end();
-        worldStage.act(delta);
+
+        if (game.getGameState().equals(GameState.RUNNING))
+        {
+            worldStage.act(delta);
+        }
         worldStage.draw();
     }
 

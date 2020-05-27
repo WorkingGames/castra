@@ -43,11 +43,26 @@ public class SoldierSpawner implements Disposable
         largeTask = Timer.schedule(new SoldierSpawnTask(large), 0, SettlementSize.LARGE.getSpawnIntervalInSeconds());
     }
 
+    public void stopSpawn()
+    {
+        cancel(smallTask);
+        cancel(mediumTask);
+        cancel(largeTask);
+    }
+
+    private void cancel(Timer.Task task)
+    {
+        if (task != null)
+        {
+            task.cancel();
+        }
+    }
+
     @Override
     public void dispose()
     {
-        smallTask.cancel();
-        mediumTask.cancel();
-        largeTask.cancel();
+        cancel(smallTask);
+        cancel(mediumTask);
+        cancel(largeTask);
     }
 }

@@ -26,9 +26,22 @@ public class BattleProcessor implements Disposable
             battleProcessingInterval);
     }
 
+    public void stopBattles()
+    {
+        cancel(battleTask);
+    }
+
     @Override
     public void dispose()
     {
-        battleTask.cancel();
+        cancel(battleTask);
+    }
+
+    private void cancel(Timer.Task task)
+    {
+        if (task != null)
+        {
+            task.cancel();
+        }
     }
 }
