@@ -1,35 +1,34 @@
 package com.github.workinggames.castra.core.task;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.utils.Timer;
 
-@Slf4j
 @RequiredArgsConstructor
 public class VortexEventSendTask extends Timer.Task
 {
-    private class DontCareResponseListener implements Net.HttpResponseListener
+    private class LoggingResponseListener implements Net.HttpResponseListener
     {
         @Override
         public void handleHttpResponse(Net.HttpResponse httpResponse)
         {
-            log.debug("Response had statusCode: {}", httpResponse.getStatus().getStatusCode());
+            Gdx.app.debug("EventResponse",
+                "Response was " + httpResponse.getStatus().getStatusCode() + ": " + httpResponse.getResultAsString());
         }
 
         @Override
         public void failed(Throwable t)
         {
-            log.error("failed sending event", t);
+            Gdx.app.error("EventResponse", "Failed sending event", t);
         }
 
         @Override
         public void cancelled()
         {
-            log.error("cancelled sending event");
+            Gdx.app.debug("EventResponse", "Task was cancelled");
         }
     }
 
@@ -47,7 +46,7 @@ public class VortexEventSendTask extends Timer.Task
             .content(eventJson)
             .build();
 
-        log.debug("Sending event {}", eventJson);
-        Gdx.net.sendHttpRequest(httpRequest, new DontCareResponseListener());
+        Gdx.app.debug("EventRequest", "Sending event " + eventJson);
+        Gdx.net.sendHttpRequest(httpRequest, new LoggingResponseListener());
     }
 }

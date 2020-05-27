@@ -31,7 +31,7 @@ import com.github.workinggames.castra.core.task.VortexEventSender;
 public class StatisticsEventCreator
 {
     private final VortexEventSender vortexEventSender;
-    private final SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    private final SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     public void gameStarted(World world)
     {
