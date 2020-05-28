@@ -27,12 +27,11 @@ public class ActorCreator
     private static final int HIGHLIGHT_ANIMATION_COLUMNS = 6;
     private static final int ARMY_ANIMATION_ROWS = 4;
     private static final int ARMY_ANIMATION_COLUMNS = 1;
-    private static final int BATTLE_ANIMATION_ROWS = 4;
+    private static final int BATTLE_ANIMATION_ROWS = 2;
     private static final int BATTLE_ANIMATION_COLUMNS = 6;
 
     private final GameConfiguration gameConfiguration;
     private final ColorizingTextureAtlasAdapter colorizingTextureAtlasAdapter;
-    private final TextureAtlas textureAtlas;
     private final FontProvider fontProvider;
     private final AnimationUtil animationUtil;
 
@@ -42,7 +41,7 @@ public class ActorCreator
     private final Map<Player, AnimatedImage> smallArmyMap = new HashMap<>();
     private final Map<Player, AnimatedImage> mediumArmyMap = new HashMap<>();
     private final Map<Player, AnimatedImage> largeArmyMap = new HashMap<>();
-    private final AnimatedImage battle;
+    private final Map<Player, AnimatedImage> battleMap = new HashMap<>();
 
     private int settlementId = 0;
     private int armyId = 0;
@@ -50,7 +49,6 @@ public class ActorCreator
     public ActorCreator(GameConfiguration gameConfiguration, TextureAtlas textureAtlas, FontProvider fontProvider)
     {
         this.gameConfiguration = gameConfiguration;
-        this.textureAtlas = textureAtlas;
         this.fontProvider = fontProvider;
         this.animationUtil = new AnimationUtil();
         colorizingTextureAtlasAdapter = new ColorizingTextureAtlasAdapter(textureAtlas);
@@ -60,7 +58,8 @@ public class ActorCreator
         createSettlementImages(gameConfiguration.getPlayer2());
         createArmyImages(gameConfiguration.getPlayer1());
         createArmyImages(gameConfiguration.getPlayer2());
-        battle = createBattleImage();
+        createBattleImage(gameConfiguration.getPlayer1());
+        createBattleImage(gameConfiguration.getPlayer2());
     }
 
     private void createSettlementImages(Player player)
@@ -96,14 +95,14 @@ public class ActorCreator
         largeArmyMap.put(player, new AnimatedImage(getArmyAnimation(ArmySize.LARGE, player)));
     }
 
-    private AnimatedImage createBattleImage()
+    private void createBattleImage(Player player)
     {
-        Texture texture = textureAtlas.findRegion("cloud").getTexture();
+        Texture texture = colorizingTextureAtlasAdapter.findRegion("battle1", player.getColorSchema()).getTexture();
         Animation<TextureRegion> battleAnimation = getAnimation(texture,
             BATTLE_ANIMATION_ROWS,
             BATTLE_ANIMATION_COLUMNS,
             SLOW_ANIMATION_SPEED);
-        return new AnimatedImage(battleAnimation);
+        battleMap.put(player, new AnimatedImage(battleAnimation));
     }
 
     public Settlement createSettlement(SettlementSize size, int x, int y, int soldiers, Player player)
@@ -215,6 +214,6 @@ public class ActorCreator
 
     public Battle createBattle(Army attacker)
     {
-        return new Battle(attacker, battle);
+        return new Battle(attacker, battleMap.get(attacker.getOwner()));
     }
 }
