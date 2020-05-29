@@ -25,7 +25,7 @@ public class SettlementInitializer implements AsyncInitializer
     private static final int PADDING_TOP = 200;
     private static final int MINIMUM_DISTANCE_AI_TO_PLAYER = 500;
     private static final int SPACING_BETWEEN_SETTLEMENTS = 250;
-    private static final int DISTANCE_TO_ARMY_SPLIT = 120;
+    private static final int DISTANCE_TO_ARMY_SPLIT = 200;
 
     private static final int MINIMUM_SETTLEMENT_TOTAL = 8;
     private static final int MAXIMUM_SETTLEMENT_TOTAL = 10;

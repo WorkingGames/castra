@@ -102,7 +102,7 @@ public class World extends Stage
             armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer2());
             addActor(armySplit);
         }
-        
+
         actorCreator = new ActorCreator(gameConfiguration, textureAtlas, fontProvider);
     }
 

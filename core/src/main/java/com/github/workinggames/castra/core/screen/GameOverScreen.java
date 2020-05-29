@@ -20,6 +20,7 @@ public class GameOverScreen extends ScreenAdapter
     {
         this.game = game;
         stage = new Stage(game.getViewport());
+        game.getInputMultiplexer().clear();
         game.getInputMultiplexer().addProcessor(stage);
 
         String message = game.getGameConfiguration().getPlayer1().getName() + " Won!";
