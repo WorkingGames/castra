@@ -2,18 +2,23 @@ package com.github.workinggames.castra.core.ai.voons;
 
 import lombok.Getter;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.Timepiece;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.model.ArmySize;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.GameConfiguration;
 import com.github.workinggames.castra.core.stage.World;
 
 public class GameInfo
 {
+    private static final int ESTIMATE_ERROR_MARGIN = 10;
+
     private final GameConfiguration gameConfiguration;
     private final Player aiPlayer;
     private final Timepiece timepiece;
@@ -120,16 +125,71 @@ public class GameInfo
 
     void armyCreated(Army army)
     {
-        int soldierEstimate = 0;
-        if (army.getOwner().equals(aiPlayer) || gameConfiguration.isOpponentArmyDetailsVisible())
+        int soldierEstimate;
+        SettlementInfo target = settlementInfoBySettlementId.get(army.getTarget().getId());
+        SettlementInfo source = settlementInfoBySettlementId.get(army.getSource().getId());
+
+        /*
+         * if the army details are visible we know the soldier count, if the
+         * settlement details are visible, we know exactly the soldier count after the army left,
+         *  so basically it's the same and we can take the actual value.
+         */
+        if (army.getOwner().equals(aiPlayer) ||
+            gameConfiguration.isOpponentArmyDetailsVisible() ||
+            gameConfiguration.isOpponentSettlementDetailsVisible())
         {
             soldierEstimate = army.getSoldiers();
         }
         else
         {
-            // TODO guess the soldier count based on army size, target soldiers and source soldiers
+            int defendingSoldiers = target.getDefenders();
+            int sourceSoldiers = source.getDefenders();
+
+            int minArmySize;
+            int maxArmySize;
+            if (army.getArmySize().equals(ArmySize.SMALL))
+            {
+                minArmySize = ArmySize.SMALL.getMinimumSoldiers();
+                maxArmySize = ArmySize.MEDIUM.getMinimumSoldiers() - 1;
+            }
+            else if (army.getArmySize().equals(ArmySize.MEDIUM))
+            {
+                minArmySize = ArmySize.MEDIUM.getMinimumSoldiers();
+                maxArmySize = ArmySize.LARGE.getMinimumSoldiers() - 1;
+            }
+            else
+            {
+                minArmySize = ArmySize.LARGE.getMinimumSoldiers();
+                if (sourceSoldiers > minArmySize)
+                {
+                    maxArmySize = sourceSoldiers;
+                }
+                else
+                {
+                    // seems like the source estimate was wrong, let's update the estimate with an error margin
+                    maxArmySize = MathUtils.random(minArmySize, minArmySize + ESTIMATE_ERROR_MARGIN);
+                    source.setDefenders(maxArmySize);
+                    Gdx.app.log("AI",
+                        "updated settlement defender estimate: " +
+                            maxArmySize +
+                            " actual defenders: " +
+                            army.getSource().getSoldiers());
+                }
+            }
+
+            /*
+             * if this army is attacking a neutral settlement, the attacker knows exactly how many soldiers are
+             * defending and it's more likely that he's attacking to win and not just weaken it.
+             */
+            if (army.getTarget().getOwner().isNeutral() &&
+                maxArmySize > defendingSoldiers &&
+                minArmySize < defendingSoldiers)
+            {
+                minArmySize = defendingSoldiers;
+            }
+            soldierEstimate = MathUtils.random(minArmySize, maxArmySize);
+            Gdx.app.log("AI", "army estimate: " + soldierEstimate + " actual size: " + army.getSoldiers());
         }
-        SettlementInfo source = settlementInfoBySettlementId.get(army.getSource().getId());
         source.setDefenders(source.getDefenders() - soldierEstimate);
 
         ArmyInfo armyInfo = new ArmyInfo(army.getId(),
@@ -139,7 +199,6 @@ public class GameInfo
             army.getPath().getDistance(),
             timepiece.getTime(),
             gameConfiguration.getArmyTravelSpeedInPixelPerSecond());
-        SettlementInfo target = settlementInfoBySettlementId.get(army.getTarget().getId());
         target.getInboundArmies().put(army.getId(), armyInfo);
     }
 
@@ -170,7 +229,9 @@ public class GameInfo
         int armyId = battle.getArmy().getId();
         armyInfo = settlementInfo.getInboundArmies().get(armyId);
         settlementInfo.getInboundArmies().removeKey(armyId);
-        BattleInfo battleInfo = new BattleInfo(Array.with(armyInfo), timepiece.getTime());
+        BattleInfo battleInfo = new BattleInfo(Array.with(armyInfo),
+            settlementInfo.getSettlement().getOwner(),
+            timepiece.getTime());
         settlementInfo.getBattles().put(armyId, battleInfo);
     }
 
@@ -181,13 +242,49 @@ public class GameInfo
 
         BattleInfo battleInfo = settlementInfo.getBattles().get(armyId);
         settlementInfo.getBattles().removeKey(armyId);
-        if (gameConfiguration.isOpponentSettlementDetailsVisible() || settlementInfo.isOwnedByPlayer())
+
+        int defenderEstimate;
+        // we know the actual defender count if the settlement details are visible or the settlement is owned by the player or neutral
+        if (gameConfiguration.isOpponentSettlementDetailsVisible() ||
+            settlementInfo.isOwnedByPlayer() ||
+            settlementInfo.getSettlement().getOwner().isNeutral())
         {
-            settlementInfo.setDefenders(settlementInfo.getSettlement().getSoldiers());
+            defenderEstimate = settlementInfo.getSettlement().getSoldiers();
         }
+        // there was a fight and we don't know the actual details, time for estimating
         else
         {
-            // TODO estimate the new defender count, maybe use the actual time the battle lasted to get a closer estimate
+            int defenders = settlementInfo.getDefenders();
+            int attackers = 0;
+            for (ArmyInfo armyInfo : battleInfo.getArmyInfos())
+            {
+                attackers = attackers + armyInfo.getSoldiers();
+            }
+
+            // reinforce
+            if (battleInfo.getDefender().equals(settlementInfo.getSettlement().getOwner()))
+            {
+                defenderEstimate = defenders + attackers;
+            }
+            // owner changed
+            else if (!battleInfo.getDefender().equals(settlementInfo.getSettlement().getOwner()))
+            {
+                defenderEstimate = attackers - defenders;
+            }
+            // attacker lost
+            else if (attackers < defenders)
+            {
+                defenderEstimate = defenders - attackers;
+            }
+            else
+            {
+                // obviously a previous estimate was wrong, otherwise the settlement had been taken over.
+                // so let's randomize the remaining defender estimate
+                defenderEstimate = MathUtils.random(0, ESTIMATE_ERROR_MARGIN);
+            }
         }
+        settlementInfo.setDefenders(defenderEstimate);
+        Gdx.app.log("AI",
+            "defender estimate: " + defenderEstimate + " actual size: " + settlementInfo.getSettlement().getSoldiers());
     }
 }
