@@ -25,6 +25,9 @@ public class MessagingHandler
         messageManager.addListener(telegraph, MessageType.BATTLE_STARTED);
         messageManager.addListener(telegraph, MessageType.BATTLE_JOINED);
         messageManager.addListener(telegraph, MessageType.BATTLE_ENDED);
+        messageManager.addListener(telegraph, MessageType.SOLDIER_REMOVED);
+        messageManager.addListener(telegraph, MessageType.DEFENDER_ADDED);
+        messageManager.addListener(telegraph, MessageType.DEFENDER_REMOVED);
     }
 
     public boolean handleMessage(Telegram msg)
@@ -59,6 +62,24 @@ public class MessagingHandler
             {
                 Battle battle = (Battle) msg.extraInfo;
                 gameInfo.battleEnded(battle);
+                break;
+            }
+            case MessageType.SOLDIER_REMOVED:
+            {
+                Battle battle = (Battle) msg.extraInfo;
+                gameInfo.soldierRemoved(battle);
+                break;
+            }
+            case MessageType.DEFENDER_ADDED:
+            {
+                Battle battle = (Battle) msg.extraInfo;
+                gameInfo.defenderAdded(battle);
+                break;
+            }
+            case MessageType.DEFENDER_REMOVED:
+            {
+                Battle battle = (Battle) msg.extraInfo;
+                gameInfo.defenderRemoved(battle);
                 break;
             }
         }

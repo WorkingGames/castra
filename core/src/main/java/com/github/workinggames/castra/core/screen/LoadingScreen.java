@@ -25,7 +25,6 @@ import com.github.workinggames.castra.core.worldbuilding.SettlementInitializer;
 @Slf4j
 public class LoadingScreen extends ScreenAdapter
 {
-    private static final float LOADING_DELAY = 0.3f;
     private final Castra game;
     private final Stage stage;
     private final LoadingState loadingState;
@@ -101,15 +100,15 @@ public class LoadingScreen extends ScreenAdapter
         }
         if (loadingState.isSettlementsInitialized() && !loadingState.isFluffInitialized())
         {
-            Timer.schedule(new InitializerTask(fluffInitializer), LOADING_DELAY);
+            Timer.post(new InitializerTask(fluffInitializer));
         }
         if (loadingState.isSettlementsInitialized() && !loadingState.isDragDropInitialized())
         {
-            Timer.schedule(new InitializerTask(dragDropInitializer), LOADING_DELAY);
+            Timer.post(new InitializerTask(dragDropInitializer));
         }
         if (loadingState.isSettlementsInitialized() && !loadingState.isPathInitialized())
         {
-            Timer.schedule(new InitializerTask(pathInitializer), LOADING_DELAY);
+            Timer.post(new InitializerTask(pathInitializer));
         }
         if (loadingState.isSettlementsInitialized() && loadingState.isPathInitialized())
         {

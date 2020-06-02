@@ -17,6 +17,7 @@ public class ArmyInfo implements Comparable<ArmyInfo>
     private final float distance;
     private final float createdAtTimestamp;
     private final float armyTravelSpeedInPixelPerSecond;
+    private final int sourceSettlementId;
 
     // order by arrival
     public int compareTo(ArmyInfo o)

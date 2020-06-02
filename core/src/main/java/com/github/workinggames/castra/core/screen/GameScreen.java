@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,6 +24,8 @@ public class GameScreen extends ScreenAdapter
     private final VictoryCondition victoryCondition;
     private final ArmySplitInputProcessor armySplitInputProcessor;
     private final Texture backgroundTexture;
+
+    private boolean gameStarted = false;
 
     public GameScreen(Castra game, World world)
     {
@@ -55,14 +58,18 @@ public class GameScreen extends ScreenAdapter
         victoryCondition = new VictoryCondition(this.world);
 
         backgroundTexture = game.getTextureAtlas().findRegion("Background256").getTexture();
-        soldierSpawner.startSpawn();
-        battleProcessor.startBattles(game.getGameConfiguration().getBattleProcessingInterval());
-        game.getStatisticsEventCreator().gameStarted(this.world);
     }
 
     @Override
     public void render(float delta)
     {
+        if (!gameStarted)
+        {
+            soldierSpawner.startSpawn();
+            battleProcessor.startBattles(game.getGameConfiguration().getBattleProcessingInterval());
+            game.getStatisticsEventCreator().gameStarted(this.world);
+            gameStarted = true;
+        }
         draw(delta);
         checkGameOver();
     }
@@ -131,5 +138,6 @@ public class GameScreen extends ScreenAdapter
         {
             game.getInputMultiplexer().removeProcessor(armySplitInputProcessor);
         }
+        MessageManager.getInstance().clear();
     }
 }

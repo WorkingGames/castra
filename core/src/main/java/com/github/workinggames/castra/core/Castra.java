@@ -28,7 +28,7 @@ public class Castra extends Game
     private final Skin skin = new Skin();
 
     @Getter
-    private GameConfiguration gameConfiguration;
+    private final GameConfiguration gameConfiguration = new GameConfiguration();
 
     @Getter
     private FontProvider fontProvider;
@@ -63,8 +63,6 @@ public class Castra extends Game
     @Override
     public void create()
     {
-        gameConfiguration = new GameConfiguration();
-
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         inputMultiplexer = new InputMultiplexer();

@@ -2,28 +2,30 @@ package com.github.workinggames.castra.core.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import com.github.workinggames.castra.core.ai.AiType;
 
 @Data
-@NoArgsConstructor
 @EqualsAndHashCode(exclude = "sendTroopPercentage")
+@RequiredArgsConstructor
 public class Player
 {
     public static final AiType DEFAULT_AI_TYPE = AiType.RANDY;
 
+    private final boolean playerOne;
     private PlayerType type;
     private AiType aiType;
     private PlayerColorSchema colorSchema;
     private String name;
     private int sendTroopPercentage = 50;
 
-    public Player(PlayerColorSchema colorSchema, String name, PlayerType type)
+    public Player(PlayerColorSchema colorSchema, String name, PlayerType type, boolean playerOne)
     {
         this.colorSchema = colorSchema;
         this.name = name;
         this.type = type;
+        this.playerOne = playerOne;
         if (isAi())
         {
             aiType = DEFAULT_AI_TYPE;

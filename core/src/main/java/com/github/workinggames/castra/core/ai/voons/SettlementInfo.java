@@ -4,28 +4,78 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.SettlementSize;
+import com.github.workinggames.castra.core.stage.GameConfiguration;
 
 @Getter
-@RequiredArgsConstructor
 public class SettlementInfo
 {
     private final Settlement settlement;
     private final Player aiPlayer;
     private final Map<Integer, Float> settlementDistancesInTicks = new HashMap<>();
-
     private final ArrayMap<Integer, ArmyInfo> inboundArmies = new ArrayMap<>();
     private final ArrayMap<Integer, BattleInfo> battles = new ArrayMap<>();
+    private Label defendersDebug;
 
-    @Setter
     private int defenders;
+
+    public SettlementInfo(Settlement settlement, Player aiPlayer, GameConfiguration gameConfiguration)
+    {
+        this.settlement = settlement;
+        this.aiPlayer = aiPlayer;
+        if (gameConfiguration.isDebugAI() && !gameConfiguration.isOpponentSettlementDetailsVisible())
+        {
+            addDebugLabel(settlement, aiPlayer);
+        }
+    }
+
+    private void addDebugLabel(Settlement settlement, Player aiPlayer)
+    {
+        BitmapFont font = new BitmapFont(Gdx.files.internal("fonts/SoldierCount.fnt"),
+            Gdx.files.internal("fonts/SoldierCount.png"),
+            false);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font,
+            aiPlayer.getColorSchema().getPlayerColor().getPrimaryColor());
+        defendersDebug = new Label("" + settlement.getSoldiers(), labelStyle);
+        if (aiPlayer.isPlayerOne())
+        {
+            defendersDebug.setPosition(settlement.getOriginX() + getOffset(settlement.getSize()),
+                settlement.getOriginY());
+        }
+        else
+        {
+            defendersDebug.setPosition(settlement.getOriginX(), settlement.getOriginY());
+        }
+        defendersDebug.setVisible(true);
+        settlement.addActor(defendersDebug);
+    }
+
+    private float getOffset(SettlementSize size)
+    {
+        float offset = 125;
+        if (size.equals(SettlementSize.LARGE))
+        {
+            offset = 145;
+        }
+        return offset;
+    }
+
+    public void setDefenders(int defenders)
+    {
+        this.defenders = defenders;
+        if (defendersDebug != null)
+        {
+            defendersDebug.setText(defenders);
+        }
+    }
 
     float getBreakEvenInSeconds(float requiredSoldiers)
     {
@@ -41,30 +91,6 @@ public class SettlementInfo
             ownerScore = 0.5f;
         }
         return ownerScore * secondsUntilReimbursed;
-    }
-
-    int getRequiredSoldiersToTakeOver(float targetDistanceInTicks, float battleProcessingInterval)
-    {
-        float requiredSoldiers = defenders + 1;
-        if (!settlement.getOwner().isNeutral())
-        {
-            requiredSoldiers = requiredSoldiers +
-                getSoldierSpawnUntilReached(targetDistanceInTicks) +
-                getBattleSoldierSpawn(requiredSoldiers, settlement.getSize(), battleProcessingInterval);
-        }
-        for (ArmyInfo armyInfo : inboundArmies.values())
-        {
-            if (armyInfo.getOwner().equals(aiPlayer))
-            {
-                requiredSoldiers = requiredSoldiers - armyInfo.getSoldiers();
-            }
-            else
-            {
-                requiredSoldiers = requiredSoldiers + armyInfo.getSoldiers();
-            }
-        }
-        // let's round up
-        return MathUtils.ceil(requiredSoldiers);
     }
 
     int getAvailableSoldiers()

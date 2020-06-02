@@ -39,22 +39,26 @@ public class BattleProcessTask extends Timer.Task
             if (army.getOwner().equals(settlement.getOwner()))
             {
                 settlement.addSoldier();
+                messageManager.dispatchMessage(0, null, null, MessageType.DEFENDER_ADDED, battle);
             }
             else
             {
                 if (!settlement.isEmpty())
                 {
                     settlement.removeSoldier();
+                    messageManager.dispatchMessage(0, null, null, MessageType.DEFENDER_REMOVED, battle);
                 }
                 else
                 {
                     settlement.changeOwner(army.getOwner());
                     settlement.addSoldier();
+                    messageManager.dispatchMessage(0, null, null, MessageType.DEFENDER_ADDED, battle);
                     captured = true;
                 }
             }
 
             army.removeSoldier();
+            messageManager.dispatchMessage(0, null, null, MessageType.SOLDIER_REMOVED, battle);
             if (army.isEmpty())
             {
                 battle.remove();

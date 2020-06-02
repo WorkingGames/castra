@@ -34,8 +34,12 @@ public class SettlementInitializer implements AsyncInitializer
     private static final int MINIMUM_MEDIUM_SETTLEMENTS = 3;
     private static final int MAXIMUM_MEDIUM_SETTLEMENTS = 4;
 
-    private static final int MINIMUM_NEUTRAL_SOLDIER_SIZE = 1;
-    private static final int MAXIMUM_NEUTRAL_SOLDIER_SIZE = 30;
+    private static final int MINIMUM_NEUTRAL_SOLDIER_SIZE_SMALL_SETTLEMENT = 1;
+    private static final int MAXIMUM_NEUTRAL_SOLDIER_SIZE_SMALL_SETTLEMENT = 10;
+    private static final int MINIMUM_NEUTRAL_SOLDIER_SIZE_MEDIUM_SETTLEMENT = 10;
+    private static final int MAXIMUM_NEUTRAL_SOLDIER_SIZE_MEDIUM_SETTLEMENT = 20;
+    private static final int MINIMUM_NEUTRAL_SOLDIER_SIZE_LARGE_SETTLEMENT = 20;
+    private static final int MAXIMUM_NEUTRAL_SOLDIER_SIZE_LARGE_SETTLEMENT = 30;
 
     private final World world;
     private final Viewport viewport;
@@ -69,19 +73,22 @@ public class SettlementInitializer implements AsyncInitializer
 
         for (int i = 2; i < largeSettlements; i++)
         {
-            int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE, MAXIMUM_NEUTRAL_SOLDIER_SIZE);
+            int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE_LARGE_SETTLEMENT,
+                MAXIMUM_NEUTRAL_SOLDIER_SIZE_LARGE_SETTLEMENT);
             createSettlement(positionIterator.next(), SettlementSize.LARGE, soldiers, NEUTRAL_PLAYER);
         }
 
         for (int i = 0; i < mediumSettlements; i++)
         {
-            int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE, MAXIMUM_NEUTRAL_SOLDIER_SIZE);
+            int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE_MEDIUM_SETTLEMENT,
+                MAXIMUM_NEUTRAL_SOLDIER_SIZE_MEDIUM_SETTLEMENT);
             createSettlement(positionIterator.next(), SettlementSize.MEDIUM, soldiers, NEUTRAL_PLAYER);
         }
 
         for (int i = largeSettlements + mediumSettlements; i < totalSettlements; i++)
         {
-            int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE, MAXIMUM_NEUTRAL_SOLDIER_SIZE);
+            int soldiers = getRandomValueInclusive(MINIMUM_NEUTRAL_SOLDIER_SIZE_SMALL_SETTLEMENT,
+                MAXIMUM_NEUTRAL_SOLDIER_SIZE_SMALL_SETTLEMENT);
             createSettlement(positionIterator.next(), SettlementSize.SMALL, soldiers, NEUTRAL_PLAYER);
         }
         LoadingState.getInstance().setSettlementsInitialized(true);

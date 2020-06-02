@@ -4,7 +4,9 @@ import lombok.Getter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.Timepiece;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.github.workinggames.castra.core.actor.Army;
@@ -17,7 +19,7 @@ import com.github.workinggames.castra.core.stage.World;
 
 public class GameInfo
 {
-    private static final int ESTIMATE_ERROR_MARGIN = 10;
+    private static final int ESTIMATE_ERROR_MARGIN = 5;
 
     private final GameConfiguration gameConfiguration;
     private final Player aiPlayer;
@@ -42,7 +44,7 @@ public class GameInfo
 
         for (Settlement settlement : world.getSettlements())
         {
-            SettlementInfo settlementInfo = new SettlementInfo(settlement, aiPlayer);
+            SettlementInfo settlementInfo = new SettlementInfo(settlement, aiPlayer, gameConfiguration);
             Array<Settlement> others = new Array<>(world.getSettlements());
             others.removeValue(settlement, true);
             for (Settlement otherSettlement : others)
@@ -55,6 +57,37 @@ public class GameInfo
             settlementInfo.setDefenders(settlementInfo.getSettlement().getSoldiers());
             settlementInfoBySettlementId.put(settlement.getId(), settlementInfo);
         }
+    }
+
+    public void soldierRemoved(Battle battle)
+    {
+        int targetSettlementId = battle.getArmy().getTarget().getId();
+        SettlementInfo settlementInfo = settlementInfoBySettlementId.get(targetSettlementId);
+        BattleInfo battleInfo = settlementInfo.getBattles().get(battle.getArmy().getId());
+
+        // only opponent battles need to be re-estimated
+        if (!battleInfo.getArmyInfos().first().getOwner().equals(aiPlayer))
+        {
+            battleInfo.setActualSoldiersAttacking(battleInfo.getActualSoldiersAttacking() + 1);
+            if (battleInfo.getEstimatedSoldiers() < battleInfo.getActualSoldiersAttacking())
+            {
+                fixEstimationError(1, battleInfo.getArmyInfos());
+            }
+        }
+    }
+
+    public void defenderAdded(Battle battle)
+    {
+        int targetSettlementId = battle.getArmy().getTarget().getId();
+        SettlementInfo settlementInfo = settlementInfoBySettlementId.get(targetSettlementId);
+        settlementInfo.setDefenders(settlementInfo.getDefenders() + 1);
+    }
+
+    public void defenderRemoved(Battle battle)
+    {
+        int targetSettlementId = battle.getArmy().getTarget().getId();
+        SettlementInfo settlementInfo = settlementInfoBySettlementId.get(targetSettlementId);
+        settlementInfo.setDefenders(settlementInfo.getDefenders() - 1);
     }
 
     public void updateSettlementInfos()
@@ -72,8 +105,9 @@ public class GameInfo
             {
                 opponentArmyEstimate = opponentArmyEstimate + settlementInfo.getDefenders();
             }
-            // armies and battle forecast
+
             int defenders = settlementInfo.getDefenders();
+            // army processing
             for (ArmyInfo armyInfo : settlementInfo.getInboundArmies().values())
             {
                 // reinforce
@@ -128,6 +162,7 @@ public class GameInfo
         int soldierEstimate;
         SettlementInfo target = settlementInfoBySettlementId.get(army.getTarget().getId());
         SettlementInfo source = settlementInfoBySettlementId.get(army.getSource().getId());
+        int sourceSoldiers = source.getDefenders();
 
         /*
          * if the army details are visible we know the soldier count, if the
@@ -143,10 +178,10 @@ public class GameInfo
         else
         {
             int defendingSoldiers = target.getDefenders();
-            int sourceSoldiers = source.getDefenders();
 
             int minArmySize;
             int maxArmySize;
+            // let's get soldier min/max based on army size first
             if (army.getArmySize().equals(ArmySize.SMALL))
             {
                 minArmySize = ArmySize.SMALL.getMinimumSoldiers();
@@ -160,21 +195,18 @@ public class GameInfo
             else
             {
                 minArmySize = ArmySize.LARGE.getMinimumSoldiers();
-                if (sourceSoldiers > minArmySize)
-                {
-                    maxArmySize = sourceSoldiers;
-                }
-                else
-                {
-                    // seems like the source estimate was wrong, let's update the estimate with an error margin
-                    maxArmySize = MathUtils.random(minArmySize, minArmySize + ESTIMATE_ERROR_MARGIN);
-                    source.setDefenders(maxArmySize);
-                    Gdx.app.log("AI",
-                        "updated settlement defender estimate: " +
-                            maxArmySize +
-                            " actual defenders: " +
-                            army.getSource().getSoldiers());
-                }
+                maxArmySize = sourceSoldiers;
+            }
+
+            // check if the source estimate was wrong
+            if (sourceSoldiers < minArmySize)
+            {
+                sourceSoldiers = MathUtils.random(minArmySize, minArmySize + ESTIMATE_ERROR_MARGIN);
+            }
+            // can only happen for large settlements which had less than minimum defenders when setting max
+            if (maxArmySize < minArmySize)
+            {
+                maxArmySize = sourceSoldiers;
             }
 
             /*
@@ -183,14 +215,19 @@ public class GameInfo
              */
             if (army.getTarget().getOwner().isNeutral() &&
                 maxArmySize > defendingSoldiers &&
-                minArmySize < defendingSoldiers)
+                minArmySize < defendingSoldiers &&
+                defendingSoldiers < sourceSoldiers)
             {
                 minArmySize = defendingSoldiers;
             }
-            soldierEstimate = MathUtils.random(minArmySize, maxArmySize);
-            Gdx.app.log("AI", "army estimate: " + soldierEstimate + " actual size: " + army.getSoldiers());
+
+            soldierEstimate = MathUtils.random(minArmySize, Math.min(sourceSoldiers, maxArmySize));
+            if (gameConfiguration.isDebugAI() && !army.getOwner().equals(aiPlayer))
+            {
+                addDebugLabel(army, aiPlayer, soldierEstimate);
+            }
         }
-        source.setDefenders(source.getDefenders() - soldierEstimate);
+        source.setDefenders(sourceSoldiers - soldierEstimate);
 
         ArmyInfo armyInfo = new ArmyInfo(army.getId(),
             soldierEstimate,
@@ -198,8 +235,22 @@ public class GameInfo
             army.getArmySize(),
             army.getPath().getDistance(),
             timepiece.getTime(),
-            gameConfiguration.getArmyTravelSpeedInPixelPerSecond());
+            gameConfiguration.getArmyTravelSpeedInPixelPerSecond(),
+            source.getSettlement().getId());
         target.getInboundArmies().put(army.getId(), armyInfo);
+    }
+
+    private void addDebugLabel(Army army, Player aiPlayer, int soldierEstimate)
+    {
+        BitmapFont font = new BitmapFont(Gdx.files.internal("fonts/SoldierCount.fnt"),
+            Gdx.files.internal("fonts/SoldierCount.png"),
+            false);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font,
+            aiPlayer.getColorSchema().getPlayerColor().getPrimaryColor());
+        Label armyEstimate = new Label("" + soldierEstimate, labelStyle);
+        armyEstimate.setPosition(army.getOriginX(), army.getOriginY());
+        armyEstimate.setVisible(true);
+        army.addActor(armyEstimate);
     }
 
     void battleJoined(Army army)
@@ -215,6 +266,7 @@ public class GameInfo
         {
             if (battleInfo.getArmyInfos().first().getOwner().equals(army.getOwner()))
             {
+                battleInfo.setEstimatedSoldiers(battleInfo.getEstimatedSoldiers() + armyInfo.getSoldiers());
                 battleInfo.getArmyInfos().add(armyInfo);
                 break;
             }
@@ -223,7 +275,8 @@ public class GameInfo
 
     public void battleStarted(Battle battle)
     {
-        SettlementInfo settlementInfo = settlementInfoBySettlementId.get(battle.getArmy().getTarget().getId());
+        int settlementId = battle.getArmy().getTarget().getId();
+        SettlementInfo settlementInfo = settlementInfoBySettlementId.get(settlementId);
 
         ArmyInfo armyInfo;
         int armyId = battle.getArmy().getId();
@@ -232,6 +285,7 @@ public class GameInfo
         BattleInfo battleInfo = new BattleInfo(Array.with(armyInfo),
             settlementInfo.getSettlement().getOwner(),
             timepiece.getTime());
+        battleInfo.setEstimatedSoldiers(armyInfo.getSoldiers());
         settlementInfo.getBattles().put(armyId, battleInfo);
     }
 
@@ -243,48 +297,79 @@ public class GameInfo
         BattleInfo battleInfo = settlementInfo.getBattles().get(armyId);
         settlementInfo.getBattles().removeKey(armyId);
 
+        // let's update the defender count if the settlement details are visible or the settlement is owned by the player or neutral
         int defenderEstimate;
-        // we know the actual defender count if the settlement details are visible or the settlement is owned by the player or neutral
         if (gameConfiguration.isOpponentSettlementDetailsVisible() ||
             settlementInfo.isOwnedByPlayer() ||
             settlementInfo.getSettlement().getOwner().isNeutral())
         {
             defenderEstimate = settlementInfo.getSettlement().getSoldiers();
+            settlementInfo.setDefenders(defenderEstimate);
         }
         // there was a fight and we don't know the actual details, time for estimating
         else
         {
-            int defenders = settlementInfo.getDefenders();
-            int attackers = 0;
-            for (ArmyInfo armyInfo : battleInfo.getArmyInfos())
+            // we only need to check opponent army estimates
+            if (!battle.getArmy().getOwner().equals(aiPlayer))
             {
-                attackers = attackers + armyInfo.getSoldiers();
-            }
-
-            // reinforce
-            if (battleInfo.getDefender().equals(settlementInfo.getSettlement().getOwner()))
-            {
-                defenderEstimate = defenders + attackers;
-            }
-            // owner changed
-            else if (!battleInfo.getDefender().equals(settlementInfo.getSettlement().getOwner()))
-            {
-                defenderEstimate = attackers - defenders;
-            }
-            // attacker lost
-            else if (attackers < defenders)
-            {
-                defenderEstimate = defenders - attackers;
-            }
-            else
-            {
-                // obviously a previous estimate was wrong, otherwise the settlement had been taken over.
-                // so let's randomize the remaining defender estimate
-                defenderEstimate = MathUtils.random(0, ESTIMATE_ERROR_MARGIN);
+                int estimationError = battleInfo.getActualSoldiersAttacking() - battleInfo.getEstimatedSoldiers();
+                // only battles which were shorter than expected remain to be fixed
+                if (estimationError < 0)
+                {
+                    fixEstimationError(estimationError, battleInfo.getArmyInfos());
+                }
             }
         }
-        settlementInfo.setDefenders(defenderEstimate);
-        Gdx.app.log("AI",
-            "defender estimate: " + defenderEstimate + " actual size: " + settlementInfo.getSettlement().getSoldiers());
+    }
+
+    private void fixEstimationError(int estimationError, Array<ArmyInfo> armyInfos)
+    {
+        // let's try fixing the estimation and proceed greedily
+        int fixedSoldiers = 0;
+        int errorAmount = Math.abs(estimationError);
+        while (fixedSoldiers != errorAmount)
+        {
+            for (ArmyInfo armyInfo : armyInfos)
+            {
+                if (fixedSoldiers == errorAmount)
+                {
+                    break;
+                }
+
+                SettlementInfo settlementInfo = settlementInfoBySettlementId.get(armyInfo.getSourceSettlementId());
+                int defenders = settlementInfo.getDefenders();
+
+                if (estimationError < 0)
+                {
+                    // the soldier estimate was too high
+                    int minimumSoldiers = armyInfo.getArmySize().getMinimumSoldiers();
+                    int correction = Math.min(armyInfo.getSoldiers() - minimumSoldiers, errorAmount - fixedSoldiers);
+                    fixedSoldiers = fixedSoldiers + correction;
+                    defenders = defenders + correction;
+                }
+                else
+                {
+                    // the soldier estimate was too low
+                    Integer maximumSoldiers = null;
+                    if (armyInfo.getArmySize().equals(ArmySize.SMALL))
+                    {
+                        maximumSoldiers = ArmySize.MEDIUM.getMinimumSoldiers() - 1;
+                    }
+                    else if (armyInfo.getArmySize().equals(ArmySize.MEDIUM))
+                    {
+                        maximumSoldiers = ArmySize.LARGE.getMinimumSoldiers() - 1;
+                    }
+                    int correction = errorAmount;
+                    if (maximumSoldiers != null)
+                    {
+                        correction = Math.min(maximumSoldiers - armyInfo.getSoldiers(), errorAmount - fixedSoldiers);
+                    }
+                    fixedSoldiers = fixedSoldiers + correction;
+                    // let's keep defenders at least at 0
+                    defenders = Math.max(0, defenders - correction);
+                }
+                settlementInfo.setDefenders(defenders);
+            }
+        }
     }
 }
