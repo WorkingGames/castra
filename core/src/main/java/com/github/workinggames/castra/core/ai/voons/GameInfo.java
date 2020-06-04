@@ -163,7 +163,11 @@ public class GameInfo
         SettlementInfo target = settlementInfoBySettlementId.get(army.getTarget().getId());
         SettlementInfo source = settlementInfoBySettlementId.get(army.getSource().getId());
         int sourceSoldiers = source.getDefenders();
-
+        // there can't be negative number of soldiers and if an army was created, there has to be at least 1 soldier
+        if (sourceSoldiers < 0)
+        {
+            sourceSoldiers = 1;
+        }
         /*
          * if the army details are visible we know the soldier count, if the
          * settlement details are visible, we know exactly the soldier count after the army left,
@@ -180,22 +184,21 @@ public class GameInfo
             int defendingSoldiers = target.getDefenders();
 
             int minArmySize;
-            int maxArmySize;
+            int maxArmySize = sourceSoldiers;
             // let's get soldier min/max based on army size first
             if (army.getArmySize().equals(ArmySize.SMALL))
             {
                 minArmySize = ArmySize.SMALL.getMinimumSoldiers();
-                maxArmySize = ArmySize.MEDIUM.getMinimumSoldiers() - 1;
+                maxArmySize = Math.min(ArmySize.MEDIUM.getMinimumSoldiers() - 1, maxArmySize);
             }
             else if (army.getArmySize().equals(ArmySize.MEDIUM))
             {
                 minArmySize = ArmySize.MEDIUM.getMinimumSoldiers();
-                maxArmySize = ArmySize.LARGE.getMinimumSoldiers() - 1;
+                maxArmySize = Math.min(ArmySize.LARGE.getMinimumSoldiers() - 1, maxArmySize);
             }
             else
             {
                 minArmySize = ArmySize.LARGE.getMinimumSoldiers();
-                maxArmySize = sourceSoldiers;
             }
 
             // check if the source estimate was wrong
@@ -221,7 +224,7 @@ public class GameInfo
                 minArmySize = defendingSoldiers;
             }
 
-            soldierEstimate = MathUtils.random(minArmySize, Math.min(sourceSoldiers, maxArmySize));
+            soldierEstimate = MathUtils.random(minArmySize, maxArmySize);
             if (gameConfiguration.isDebugAI() && !army.getOwner().equals(aiPlayer))
             {
                 addDebugLabel(army, aiPlayer, soldierEstimate);
