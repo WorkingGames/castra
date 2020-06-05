@@ -57,6 +57,12 @@ public class SimpleAi implements Ai
         stateMachine.changeState(SimpleAiState.WAIT);
     }
 
+    @Override
+    public void fake()
+    {
+        // not supported
+    }
+
     private Settlement randomOrigin()
     {
         Settlement origin = null;

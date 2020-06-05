@@ -20,6 +20,7 @@ public class BasicAi implements Ai, Telegraph
     private static final int MAXIMUM_SOLDIER_INVEST_IN_NEUTRAL = 5;
     private static final float MINIMUM_IDLE_TIME = 0.5f;
     private static final float MAXIMUM_IDLE_TIME = 1.5f;
+    private static final float FAKING_CHANCE = 0.25f;
 
     @Getter
     private final StateMachine<Ai, AiState> stateMachine;
@@ -27,6 +28,7 @@ public class BasicAi implements Ai, Telegraph
     private final MessagingHandler messagingHandler;
     private final GameInfo gameInfo;
     private final AttackGeneral attackGeneral;
+    private final FakeGeneral fakeGeneral;
 
     private float nextActionTime;
 
@@ -36,7 +38,9 @@ public class BasicAi implements Ai, Telegraph
         stateMachine = new DefaultStateMachine<>(this, AiState.WAIT);
         gameInfo = new GameInfo(world, aiPlayer);
         messagingHandler = new MessagingHandler(this, gameInfo);
-        attackGeneral = new AttackGeneral(new AiUtils(world), aiPlayer, world.getGameConfiguration());
+        AiUtils aiUtils = new AiUtils(world);
+        attackGeneral = new AttackGeneral(aiUtils, aiPlayer, world.getGameConfiguration());
+        fakeGeneral = new FakeGeneral(aiUtils, aiPlayer);
         nextActionTime = FIRST_ACTION_TIME;
     }
 
@@ -54,7 +58,18 @@ public class BasicAi implements Ai, Telegraph
 
         if (time >= nextActionTime)
         {
-            stateMachine.changeState(AiState.ATTACK);
+            // only fake when it makes sense (army details hidden) and by chance
+            boolean faking = !world.getGameConfiguration().isOpponentArmyDetailsVisible() &&
+                MathUtils.randomBoolean(FAKING_CHANCE);
+
+            if (faking)
+            {
+                stateMachine.changeState(AiState.FAKE);
+            }
+            else
+            {
+                stateMachine.changeState(AiState.ATTACK);
+            }
             nextActionTime = time + MathUtils.random(MINIMUM_IDLE_TIME, MAXIMUM_IDLE_TIME);
         }
     }
@@ -79,6 +94,25 @@ public class BasicAi implements Ai, Telegraph
         {
             Attack attack = attackOptions.first();
             createArmies(attack);
+        }
+        else
+        {
+            stateMachine.changeState(AiState.WAIT);
+        }
+    }
+
+    public void fake()
+    {
+        Array<Attack> attackOptions = fakeGeneral.getOpponentAttackOptions(gameInfo.getSettlementInfoBySettlementId());
+        attackOptions.shuffle();
+
+        if (!attackOptions.isEmpty())
+        {
+            Attack attack = attackOptions.first();
+            createArmies(attack);
+            // faking only makes sense if the real attack is deployed as fast as allowed
+            nextActionTime = world.getTimepiece().getTime() + MINIMUM_IDLE_TIME;
+            stateMachine.changeState(AiState.ATTACK);
         }
         else
         {

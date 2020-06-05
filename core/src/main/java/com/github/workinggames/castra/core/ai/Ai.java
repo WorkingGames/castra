@@ -5,4 +5,6 @@ public interface Ai
     void update();
 
     void attack();
+
+    void fake();
 }

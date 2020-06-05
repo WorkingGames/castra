@@ -14,6 +14,14 @@ enum AiState implements State<Ai>
                 entity.attack();
             }
         },
+    FAKE()
+        {
+            @Override
+            public void enter(Ai entity)
+            {
+                entity.fake();
+            }
+        },
     WAIT();
 
     @Override
