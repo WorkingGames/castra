@@ -1,7 +1,5 @@
 package com.github.workinggames.castra.core.screen;
 
-import lombok.extern.slf4j.Slf4j;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -22,7 +20,6 @@ import com.github.workinggames.castra.core.task.InitializerTask;
 import com.github.workinggames.castra.core.worldbuilding.FluffInitializer;
 import com.github.workinggames.castra.core.worldbuilding.SettlementInitializer;
 
-@Slf4j
 public class LoadingScreen extends ScreenAdapter
 {
     private final Castra game;

@@ -1,7 +1,5 @@
 package com.github.workinggames.castra.core.task;
 
-import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.utils.Array;
@@ -14,7 +12,7 @@ import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 public class BattleProcessor implements Disposable
 {
     private final Array<Battle> battles;
-    private final UUID gameId;
+    private final String gameId;
     private final StatisticsEventCreator statisticsEventCreator;
 
     private Timer.Task battleTask;

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.GridPoint2;
@@ -22,7 +21,6 @@ import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.AsyncInitializer;
 import com.github.workinggames.castra.core.texture.TextureAtlasInitializer;
 
-@Slf4j
 @RequiredArgsConstructor
 public class FluffInitializer implements AsyncInitializer
 {

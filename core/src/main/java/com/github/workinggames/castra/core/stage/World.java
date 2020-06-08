@@ -1,11 +1,9 @@
 package com.github.workinggames.castra.core.stage;
 
 import java.util.Iterator;
-import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import com.badlogic.gdx.ai.DefaultTimepiece;
 import com.badlogic.gdx.ai.Timepiece;
@@ -30,11 +28,10 @@ import com.github.workinggames.castra.core.model.SettlementSize;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
 import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 
-@Slf4j
 public class World extends Stage
 {
     @Getter
-    private final UUID gameId = UUID.randomUUID();
+    private final String gameId = IdGenerator.random();
 
     @Getter
     private final TextureAtlas textureAtlas;

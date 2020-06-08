@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.badlogic.gdx.utils.Array;
-import com.github.workinggames.castra.core.AttackSource;
 
 @Getter
 @ToString

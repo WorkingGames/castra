@@ -1,11 +1,8 @@
 package com.github.workinggames.castra.core.statistics;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
@@ -26,17 +23,15 @@ import com.github.workinggames.castra.core.statistics.event.PlayerDto;
 import com.github.workinggames.castra.core.statistics.event.SettlementDto;
 import com.github.workinggames.castra.core.task.VortexEventSender;
 
-@Slf4j
 @RequiredArgsConstructor
 public class StatisticsEventCreator
 {
     private final VortexEventSender vortexEventSender;
-    private final SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private final TimestampFormatter timestampFormatter;
 
     public void gameStarted(World world)
     {
         GameConfiguration gameConfiguration = world.getGameConfiguration();
-
         GameStarted.Attributes attributes = new GameStarted.Attributes(getGameId(world),
             new PlayerDto(gameConfiguration.getPlayer1()),
             new PlayerDto(gameConfiguration.getPlayer2()),
@@ -98,9 +93,9 @@ public class StatisticsEventCreator
         vortexEventSender.send(battleJoined);
     }
 
-    public void battleEnded(UUID gameId, Army army, boolean captured)
+    public void battleEnded(String gameId, Army army, boolean captured)
     {
-        BattleEnded.Attributes attributes = new BattleEnded.Attributes(gameId.toString(),
+        BattleEnded.Attributes attributes = new BattleEnded.Attributes(gameId,
             new PlayerDto(army.getOwner()),
             new SettlementDto(army.getTarget()),
             captured);
@@ -112,12 +107,12 @@ public class StatisticsEventCreator
     private String getTimestamp()
     {
         Date now = new Date(TimeUtils.millis());
-        return isoDateFormatter.format(now);
+        return timestampFormatter.getTimestamp(now);
     }
 
     private String getGameId(World world)
     {
-        return world.getGameId().toString();
+        return world.getGameId();
     }
 
     private Array<SettlementDto> getSettlementDtos(World world)

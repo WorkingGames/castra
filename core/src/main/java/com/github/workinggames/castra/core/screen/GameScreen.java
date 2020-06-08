@@ -1,7 +1,5 @@
 package com.github.workinggames.castra.core.screen;
 
-import lombok.extern.slf4j.Slf4j;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.ai.msg.MessageManager;
@@ -14,7 +12,6 @@ import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.BattleProcessor;
 import com.github.workinggames.castra.core.task.SoldierSpawner;
 
-@Slf4j
 public class GameScreen extends ScreenAdapter
 {
     private final Castra game;

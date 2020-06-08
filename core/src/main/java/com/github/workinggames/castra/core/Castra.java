@@ -1,6 +1,7 @@
 package com.github.workinggames.castra.core;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import com.badlogic.gdx.Game;
@@ -16,9 +17,11 @@ import com.github.workinggames.castra.core.screen.GameState;
 import com.github.workinggames.castra.core.screen.MainMenuScreen;
 import com.github.workinggames.castra.core.stage.GameConfiguration;
 import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
+import com.github.workinggames.castra.core.statistics.TimestampFormatter;
 import com.github.workinggames.castra.core.task.VortexEventSender;
 import com.github.workinggames.castra.core.texture.TextureAtlasInitializer;
 
+@RequiredArgsConstructor
 public class Castra extends Game
 {
     @Getter
@@ -41,6 +44,8 @@ public class Castra extends Game
 
     @Getter
     private StatisticsEventCreator statisticsEventCreator;
+
+    private final TimestampFormatter timestampFormatter;
 
     @Override
     public void pause()
@@ -76,7 +81,7 @@ public class Castra extends Game
 
         fontProvider = new FontProvider();
 
-        statisticsEventCreator = new StatisticsEventCreator(new VortexEventSender());
+        statisticsEventCreator = new StatisticsEventCreator(new VortexEventSender(), timestampFormatter);
 
         this.setScreen(new MainMenuScreen(this));
     }

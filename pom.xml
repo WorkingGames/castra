@@ -11,6 +11,7 @@
         <module>android</module>
         <module>core</module>
         <module>desktop</module>
+        <module>html</module>
     </modules>
 
     <properties>
@@ -19,8 +20,8 @@
         <encoding>UTF-8</encoding>
         <gdx.ai.version>1.8.2</gdx.ai.version>
         <gdx.version>1.9.10</gdx.version>
-        <gwt.maven.version>2.6.0</gwt.maven.version>
-        <gwt.version>2.6.0</gwt.version>
+        <gwt.maven.version>2.8.2</gwt.maven.version>
+        <gwt.version>2.8.2</gwt.version>
         <!-- Although we develop for Desktop first, we want to stay compatible to Android and GWT. At least Android
         complained about lambdas. -->
         <java.version>1.8</java.version>

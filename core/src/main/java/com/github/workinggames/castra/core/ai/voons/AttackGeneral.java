@@ -3,7 +3,6 @@ package com.github.workinggames.castra.core.ai.voons;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
-import com.github.workinggames.castra.core.AttackSource;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.ai.AiUtils;
 import com.github.workinggames.castra.core.model.Player;

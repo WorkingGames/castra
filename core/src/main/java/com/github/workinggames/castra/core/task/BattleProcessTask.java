@@ -1,7 +1,6 @@
 package com.github.workinggames.castra.core.task;
 
 import java.util.Iterator;
-import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +18,7 @@ import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 public class BattleProcessTask extends Timer.Task
 {
     private final Array<Battle> battles;
-    private final UUID gameId;
+    private final String gameId;
     private final StatisticsEventCreator statisticsEventCreator;
 
     private boolean captured = false;

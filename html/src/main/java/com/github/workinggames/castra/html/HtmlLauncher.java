@@ -3,6 +3,7 @@ package com.github.workinggames.castra.html;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.github.workinggames.castra.core.Castra;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
@@ -12,14 +13,13 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import de.incub8.castra.core.Castra;
 
 public class HtmlLauncher extends GwtApplication
 {
     private static final String APPLICATION_CONTAINER_ID = "applicationContainer";
 
-    private static final int WIDTH = 1366;
-    private static final int HEIGHT = 768;
+    private static final int WIDTH = 1920;
+    private static final int HEIGHT = 1080;
 
     private static HtmlLauncher instance;
 
@@ -57,23 +57,22 @@ public class HtmlLauncher extends GwtApplication
     public ApplicationListener createApplicationListener()
     {
         instance = this;
-        setLoadingListener(
-            new LoadingListener()
+        setLoadingListener(new LoadingListener()
+        {
+            @Override
+            public void beforeSetup()
             {
-                @Override
-                public void beforeSetup()
-                {
 
-                }
+            }
 
-                @Override
-                public void afterSetup()
-                {
-                    scaleCanvas();
-                    setupResizeHook();
-                }
-            });
-        return new Castra();
+            @Override
+            public void afterSetup()
+            {
+                scaleCanvas();
+                setupResizeHook();
+            }
+        });
+        return new Castra(new GwtTimestampFormatter());
     }
 
     void scaleCanvas()
@@ -123,7 +122,7 @@ public class HtmlLauncher extends GwtApplication
     }-*/;
 
     native void setupResizeHook() /*-{
-        var htmlLauncher_onWindowResize = $entry(@de.incub8.castra.html.HtmlLauncher::handleResize());
+        var htmlLauncher_onWindowResize = $entry(@com.github.workinggames.castra.html.HtmlLauncher::handleResize());
         $wnd.addEventListener('resize', htmlLauncher_onWindowResize, false);
     }-*/;
 

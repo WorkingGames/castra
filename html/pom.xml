@@ -36,14 +36,6 @@
             <classifier>sources</classifier>
         </dependency>
         <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.workinggames.castra</groupId>
             <artifactId>castra-core</artifactId>
         </dependency>
@@ -51,6 +43,14 @@
             <groupId>com.github.workinggames.castra</groupId>
             <artifactId>castra-core</artifactId>
             <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -87,6 +87,11 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <webappDirectory>${project.build.directory}/webapp</webappDirectory>
+                    <webResources>
+                        <resource>
+                            <directory>html/target/webapp</directory>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>

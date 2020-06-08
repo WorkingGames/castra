@@ -1,7 +1,6 @@
 package com.github.workinggames.castra.core.ai.voons;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
@@ -10,13 +9,11 @@ import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
-import com.github.workinggames.castra.core.AttackSource;
 import com.github.workinggames.castra.core.ai.Ai;
 import com.github.workinggames.castra.core.ai.AiUtils;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
-@Slf4j
 public class ConfrontingAi implements Ai, Telegraph
 {
     private static final int FIRST_ACTION_TIME = 1;
