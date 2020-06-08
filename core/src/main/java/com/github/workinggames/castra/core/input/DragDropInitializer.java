@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.github.workinggames.castra.core.actor.Settlement;
-import com.github.workinggames.castra.core.screen.LoadingState;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.AsyncInitializer;
 
@@ -12,6 +11,8 @@ import com.github.workinggames.castra.core.task.AsyncInitializer;
 public class DragDropInitializer implements AsyncInitializer
 {
     private final World world;
+
+    private boolean finished;
 
     public void initialize()
     {
@@ -22,6 +23,13 @@ public class DragDropInitializer implements AsyncInitializer
             dragAndDrop.addSource(new SettlementDragSource(settlement));
             dragAndDrop.addTarget(new SettlementDragTarget(settlement, world));
         }
-        LoadingState.getInstance().setDragDropInitialized(true);
+
+        finished = true;
+    }
+
+    @Override
+    public boolean isFinished()
+    {
+        return finished;
     }
 }

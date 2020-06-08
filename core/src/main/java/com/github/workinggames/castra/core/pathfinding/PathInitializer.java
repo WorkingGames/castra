@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.model.Paths;
-import com.github.workinggames.castra.core.screen.LoadingState;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.AsyncInitializer;
 
@@ -26,6 +25,8 @@ public class PathInitializer implements AsyncInitializer
     private final Heuristic<Vector2> heuristic;
     private final PathUtils pathUtils;
     private final World world;
+
+    private boolean finished;
 
     public PathInitializer(Viewport viewport, TextureAtlas textureAtlas, World world)
     {
@@ -76,7 +77,8 @@ public class PathInitializer implements AsyncInitializer
                 }
             }
         }
-        LoadingState.getInstance().setPathInitialized(true);
+
+        finished = true;
     }
 
     private void applyBlacklist(Array<Settlement> settlements, Settlement origin, Settlement destination)
@@ -105,5 +107,11 @@ public class PathInitializer implements AsyncInitializer
             result = null;
         }
         return result;
+    }
+
+    @Override
+    public boolean isFinished()
+    {
+        return finished;
     }
 }

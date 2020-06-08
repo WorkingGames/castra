@@ -18,7 +18,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.math.Rectangles;
-import com.github.workinggames.castra.core.screen.LoadingState;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.AsyncInitializer;
 import com.github.workinggames.castra.core.texture.TextureAtlasInitializer;
@@ -50,6 +49,7 @@ public class FluffInitializer implements AsyncInitializer
     private RandomXS128 random;
     private float worldWidth;
     private float worldHeight;
+    private boolean finished;
 
     public void initialize()
     {
@@ -76,7 +76,8 @@ public class FluffInitializer implements AsyncInitializer
         {
             world.createFluff(image);
         }
-        LoadingState.getInstance().setFluffInitialized(true);
+
+        finished = true;
     }
 
     private void addFluff(Array<Image> fluffs, List<String> names, int amount)
@@ -180,5 +181,11 @@ public class FluffInitializer implements AsyncInitializer
     {
         GridPoint2 armySplitPosition = new GridPoint2(0, 0);
         return position.dst(armySplitPosition) >= DISTANCE_TO_ARMY_SPLIT;
+    }
+
+    @Override
+    public boolean isFinished()
+    {
+        return finished;
     }
 }

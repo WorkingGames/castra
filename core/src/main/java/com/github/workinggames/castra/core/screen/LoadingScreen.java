@@ -27,7 +27,6 @@ public class LoadingScreen extends ScreenAdapter
 {
     private final Castra game;
     private final Stage stage;
-    private final LoadingState loadingState;
     private final Texture backgroundTexture;
 
     private World world;
@@ -36,6 +35,12 @@ public class LoadingScreen extends ScreenAdapter
     private PathInitializer pathInitializer;
     private DragDropInitializer dragDropInitializer;
     private AiInitializer aiInitializer;
+
+    private boolean settlementInitializerStarted;
+    private boolean fluffInitializerStarted;
+    private boolean pathInitializerStarted;
+    private boolean dragDropInitializerStarted;
+    private boolean aiInitializerStarted;
 
     public LoadingScreen(Castra game)
     {
@@ -49,8 +54,6 @@ public class LoadingScreen extends ScreenAdapter
         Label loadingLabel = new Label("Loading...", game.getSkin());
         loadingLabel.setPosition(Screens.getCenterX(loadingLabel), Screens.getRelativeY(50));
         stage.addActor(loadingLabel);
-
-        loadingState = LoadingState.getInstance();
     }
 
     @Override
@@ -94,32 +97,37 @@ public class LoadingScreen extends ScreenAdapter
             aiInitializer = new AiInitializer(world);
         }
 
-        if (world != null && !loadingState.isSettlementsInitialized())
+        if (world != null && !settlementInitializerStarted)
         {
             Timer.post(new InitializerTask(settlementInitializer));
+            settlementInitializerStarted = true;
         }
-        if (loadingState.isSettlementsInitialized() && !loadingState.isFluffInitialized())
+        if (settlementInitializer.isFinished() && !fluffInitializerStarted)
         {
             Timer.post(new InitializerTask(fluffInitializer));
+            fluffInitializerStarted = true;
         }
-        if (loadingState.isSettlementsInitialized() && !loadingState.isDragDropInitialized())
+        if (settlementInitializer.isFinished() && !dragDropInitializerStarted)
         {
             Timer.post(new InitializerTask(dragDropInitializer));
+            dragDropInitializerStarted = true;
         }
-        if (loadingState.isSettlementsInitialized() && !loadingState.isPathInitialized())
+        if (settlementInitializer.isFinished() && !pathInitializerStarted)
         {
             Timer.post(new InitializerTask(pathInitializer));
+            pathInitializerStarted = true;
         }
-        if (loadingState.isSettlementsInitialized() && loadingState.isPathInitialized())
+        if (settlementInitializer.isFinished() && pathInitializer.isFinished() && !aiInitializerStarted)
         {
             aiInitializer.initialize();
+            aiInitializerStarted = true;
         }
 
-        if (loadingState.isSettlementsInitialized() &&
-            loadingState.isFluffInitialized() &&
-            loadingState.isPathInitialized() &&
-            loadingState.isDragDropInitialized() &&
-            loadingState.isAiInitialized())
+        if (settlementInitializer.isFinished() &&
+            fluffInitializer.isFinished() &&
+            pathInitializer.isFinished() &&
+            dragDropInitializer.isFinished() &&
+            aiInitializer.isFinished())
         {
             game.setScreen(new GameScreen(game, world));
             stage.dispose();

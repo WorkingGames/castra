@@ -68,7 +68,6 @@ public class MainMenuScreen extends ScreenAdapter
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                LoadingState.reset();
                 game.setScreen(new LoadingScreen(game));
                 dispose();
             }

@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.SettlementSize;
-import com.github.workinggames.castra.core.screen.LoadingState;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.AsyncInitializer;
 
@@ -46,6 +45,7 @@ public class SettlementInitializer implements AsyncInitializer
     private RandomXS128 random;
     private float worldWidth;
     private float worldHeight;
+    private boolean finished;
 
     public void initialize()
     {
@@ -91,7 +91,8 @@ public class SettlementInitializer implements AsyncInitializer
                 MAXIMUM_NEUTRAL_SOLDIER_SIZE_SMALL_SETTLEMENT);
             createSettlement(positionIterator.next(), SettlementSize.SMALL, soldiers, NEUTRAL_PLAYER);
         }
-        LoadingState.getInstance().setSettlementsInitialized(true);
+
+        finished = true;
     }
 
     private void createSettlement(GridPoint2 position, SettlementSize size, int soldiers, Player owner)
@@ -178,5 +179,11 @@ public class SettlementInitializer implements AsyncInitializer
         int xPosition = getRandomValueInclusive(PADDING_LEFT, maxX);
         int yPosition = getRandomValueInclusive(PADDING_BOTTOM, maxY);
         return new GridPoint2(xPosition, yPosition);
+    }
+
+    @Override
+    public boolean isFinished()
+    {
+        return finished;
     }
 }
