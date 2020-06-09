@@ -13,6 +13,7 @@ public class GameEnded implements VortexEvent
         private final String gameId;
         private final PlayerDto winner;
         private final Array<SettlementDto> settlements;
+        private final int playTime;
     }
 
     private final String name = "game_ended";

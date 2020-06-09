@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -16,7 +17,7 @@ public class GameOverScreen extends ScreenAdapter
     private final Castra game;
     private final Stage stage;
 
-    public GameOverScreen(Castra game, boolean player1Won)
+    public GameOverScreen(Castra game, boolean player1Won, float playTime)
     {
         this.game = game;
         stage = new Stage(game.getViewport());
@@ -28,6 +29,7 @@ public class GameOverScreen extends ScreenAdapter
         {
             message = game.getGameConfiguration().getPlayer2().getName() + " Won!";
         }
+        message = message + " in " + MathUtils.ceil(playTime) + " seconds";
 
         Label label = new Label(message, game.getSkin());
         label.setPosition(Screens.getCenterX(label), Screens.getRelativeY(60));

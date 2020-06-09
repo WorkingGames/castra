@@ -23,6 +23,8 @@ public class GameScreen extends ScreenAdapter
     private final Texture backgroundTexture;
 
     private boolean gameStarted = false;
+    private float playTime;
+    private boolean skipNextDeltaForPlayTime = false;
 
     public GameScreen(Castra game, World world)
     {
@@ -67,6 +69,14 @@ public class GameScreen extends ScreenAdapter
             game.getStatisticsEventCreator().gameStarted(this.world);
             gameStarted = true;
         }
+        if (!skipNextDeltaForPlayTime)
+        {
+            playTime = playTime + delta;
+        }
+        else
+        {
+            skipNextDeltaForPlayTime = false;
+        }
         draw(delta);
         checkGameOver();
     }
@@ -82,6 +92,7 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void resume()
     {
+        skipNextDeltaForPlayTime = true;
         super.resume();
         soldierSpawner.startSpawn();
         battleProcessor.startBattles(game.getGameConfiguration().getGameSpeed().getBattleProcessingInterval());
@@ -114,14 +125,14 @@ public class GameScreen extends ScreenAdapter
     {
         if (victoryCondition.player1Won())
         {
-            game.getStatisticsEventCreator().gameEnded(world, world.getGameConfiguration().getPlayer1());
-            game.setScreen(new GameOverScreen(game, true));
+            game.getStatisticsEventCreator().gameEnded(world, world.getGameConfiguration().getPlayer1(), playTime);
+            game.setScreen(new GameOverScreen(game, true, playTime));
             dispose();
         }
         else if (victoryCondition.player1Lost())
         {
-            game.getStatisticsEventCreator().gameEnded(world, world.getGameConfiguration().getPlayer2());
-            game.setScreen(new GameOverScreen(game, false));
+            game.getStatisticsEventCreator().gameEnded(world, world.getGameConfiguration().getPlayer2(), playTime);
+            game.setScreen(new GameOverScreen(game, false, playTime));
             dispose();
         }
     }

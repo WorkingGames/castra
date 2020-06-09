@@ -5,6 +5,7 @@ import java.util.Date;
 import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.github.workinggames.castra.core.actor.Army;
@@ -43,11 +44,12 @@ public class StatisticsEventCreator
         vortexEventSender.send(gameStarted);
     }
 
-    public void gameEnded(World world, Player winner)
+    public void gameEnded(World world, Player winner, float playTime)
     {
         GameEnded.Attributes attributes = new GameEnded.Attributes(getGameId(world),
             new PlayerDto(winner),
-            getSettlementDtos(world));
+            getSettlementDtos(world),
+            MathUtils.ceil(playTime));
         GameEnded gameEnded = new GameEnded(attributes, getTimestamp());
 
         vortexEventSender.send(gameEnded);

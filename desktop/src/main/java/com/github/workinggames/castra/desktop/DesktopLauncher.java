@@ -12,7 +12,8 @@ public class DesktopLauncher
         config.title = "Charge";
         config.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
         Castra game = new Castra(new DesktopTimestampFormatter());
-        game.getGameConfiguration().setDebug(true);
+        String debug = System.getProperty("debug", "false");
+        game.getGameConfiguration().setDebug(Boolean.parseBoolean(debug));
         new LwjglApplication(game, config);
     }
 }
