@@ -31,7 +31,7 @@ public class SettlementInfo
     {
         this.settlement = settlement;
         this.aiPlayer = aiPlayer;
-        if (gameConfiguration.isDebugAI() && !gameConfiguration.isOpponentSettlementDetailsVisible())
+        if (gameConfiguration.isDebug() && !gameConfiguration.isOpponentSettlementDetailsVisible())
         {
             addDebugLabel(settlement, aiPlayer);
         }

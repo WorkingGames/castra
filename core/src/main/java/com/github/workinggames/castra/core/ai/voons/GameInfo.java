@@ -50,7 +50,7 @@ public class GameInfo
             for (Settlement otherSettlement : others)
             {
                 float distance = world.getPaths().get(settlement, otherSettlement).getDistance();
-                float seconds = distance / gameConfiguration.getArmyTravelSpeedInPixelPerSecond();
+                float seconds = distance / gameConfiguration.getGameSpeed().getArmySpeed();
                 settlementInfo.getSettlementDistancesInTicks().put(otherSettlement.getId(), seconds);
             }
             // initial strength is always known, even from opponent
@@ -225,7 +225,7 @@ public class GameInfo
             }
 
             soldierEstimate = MathUtils.random(minArmySize, maxArmySize);
-            if (gameConfiguration.isDebugAI() && !army.getOwner().equals(aiPlayer))
+            if (gameConfiguration.isDebug() && !army.getOwner().equals(aiPlayer))
             {
                 addDebugLabel(army, aiPlayer, soldierEstimate);
             }
@@ -238,7 +238,7 @@ public class GameInfo
             army.getArmySize(),
             army.getPath().getDistance(),
             timepiece.getTime(),
-            gameConfiguration.getArmyTravelSpeedInPixelPerSecond(),
+            gameConfiguration.getGameSpeed().getArmySpeed(),
             source.getSettlement().getId());
         target.getInboundArmies().put(army.getId(), armyInfo);
     }

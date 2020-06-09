@@ -59,7 +59,7 @@ public class AttackGeneral
                     1 +
                     settlementInfo.getBattleSoldierSpawn(settlementInfo.getDefenders(),
                         settlementInfo.getSettlement().getSize(),
-                        gameConfiguration.getBattleProcessingInterval());
+                        gameConfiguration.getGameSpeed().getBattleProcessingInterval());
                 Array<AttackSource> attackSources = getAttackSourcesWithSoldierSpawn(settlementInfoBySettlementId,
                     settlementInfo,
                     requiredSoldiers,

@@ -26,6 +26,7 @@
     <set-property name="user.agent" value="safari" />
 
     <extend-configuration-property name="gdx.reflect.include" value="com.github.workinggames.castra.core.model.PlayerColorSchema" />
+    <extend-configuration-property name="gdx.reflect.include" value="com.github.workinggames.castra.core.model.GameSpeed" />
 
     <!-- for debugging activate the property with the full path reference, otherwise the relative one -->
     <!--<set-configuration-property name="gdx.assetpath" value="C:\incub8\volkerivens\projects\castra\assets" />-->

@@ -63,7 +63,7 @@ public class GameScreen extends ScreenAdapter
         if (!gameStarted)
         {
             soldierSpawner.startSpawn();
-            battleProcessor.startBattles(game.getGameConfiguration().getBattleProcessingInterval());
+            battleProcessor.startBattles(game.getGameConfiguration().getGameSpeed().getBattleProcessingInterval());
             game.getStatisticsEventCreator().gameStarted(this.world);
             gameStarted = true;
         }
@@ -84,7 +84,7 @@ public class GameScreen extends ScreenAdapter
     {
         super.resume();
         soldierSpawner.startSpawn();
-        battleProcessor.startBattles(game.getGameConfiguration().getBattleProcessingInterval());
+        battleProcessor.startBattles(game.getGameConfiguration().getGameSpeed().getBattleProcessingInterval());
     }
 
     private void draw(float delta)
