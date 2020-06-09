@@ -14,7 +14,7 @@ import com.github.workinggames.castra.core.ai.AiUtils;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
-public class ConfrontingAi implements Ai, Telegraph
+public class FrankyAi implements Ai, Telegraph
 {
     private static final int FIRST_ACTION_TIME = 1;
     private static final int MAXIMUM_SOLDIER_INVEST_IN_NEUTRAL = 30;
@@ -31,6 +31,8 @@ public class ConfrontingAi implements Ai, Telegraph
     private final GameInfo gameInfo;
     private final AttackGeneral attackGeneral;
     private final FakeGeneral fakeGeneral;
+    private final AiUtils aiUtils;
+    private final Player aiPlayer;
 
     private float nextActionTime;
     private boolean attacked;
@@ -38,13 +40,14 @@ public class ConfrontingAi implements Ai, Telegraph
         MAXIMUM_TURNS_WITHOUT_ATTACKING_NEUTRAL);
     private int turnsWithoutAttack = 0;
 
-    public ConfrontingAi(World world, Player aiPlayer)
+    public FrankyAi(World world, Player aiPlayer)
     {
         this.world = world;
+        this.aiPlayer = aiPlayer;
         stateMachine = new DefaultStateMachine<>(this, AiState.WAIT);
         gameInfo = new GameInfo(world, aiPlayer);
         messagingHandler = new MessagingHandler(this, gameInfo);
-        AiUtils aiUtils = new AiUtils(world);
+        aiUtils = new AiUtils(world);
         attackGeneral = new AttackGeneral(aiUtils, aiPlayer, world.getGameConfiguration());
         fakeGeneral = new FakeGeneral(aiUtils, aiPlayer);
         nextActionTime = FIRST_ACTION_TIME;
@@ -82,7 +85,8 @@ public class ConfrontingAi implements Ai, Telegraph
             }
             else
             {
-                if (faking)
+                // it only makes sense to fake attacking an opponent if he has more than one settlement
+                if (faking && aiUtils.getOpponentSettlements(aiPlayer).size > 1)
                 {
                     stateMachine.changeState(AiState.FAKE);
                 }

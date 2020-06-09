@@ -40,6 +40,8 @@ public class PlayerOptions extends Table
     private Label aiDescriptionValue;
     private SelectBox<PlayerColorSchema> playerColorSelectBox;
     private SelectBox<PlayerType> playerTypeSelectBox;
+    private Label playerNameLabel;
+    private TextField nameInputField;
 
     public PlayerOptions(Castra game, String title, PlayerOptionsGroup optionsGroup)
     {
@@ -148,6 +150,8 @@ public class PlayerOptions extends Table
                 if (!player.isAi())
                 {
                     player.setAiType(null);
+                    player.setName(title);
+                    nameInputField.setText(title);
                 }
                 else if (player.getAiType() == null)
                 {
@@ -184,6 +188,8 @@ public class PlayerOptions extends Table
         aiDifficultyValue.setVisible(visible);
         aiDescriptionLabel.setVisible(visible);
         aiDescriptionValue.setVisible(visible);
+        playerNameLabel.setVisible(!visible);
+        nameInputField.setVisible(!visible);
     }
 
     private void addAiTypeInput()
@@ -196,6 +202,7 @@ public class PlayerOptions extends Table
         if (player.getAiType() != null)
         {
             aiTypeSelectBox.setSelected(player.getAiType());
+            player.setName(player.getAiType().name());
         }
 
         aiTypeSelectBox.addListener(new ChangeListener()
@@ -206,6 +213,7 @@ public class PlayerOptions extends Table
                 SelectBox<AiType> selectBox = (SelectBox<AiType>) actor;
                 AiType selected = selectBox.getSelected();
                 player.setAiType(selected);
+                player.setName(selected.name());
                 aiDifficultyValue.setText(selected.getDifficulty());
                 aiDescriptionValue.setText(selected.getDescription());
             }
@@ -237,9 +245,9 @@ public class PlayerOptions extends Table
 
     private void addNameInput()
     {
-        Label playerNameLabel = new Label("Name: ", skin);
+        playerNameLabel = new Label("Name: ", skin);
         add(playerNameLabel);
-        TextField nameInputField = new TextField(player.getName(), skin);
+        nameInputField = new TextField(player.getName(), skin);
 
         nameInputField.setOnlyFontChars(true);
         nameInputField.addListener(new ChangeListener()

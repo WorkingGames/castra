@@ -14,7 +14,7 @@ import com.github.workinggames.castra.core.ai.AiUtils;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
 
-public class BasicAi implements Ai, Telegraph
+public class BillyAi implements Ai, Telegraph
 {
     private static final int FIRST_ACTION_TIME = 1;
     private static final int MAXIMUM_SOLDIER_INVEST_IN_NEUTRAL = 5;
@@ -32,7 +32,7 @@ public class BasicAi implements Ai, Telegraph
 
     private float nextActionTime;
 
-    public BasicAi(World world, Player aiPlayer)
+    public BillyAi(World world, Player aiPlayer)
     {
         this.world = world;
         stateMachine = new DefaultStateMachine<>(this, AiState.WAIT);
@@ -104,6 +104,7 @@ public class BasicAi implements Ai, Telegraph
     public void fake()
     {
         Array<Attack> attackOptions = fakeGeneral.getOpponentAttackOptions(gameInfo.getSettlementInfoBySettlementId());
+        attackOptions.addAll(fakeGeneral.getNeutralAttackOptions(gameInfo.getSettlementInfoBySettlementId()));
         attackOptions.shuffle();
 
         if (!attackOptions.isEmpty())

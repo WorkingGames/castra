@@ -3,8 +3,8 @@ package com.github.workinggames.castra.core.ai;
 import lombok.RequiredArgsConstructor;
 
 import com.github.workinggames.castra.core.ai.simple.SimpleAi;
-import com.github.workinggames.castra.core.ai.voons.BasicAi;
-import com.github.workinggames.castra.core.ai.voons.ConfrontingAi;
+import com.github.workinggames.castra.core.ai.voons.BillyAi;
+import com.github.workinggames.castra.core.ai.voons.FrankyAi;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.stage.GameConfiguration;
@@ -44,10 +44,10 @@ public class AiInitializer implements AsyncInitializer
                     result = new SimpleAi(world, aiPlayer);
                     break;
                 case BILLY:
-                    result = new BasicAi(world, aiPlayer);
+                    result = new BillyAi(world, aiPlayer);
                     break;
-                case FRANK:
-                    result = new ConfrontingAi(world, aiPlayer);
+                case FRANKY:
+                    result = new FrankyAi(world, aiPlayer);
                     break;
             }
         }
