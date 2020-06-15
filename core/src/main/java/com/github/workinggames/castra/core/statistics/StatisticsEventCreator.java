@@ -44,12 +44,13 @@ public class StatisticsEventCreator
         vortexEventSender.send(gameStarted);
     }
 
-    public void gameEnded(World world, Player winner, float playTime)
+    public void gameEnded(World world, Player winner, float playTime, int score)
     {
         GameEnded.Attributes attributes = new GameEnded.Attributes(getGameId(world),
             new PlayerDto(winner),
             getSettlementDtos(world),
-            MathUtils.ceil(playTime));
+            MathUtils.ceil(playTime),
+            score);
         GameEnded gameEnded = new GameEnded(attributes, getTimestamp());
 
         vortexEventSender.send(gameEnded);

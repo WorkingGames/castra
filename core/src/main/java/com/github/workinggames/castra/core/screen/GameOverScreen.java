@@ -17,7 +17,7 @@ public class GameOverScreen extends ScreenAdapter
     private final Castra game;
     private final Stage stage;
 
-    public GameOverScreen(Castra game, boolean player1Won, float playTime)
+    public GameOverScreen(Castra game, boolean player1Won, float playTime, int score)
     {
         this.game = game;
         stage = new Stage(game.getViewport());
@@ -29,7 +29,7 @@ public class GameOverScreen extends ScreenAdapter
         {
             message = game.getGameConfiguration().getPlayer2().getName() + " Won!";
         }
-        message = message + " in " + MathUtils.ceil(playTime) + " seconds";
+        message = message + " in " + MathUtils.ceil(playTime) + " seconds, getting a score of " + score;
 
         Label label = new Label(message, game.getSkin());
         label.setPosition(Screens.getCenterX(label), Screens.getRelativeY(60));

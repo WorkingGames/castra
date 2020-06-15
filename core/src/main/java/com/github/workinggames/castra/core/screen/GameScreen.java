@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
+import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
+import com.github.workinggames.castra.core.statistics.ScoreUtility;
 import com.github.workinggames.castra.core.task.BattleProcessor;
 import com.github.workinggames.castra.core.task.SoldierSpawner;
 
@@ -123,16 +125,21 @@ public class GameScreen extends ScreenAdapter
 
     private void checkGameOver()
     {
+        Player winner = null;
         if (victoryCondition.player1Won())
         {
-            game.getStatisticsEventCreator().gameEnded(world, world.getGameConfiguration().getPlayer1(), playTime);
-            game.setScreen(new GameOverScreen(game, true, playTime));
-            dispose();
+            winner = world.getGameConfiguration().getPlayer1();
         }
         else if (victoryCondition.player1Lost())
         {
-            game.getStatisticsEventCreator().gameEnded(world, world.getGameConfiguration().getPlayer2(), playTime);
-            game.setScreen(new GameOverScreen(game, false, playTime));
+            winner = world.getGameConfiguration().getPlayer2();
+        }
+
+        if (winner != null)
+        {
+            int score = ScoreUtility.getGameScore(world, winner, playTime);
+            game.getStatisticsEventCreator().gameEnded(world, winner, playTime, score);
+            game.setScreen(new GameOverScreen(game, victoryCondition.player1Won(), playTime, score));
             dispose();
         }
     }
