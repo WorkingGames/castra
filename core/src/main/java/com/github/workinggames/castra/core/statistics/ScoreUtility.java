@@ -14,15 +14,16 @@ import com.github.workinggames.castra.core.stage.World;
 public class ScoreUtility
 {
     private final int MAX_SECONDS_GETTING_POINTS = 300;
-    private final int PLAYTIME_SCORE_FACTOR = 30;
-    private final int SOLDIERS_SCORE_FACTOR = 25;
+    private final int SCORE_FACTOR = 30;
+    private final int MAXIMUM_SCORE_BY_SOLDIERS = MAX_SECONDS_GETTING_POINTS * SCORE_FACTOR / 2;
 
     public int getGameScore(World world, Player winner, Float playTime)
     {
         int soldierCount = ScoreUtility.getSoldierCount(world, winner);
         float soldierSpawnPerSecond = ScoreUtility.getMapSoldierSpawnPerSecond(world);
-        int timeScore = Math.max(MathUtils.floor(MAX_SECONDS_GETTING_POINTS - playTime) * PLAYTIME_SCORE_FACTOR, 0);
-        int soldierScore = MathUtils.floor(soldierCount / soldierSpawnPerSecond) * SOLDIERS_SCORE_FACTOR;
+        int timeScore = Math.max(MathUtils.floor(MAX_SECONDS_GETTING_POINTS - playTime) * SCORE_FACTOR, 0);
+        int soldierScore = Math.min(MathUtils.floor(soldierCount / soldierSpawnPerSecond) * SCORE_FACTOR,
+            MAXIMUM_SCORE_BY_SOLDIERS);
         return timeScore + soldierScore;
     }
 
