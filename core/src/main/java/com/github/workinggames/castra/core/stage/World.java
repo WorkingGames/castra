@@ -26,6 +26,7 @@ import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.model.PlayerType;
 import com.github.workinggames.castra.core.model.SettlementSize;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
+import com.github.workinggames.castra.core.screen.Screens;
 import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 
 public class World extends Stage
@@ -89,6 +90,8 @@ public class World extends Stage
         battles = new Array<>();
         timepiece = new DefaultTimepiece();
 
+        addBackground();
+
         if (gameConfiguration.getPlayer1().getType().equals(PlayerType.HUMAN))
         {
             armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer1());
@@ -101,6 +104,11 @@ public class World extends Stage
         }
 
         actorCreator = new ActorCreator(gameConfiguration, textureAtlas, fontProvider);
+    }
+
+    private void addBackground()
+    {
+        addActor(Screens.toBackground(textureAtlas.findRegion("Background256").getTexture(), getViewport()));
     }
 
     @Override

@@ -1,11 +1,7 @@
 package com.github.workinggames.castra.core.screen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.ai.msg.MessageManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.github.workinggames.castra.core.Castra;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
 import com.github.workinggames.castra.core.model.Player;
@@ -22,7 +18,6 @@ public class GameScreen extends ScreenAdapter
     private final BattleProcessor battleProcessor;
     private final VictoryCondition victoryCondition;
     private final ArmySplitInputProcessor armySplitInputProcessor;
-    private final Texture backgroundTexture;
 
     private boolean gameStarted = false;
     private float playTime;
@@ -57,8 +52,6 @@ public class GameScreen extends ScreenAdapter
             this.world.getGameId(),
             game.getStatisticsEventCreator());
         victoryCondition = new VictoryCondition(this.world);
-
-        backgroundTexture = game.getTextureAtlas().findRegion("Background256").getTexture();
     }
 
     @Override
@@ -102,20 +95,6 @@ public class GameScreen extends ScreenAdapter
 
     private void draw(float delta)
     {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        world.getBatch().begin();
-        world.getBatch().setColor(Color.WHITE);
-        world.getBatch()
-            .draw(backgroundTexture,
-                0,
-                0,
-                0,
-                0,
-                (int) game.getViewport().getWorldWidth(),
-                (int) game.getViewport().getWorldHeight());
-        world.getBatch().end();
-
         if (game.getGameState().equals(GameState.RUNNING))
         {
             world.act(delta);
