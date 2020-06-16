@@ -32,6 +32,7 @@ public class LoadingScreen extends ScreenAdapter
     private boolean pathInitializerStarted;
     private boolean dragDropInitializerStarted;
     private boolean aiInitializerStarted;
+    private boolean loadingScreenDrawn = false;
 
     public LoadingScreen(Castra game)
     {
@@ -59,7 +60,7 @@ public class LoadingScreen extends ScreenAdapter
 
         GameScreen gameScreen = null;
         // let's initialize once after the loading screen is displayed
-        if (world == null)
+        if (world == null && loadingScreenDrawn)
         {
             Viewport viewport = game.getViewport();
             TextureAtlas textureAtlas = game.getTextureAtlas();
@@ -83,29 +84,33 @@ public class LoadingScreen extends ScreenAdapter
             Timer.post(new InitializerTask(settlementInitializer));
             settlementInitializerStarted = true;
         }
-        if (settlementInitializer.isFinished() && !fluffInitializerStarted)
+        if (world != null && settlementInitializer.isFinished() && !fluffInitializerStarted)
         {
             Timer.post(new InitializerTask(fluffInitializer));
             fluffInitializerStarted = true;
         }
-        if (settlementInitializer.isFinished() && !dragDropInitializerStarted)
+        if (world != null && settlementInitializer.isFinished() && !dragDropInitializerStarted)
         {
             Timer.post(new InitializerTask(dragDropInitializer));
             dragDropInitializerStarted = true;
         }
-        if (settlementInitializer.isFinished() && !pathInitializerStarted)
+        if (world != null && settlementInitializer.isFinished() && !pathInitializerStarted)
         {
             Timer.post(new InitializerTask(pathInitializer));
             pathInitializerStarted = true;
         }
-        if (settlementInitializer.isFinished() && pathInitializer.isFinished() && !aiInitializerStarted)
+        if (world != null &&
+            settlementInitializer.isFinished() &&
+            pathInitializer.isFinished() &&
+            !aiInitializerStarted)
         {
             gameScreen = new GameScreen(game, world);
             aiInitializer.initialize();
             aiInitializerStarted = true;
         }
 
-        if (settlementInitializer.isFinished() &&
+        if (world != null &&
+            settlementInitializer.isFinished() &&
             fluffInitializer.isFinished() &&
             pathInitializer.isFinished() &&
             dragDropInitializer.isFinished() &&
@@ -114,6 +119,8 @@ public class LoadingScreen extends ScreenAdapter
             game.setScreen(gameScreen);
             stage.dispose();
         }
+
+        loadingScreenDrawn = true;
     }
 
     @Override
