@@ -1,5 +1,6 @@
 package com.github.workinggames.castra.core.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -41,6 +42,7 @@ public class GameOverScreen extends ScreenAdapter
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Gdx.input.vibrate(50);
                 game.setScreen(mainMenuScreen);
                 dispose();
             }

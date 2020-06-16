@@ -2,7 +2,6 @@ package com.github.workinggames.castra.core;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.font.FontProvider;
-import com.github.workinggames.castra.core.screen.GameState;
 import com.github.workinggames.castra.core.screen.MainMenuScreen;
 import com.github.workinggames.castra.core.stage.GameConfiguration;
 import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
@@ -51,19 +49,13 @@ public class Castra extends Game
     public void pause()
     {
         super.pause();
-        gameState = GameState.PAUSED;
     }
 
     @Override
     public void resume()
     {
         super.resume();
-        gameState = GameState.RUNNING;
     }
-
-    @Getter
-    @Setter
-    private GameState gameState = GameState.RUNNING;
 
     @Override
     public void create()

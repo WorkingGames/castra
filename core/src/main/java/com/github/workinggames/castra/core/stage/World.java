@@ -114,21 +114,17 @@ public class World extends Stage
     @Override
     public void act(float deltaTime)
     {
-        timepiece.update(deltaTime);
         processArmies();
         super.act(deltaTime);
         getActors().sort(actorComparator);
-        // 1 second head start for players, otherwise the AI starts moving before the world is rendered
-        if (timepiece.getTime() > 1)
+
+        if (ai1 != null)
         {
-            if (ai1 != null)
-            {
-                ai1.update();
-            }
-            if (ai2 != null)
-            {
-                ai2.update();
-            }
+            ai1.update();
+        }
+        if (ai2 != null)
+        {
+            ai2.update();
         }
     }
 

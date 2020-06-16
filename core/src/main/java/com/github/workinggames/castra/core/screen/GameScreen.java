@@ -20,8 +20,8 @@ public class GameScreen extends ScreenAdapter
     private final ArmySplitInputProcessor armySplitInputProcessor;
 
     private boolean gameStarted = false;
-    private float playTime;
     private boolean skipNextDeltaForPlayTime = false;
+    private boolean gameScreenDrawn = false;
 
     public GameScreen(Castra game, World world)
     {
@@ -57,23 +57,32 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void render(float delta)
     {
-        if (!gameStarted)
+        if (gameScreenDrawn)
         {
-            soldierSpawner.startSpawn();
-            battleProcessor.startBattles(game.getGameConfiguration().getGameSpeed().getBattleProcessingInterval());
-            game.getStatisticsEventCreator().gameStarted(this.world);
-            gameStarted = true;
+            if (!gameStarted)
+            {
+                soldierSpawner.startSpawn();
+                battleProcessor.startBattles(game.getGameConfiguration().getGameSpeed().getBattleProcessingInterval());
+                game.getStatisticsEventCreator().gameStarted(this.world);
+                gameStarted = true;
+                // starting the game takes some time and it is not part of the actual game time, so skip the next delta
+                skipNextDeltaForPlayTime = true;
+            }
+            else if (!skipNextDeltaForPlayTime)
+            {
+                // if the game was paused, the delta will be including the pause, so we should skip it
+                world.getTimepiece().update(delta);
+            }
+            else
+            {
+                skipNextDeltaForPlayTime = false;
+            }
+            checkGameOver();
         }
-        if (!skipNextDeltaForPlayTime)
-        {
-            playTime = playTime + delta;
-        }
-        else
-        {
-            skipNextDeltaForPlayTime = false;
-        }
-        draw(delta);
-        checkGameOver();
+
+        world.act(delta);
+        world.draw();
+        gameScreenDrawn = true;
     }
 
     @Override
@@ -93,15 +102,6 @@ public class GameScreen extends ScreenAdapter
         battleProcessor.startBattles(game.getGameConfiguration().getGameSpeed().getBattleProcessingInterval());
     }
 
-    private void draw(float delta)
-    {
-        if (game.getGameState().equals(GameState.RUNNING))
-        {
-            world.act(delta);
-        }
-        world.draw();
-    }
-
     private void checkGameOver()
     {
         Player winner = null;
@@ -116,6 +116,7 @@ public class GameScreen extends ScreenAdapter
 
         if (winner != null)
         {
+            float playTime = world.getTimepiece().getTime();
             int score = ScoreUtility.getGameScore(world, winner, playTime);
             game.getStatisticsEventCreator().gameEnded(world, winner, playTime, score);
             game.setScreen(new GameOverScreen(game, victoryCondition.player1Won(), playTime, score));
