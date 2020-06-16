@@ -57,6 +57,7 @@ public class LoadingScreen extends ScreenAdapter
         stage.act(delta);
         stage.draw();
 
+        GameScreen gameScreen = null;
         // let's initialize once after the loading screen is displayed
         if (world == null)
         {
@@ -99,6 +100,7 @@ public class LoadingScreen extends ScreenAdapter
         }
         if (settlementInitializer.isFinished() && pathInitializer.isFinished() && !aiInitializerStarted)
         {
+            gameScreen = new GameScreen(game, world);
             aiInitializer.initialize();
             aiInitializerStarted = true;
         }
@@ -109,7 +111,7 @@ public class LoadingScreen extends ScreenAdapter
             dragDropInitializer.isFinished() &&
             aiInitializer.isFinished())
         {
-            game.setScreen(new GameScreen(game, world));
+            game.setScreen(gameScreen);
             stage.dispose();
         }
     }

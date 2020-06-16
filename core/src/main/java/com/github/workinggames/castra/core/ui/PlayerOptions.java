@@ -2,11 +2,13 @@ package com.github.workinggames.castra.core.ui;
 
 import lombok.Getter;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -87,11 +90,20 @@ public class PlayerOptions extends Table
         add(playerColor1);
         row().padTop(10);
 
+        playerColorSelectBox.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Gdx.input.vibrate(50);
+            }
+        });
         playerColorSelectBox.addListener(new ChangeListener()
         {
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
+                Gdx.input.vibrate(50);
                 SelectBox<PlayerColorSchema> selectBox = (SelectBox<PlayerColorSchema>) actor;
                 player.setColorSchema(selectBox.getSelected());
                 playerColor1.setDrawable(createColorPreview(player.getColorSchema()
@@ -138,11 +150,20 @@ public class PlayerOptions extends Table
         playerTypeSelectBox = new SelectBox<>(skin);
         playerTypeSelectBox.setItems(getPlayerTypeOptions(opponent));
         playerTypeSelectBox.setSelected(player.getType());
+        playerTypeSelectBox.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Gdx.input.vibrate(50);
+            }
+        });
         playerTypeSelectBox.addListener(new ChangeListener()
         {
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
+                Gdx.input.vibrate(50);
                 SelectBox<PlayerType> selectBox = (SelectBox<PlayerType>) actor;
                 PlayerType selected = selectBox.getSelected();
                 player.setType(selected);
@@ -204,12 +225,20 @@ public class PlayerOptions extends Table
             aiTypeSelectBox.setSelected(player.getAiType());
             player.setName(player.getAiType().name());
         }
-
+        aiTypeSelectBox.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Gdx.input.vibrate(50);
+            }
+        });
         aiTypeSelectBox.addListener(new ChangeListener()
         {
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
+                Gdx.input.vibrate(50);
                 SelectBox<AiType> selectBox = (SelectBox<AiType>) actor;
                 AiType selected = selectBox.getSelected();
                 player.setAiType(selected);
@@ -248,13 +277,22 @@ public class PlayerOptions extends Table
         playerNameLabel = new Label("Name: ", skin);
         add(playerNameLabel);
         nameInputField = new TextField(player.getName(), skin);
-
+        nameInputField.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Gdx.input.vibrate(50);
+                nameInputField.setText("");
+            }
+        });
         nameInputField.setOnlyFontChars(true);
         nameInputField.addListener(new ChangeListener()
         {
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
+                Gdx.input.vibrate(50);
                 TextField textField = (TextField) actor;
                 player.setName(textField.getText());
             }

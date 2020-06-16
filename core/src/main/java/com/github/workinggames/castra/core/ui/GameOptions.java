@@ -2,6 +2,7 @@ package com.github.workinggames.castra.core.ui;
 
 import lombok.Getter;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -62,6 +63,7 @@ public class GameOptions extends Table
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Gdx.input.vibrate(50);
                 seedInputField.setText("");
             }
         });
@@ -70,6 +72,7 @@ public class GameOptions extends Table
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
+                Gdx.input.vibrate(50);
                 TextField textField = (TextField) actor;
                 String value = textField.getText();
                 long result = 0L;
@@ -92,12 +95,21 @@ public class GameOptions extends Table
 
         SelectBox gameSpeedSelectBox = new SelectBox<>(skin);
         gameSpeedSelectBox.setItems(GameSpeed.values());
+        gameSpeedSelectBox.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Gdx.input.vibrate(50);
+            }
+        });
         gameSpeedSelectBox.setSelected(game.getGameConfiguration().getGameSpeed());
         gameSpeedSelectBox.addListener(new ChangeListener()
         {
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
+                Gdx.input.vibrate(50);
                 SelectBox<GameSpeed> selectBox = (SelectBox<GameSpeed>) actor;
                 GameSpeed selected = selectBox.getSelected();
                 game.getGameConfiguration().setGameSpeed(selected);

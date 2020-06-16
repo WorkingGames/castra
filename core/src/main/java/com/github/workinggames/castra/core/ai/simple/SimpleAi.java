@@ -14,6 +14,7 @@ import com.github.workinggames.castra.core.stage.World;
 
 public class SimpleAi implements Ai
 {
+    private static final int FIRST_ACTION_TIME = 1;
     private static final float MINIMUM_IDLE_TIME = 1;
     private static final float MAXIMUM_IDLE_TIME = 4;
     private static final int MINIMUM_TROOP_PERCENTAGE = 20;
@@ -32,7 +33,7 @@ public class SimpleAi implements Ai
         this.player = aiPlayer;
         aiUtils = new AiUtils(world);
         stateMachine = new DefaultStateMachine<>(this, SimpleAiState.ATTACK);
-        nextActionTime = 1;
+        nextActionTime = FIRST_ACTION_TIME;
     }
 
     public void update()

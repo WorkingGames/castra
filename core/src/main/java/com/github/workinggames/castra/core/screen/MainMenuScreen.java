@@ -1,5 +1,6 @@
 package com.github.workinggames.castra.core.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -47,6 +48,7 @@ public class MainMenuScreen extends ScreenAdapter
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Gdx.input.vibrate(50);
                 gameOptions.getCloseOptionsButton().setChecked(false);
                 gameOptions.setVisible(false);
                 gameOptionsButton.setVisible(true);
@@ -57,6 +59,7 @@ public class MainMenuScreen extends ScreenAdapter
         });
         stage.addActor(gameOptions);
 
+        LoadingScreen loadingScreen = new LoadingScreen(game);
         startGameButton = new TextButton("Start Game", game.getSkin());
         startGameButton.getLabel().setFontScale(0.95f);
         startGameButton.addListener(new ClickListener()
@@ -64,7 +67,8 @@ public class MainMenuScreen extends ScreenAdapter
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                game.setScreen(new LoadingScreen(game));
+                Gdx.input.vibrate(50);
+                game.setScreen(loadingScreen);
                 dispose();
             }
         });
@@ -78,6 +82,7 @@ public class MainMenuScreen extends ScreenAdapter
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Gdx.input.vibrate(50);
                 gameOptionsButton.setChecked(false);
                 gameOptions.setVisible(true);
                 gameOptionsButton.setVisible(false);

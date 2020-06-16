@@ -22,6 +22,7 @@ public class GameOverScreen extends ScreenAdapter
         game.getInputMultiplexer().addProcessor(stage);
 
         addBackground();
+        MainMenuScreen mainMenuScreen = new MainMenuScreen(game);
 
         String message = game.getGameConfiguration().getPlayer1().getName() + " Won!";
         if (!player1Won)
@@ -40,7 +41,7 @@ public class GameOverScreen extends ScreenAdapter
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen(mainMenuScreen);
                 dispose();
             }
         });
