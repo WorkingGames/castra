@@ -65,6 +65,10 @@ public class LoadingScreen extends ScreenAdapter
             Viewport viewport = game.getViewport();
             TextureAtlas textureAtlas = game.getTextureAtlas();
 
+            // if a game was already played we need to reset them to the initial value
+            game.getGameConfiguration().getPlayer1().setSendTroopPercentage(50);
+            game.getGameConfiguration().getPlayer2().setSendTroopPercentage(50);
+
             world = new World(viewport,
                 textureAtlas,
                 game.getFontProvider(),
