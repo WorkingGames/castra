@@ -7,10 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.github.workinggames.castra.core.Castra;
+import com.github.workinggames.castra.core.ui.GameInstructions;
 import com.github.workinggames.castra.core.ui.GameOptions;
 import com.github.workinggames.castra.core.ui.PlayerOptions;
 import com.github.workinggames.castra.core.ui.PlayerOptionsGroup;
@@ -22,6 +24,7 @@ public class MainMenuScreen extends ScreenAdapter
     private final Stage stage;
     private final TextButton startGameButton;
     private final TextButton gameOptionsButton;
+    private final TextButton gameInstructionsButton;
     private final GameOptions gameOptions;
 
     private PlayerOptions player1Options = null;
@@ -36,10 +39,59 @@ public class MainMenuScreen extends ScreenAdapter
 
         Skins.initialize(game);
 
+        LoadingScreen loadingScreen = new LoadingScreen(game);
+        gameOptions = new GameOptions(game);
+        startGameButton = new TextButton("Start game", game.getSkin());
+        gameOptionsButton = new TextButton("Game options", game.getSkin());
+        gameInstructionsButton = new TextButton("Game instructions", game.getSkin());
+
         addBackground();
         addTitle(game);
+        addStartGameButton(loadingScreen);
+        addGameOptions();
+        addPlayerOptions();
+        addGameInstructions();
+    }
 
-        gameOptions = new GameOptions(game);
+    private void addBackground()
+    {
+        stage.addActor(Screens.toBackground(game.getTextureAtlas().findRegion("Bricks").getTexture(),
+            game.getViewport()));
+    }
+
+    private void addTitle(Castra game)
+    {
+        Drawable drawable = game.getSkin().newDrawable("white", Color.BLACK);
+        Image titleBox = new Image(drawable);
+
+        Label title = new Label("CHARGE!", game.getSkin(), "title");
+        title.setPosition(Screens.getCenterX(title), Screens.getRelativeY(90));
+        titleBox.setSize(title.getWidth() + 30, title.getHeight() + 30);
+        titleBox.setPosition(title.getX() - 15, title.getY() - 15);
+
+        stage.addActor(titleBox);
+        stage.addActor(title);
+    }
+
+    private void addStartGameButton(LoadingScreen loadingScreen)
+    {
+        startGameButton.getLabel().setFontScale(0.95f);
+        startGameButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Gdx.input.vibrate(50);
+                game.setScreen(loadingScreen);
+                dispose();
+            }
+        });
+        startGameButton.setPosition(Screens.getCenterX(startGameButton), Screens.getRelativeY(60));
+        stage.addActor(startGameButton);
+    }
+
+    private void addGameOptions()
+    {
         gameOptions.setSize(game.getViewport().getWorldWidth() - 200, game.getViewport().getWorldHeight() - 250);
         gameOptions.setPosition(Screens.getCenterX(gameOptions), Screens.getRelativeY(5));
         gameOptions.setVisible(false);
@@ -59,23 +111,6 @@ public class MainMenuScreen extends ScreenAdapter
         });
         stage.addActor(gameOptions);
 
-        LoadingScreen loadingScreen = new LoadingScreen(game);
-        startGameButton = new TextButton("Start Game", game.getSkin());
-        startGameButton.getLabel().setFontScale(0.95f);
-        startGameButton.addListener(new ClickListener()
-        {
-            @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
-                Gdx.input.vibrate(50);
-                game.setScreen(loadingScreen);
-                dispose();
-            }
-        });
-        startGameButton.setPosition(Screens.getCenterX(startGameButton), Screens.getRelativeY(60));
-        stage.addActor(startGameButton);
-
-        gameOptionsButton = new TextButton("Game Options", game.getSkin());
         gameOptionsButton.getLabel().setFontScale(0.95f);
         gameOptionsButton.addListener(new ClickListener()
         {
@@ -91,9 +126,12 @@ public class MainMenuScreen extends ScreenAdapter
                 player2Options.setVisible(false);
             }
         });
-        gameOptionsButton.setPosition(Screens.getCenterX(startGameButton), Screens.getRelativeY(52));
+        gameOptionsButton.setPosition(Screens.getCenterX(gameOptionsButton), Screens.getRelativeY(52));
         stage.addActor(gameOptionsButton);
+    }
 
+    private void addPlayerOptions()
+    {
         PlayerOptionsGroup playerOptionsGroup = new PlayerOptionsGroup(game);
         player1Options = playerOptionsGroup.getPlayer1Options();
         player1Options.setPosition(Screens.getRelativeX(30), Screens.getRelativeY(20));
@@ -104,24 +142,40 @@ public class MainMenuScreen extends ScreenAdapter
         stage.addActor(player2Options);
     }
 
-    private void addTitle(Castra game)
+    private void addGameInstructions()
     {
-        Drawable drawable = game.getSkin().newDrawable("white", Color.BLACK);
-        Image titleBox = new Image(drawable);
+        gameInstructionsButton.setPosition(Screens.getCenterX(gameInstructionsButton), Screens.getRelativeY(46));
+        stage.addActor(gameInstructionsButton);
 
-        Label title = new Label("CHARGE!", game.getSkin(), "title");
-        title.setPosition(Screens.getCenterX(title), Screens.getRelativeY(90));
-        titleBox.setSize(title.getWidth() + 30, title.getHeight() + 30);
-        titleBox.setPosition(title.getX() - 15, title.getY() - 15);
+        GameInstructions gameInstructions = new GameInstructions(game);
+        ScrollPane gameInstructionsPanel = new ScrollPane(gameInstructions, game.getSkin());
+        gameInstructionsPanel.setVisible(false);
+        gameInstructionsPanel.setZIndex(0);
+        gameInstructionsPanel.setSize(Screens.getRelativeX(90), Screens.getRelativeY(85));
+        gameInstructionsPanel.setPosition(Screens.getCenterX(gameInstructionsPanel), Screens.getRelativeY(2));
+        stage.addActor(gameInstructionsPanel);
 
-        stage.addActor(titleBox);
-        stage.addActor(title);
-    }
+        gameInstructionsButton.getLabel().setFontScale(0.95f);
+        gameInstructionsButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Gdx.input.vibrate(50);
+                gameInstructionsButton.setChecked(false);
+                gameInstructionsPanel.setVisible(true);
+            }
+        });
 
-    private void addBackground()
-    {
-        stage.addActor(Screens.toBackground(game.getTextureAtlas().findRegion("Bricks").getTexture(),
-            game.getViewport()));
+        gameInstructions.getCloseInstructionsButton().addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                gameInstructionsPanel.setVisible(false);
+                gameInstructions.getCloseInstructionsButton().setChecked(false);
+            }
+        });
     }
 
     @Override

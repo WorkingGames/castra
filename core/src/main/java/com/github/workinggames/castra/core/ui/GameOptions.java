@@ -45,7 +45,6 @@ public class GameOptions extends Table
 
         closeOptionsButton = new TextButton("Close", game.getSkin());
         closeOptionsButton.getLabel().setFontScale(0.95f);
-        closeOptionsButton.addListener(new ClickListener());
         closeOptionsButton.setPosition(Screens.getCenterX(closeOptionsButton), Screens.getRelativeY(10));
         addActor(closeOptionsButton);
     }
