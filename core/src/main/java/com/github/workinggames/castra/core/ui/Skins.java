@@ -48,7 +48,8 @@ public class Skins
         textFieldStyle.font = skin.getFont("menuMedium");
         textFieldStyle.fontColor = Color.WHITE;
         textFieldStyle.cursor = skin.newDrawable("white", Color.WHITE);
-        textFieldStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
+        textFieldStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
+        textFieldStyle.focusedBackground = skin.newDrawable("white", Color.LIGHT_GRAY);
         textFieldStyle.messageFont = skin.getFont("menuMedium");
         textFieldStyle.messageFontColor = Color.WHITE;
         skin.add("default", textFieldStyle);
@@ -71,6 +72,7 @@ public class Skins
         selectBoxStyle.font = skin.getFont("menuMedium");
         selectBoxStyle.fontColor = Color.WHITE;
         selectBoxStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
+        selectBoxStyle.backgroundOver = skin.newDrawable("white", Color.LIGHT_GRAY);
         selectBoxStyle.backgroundOpen = skin.newDrawable("white", Color.LIGHT_GRAY);
         selectBoxStyle.listStyle = listStyle;
         selectBoxStyle.scrollStyle = scrollPaneStyle;

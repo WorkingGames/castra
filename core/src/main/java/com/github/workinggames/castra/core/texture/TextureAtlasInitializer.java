@@ -62,6 +62,7 @@ public class TextureAtlasInitializer
         addToAtlas("Bricks", textureAtlas);
         addToAtlas("sliderKnob", textureAtlas);
         addToAtlas("battle1", textureAtlas);
+        addToAtlas("InstructionsScreenshot", textureAtlas);
         for (String name : FLUFF_ALL)
         {
             addToAtlas(name, textureAtlas);

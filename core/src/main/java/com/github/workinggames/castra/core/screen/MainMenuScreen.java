@@ -105,6 +105,7 @@ public class MainMenuScreen extends ScreenAdapter
                 gameOptions.setVisible(false);
                 gameOptionsButton.setVisible(true);
                 startGameButton.setVisible(true);
+                gameInstructionsButton.setVisible(true);
                 player1Options.setVisible(true);
                 player2Options.setVisible(true);
             }
@@ -121,6 +122,7 @@ public class MainMenuScreen extends ScreenAdapter
                 gameOptionsButton.setChecked(false);
                 gameOptions.setVisible(true);
                 gameOptionsButton.setVisible(false);
+                gameInstructionsButton.setVisible(false);
                 startGameButton.setVisible(false);
                 player1Options.setVisible(false);
                 player2Options.setVisible(false);
@@ -144,7 +146,7 @@ public class MainMenuScreen extends ScreenAdapter
 
     private void addGameInstructions()
     {
-        gameInstructionsButton.setPosition(Screens.getCenterX(gameInstructionsButton), Screens.getRelativeY(46));
+        gameInstructionsButton.setPosition(Screens.getCenterX(gameInstructionsButton), Screens.getRelativeY(44));
         stage.addActor(gameInstructionsButton);
 
         GameInstructions gameInstructions = new GameInstructions(game);
@@ -153,6 +155,7 @@ public class MainMenuScreen extends ScreenAdapter
         gameInstructionsPanel.setZIndex(0);
         gameInstructionsPanel.setSize(Screens.getRelativeX(90), Screens.getRelativeY(85));
         gameInstructionsPanel.setPosition(Screens.getCenterX(gameInstructionsPanel), Screens.getRelativeY(2));
+        gameInstructionsPanel.setScrollingDisabled(true, false);
         stage.addActor(gameInstructionsPanel);
 
         gameInstructionsButton.getLabel().setFontScale(0.95f);
@@ -162,6 +165,7 @@ public class MainMenuScreen extends ScreenAdapter
             public void clicked(InputEvent event, float x, float y)
             {
                 Gdx.input.vibrate(50);
+                gameInstructionsPanel.setScrollY(0);
                 gameInstructionsButton.setChecked(false);
                 gameInstructionsPanel.setVisible(true);
             }
@@ -172,6 +176,7 @@ public class MainMenuScreen extends ScreenAdapter
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Gdx.input.vibrate(50);
                 gameInstructionsPanel.setVisible(false);
                 gameInstructions.getCloseInstructionsButton().setChecked(false);
             }

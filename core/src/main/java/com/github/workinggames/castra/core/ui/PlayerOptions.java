@@ -39,8 +39,6 @@ public class PlayerOptions extends Table
     private Label aiTypeLabel;
     private Label aiDifficultyLabel;
     private Label aiDifficultyValue;
-    private Label aiDescriptionLabel;
-    private Label aiDescriptionValue;
     private SelectBox<PlayerColorSchema> playerColorSelectBox;
     private SelectBox<PlayerType> playerTypeSelectBox;
     private Label playerNameLabel;
@@ -86,7 +84,7 @@ public class PlayerOptions extends Table
         add(playerColor1Label);
 
         Image playerColor1 = new Image(createColorPreview(player.getColorSchema().getPlayerColor().getPrimaryColor()));
-        playerColor1.setSize(20, 10);
+        playerColor1.setSize(80, 39);
         add(playerColor1);
         row().padTop(10);
 
@@ -129,7 +127,7 @@ public class PlayerOptions extends Table
 
     private Drawable createColorPreview(Color color)
     {
-        Pixmap pixmap = new Pixmap(20, 10, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(80, 39, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
         pixmap.fill();
         return new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
@@ -207,8 +205,6 @@ public class PlayerOptions extends Table
         aiTypeLabel.setVisible(visible);
         aiDifficultyLabel.setVisible(visible);
         aiDifficultyValue.setVisible(visible);
-        aiDescriptionLabel.setVisible(visible);
-        aiDescriptionValue.setVisible(visible);
         playerNameLabel.setVisible(!visible);
         nameInputField.setVisible(!visible);
     }
@@ -244,11 +240,10 @@ public class PlayerOptions extends Table
                 player.setAiType(selected);
                 player.setName(selected.name());
                 aiDifficultyValue.setText(selected.getDifficulty());
-                aiDescriptionValue.setText(selected.getDescription());
             }
         });
         add(aiTypeSelectBox).minWidth(300);
-        row();
+        row().padTop(10);
 
         aiDifficultyLabel = new Label("Difficulty: ", skin);
         add(aiDifficultyLabel);
@@ -259,17 +254,6 @@ public class PlayerOptions extends Table
         }
         aiDifficultyValue = new Label(difficulty, skin);
         add(aiDifficultyValue);
-        row();
-
-        aiDescriptionLabel = new Label("Description: ", skin);
-        add(aiDescriptionLabel);
-        String description = Player.DEFAULT_AI_TYPE.getDescription();
-        if (player.getAiType() != null)
-        {
-            description = player.getAiType().getDescription();
-        }
-        aiDescriptionValue = new Label(description, skin);
-        add(aiDescriptionValue);
     }
 
     private void addNameInput()
