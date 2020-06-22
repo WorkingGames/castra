@@ -5,24 +5,26 @@ import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.graphics.Color;
 
+@Getter
 @RequiredArgsConstructor
 public enum PlayerColorSchema
 {
-    RED(new PlayerColor(new Color(0xFF0000ff))),
-    BLUE(new PlayerColor(new Color(0x0000FFff))),
-    GREEN(new PlayerColor(new Color(0x7CFC00ff))),
-    YELLOW(new PlayerColor(new Color(0xffff00ff))),
-    PURPLE(new PlayerColor(new Color(0x800080ff))),
-    ORANGE(new PlayerColor(new Color(0xFFA500ff))),
-    CYAN(new PlayerColor(new Color(0x00FFFFff))),
-    PINK(new PlayerColor(new Color(0xFFC0CBff))),
-    DARK_GREY(new PlayerColor(new Color(0x383838ff))),
-    LIGHT_BLUE(new PlayerColor(new Color(0x00BFFFff))),
-    DARK_BLUE(new PlayerColor(new Color(0x00008Bff))),
-    DARK_GREEN(new PlayerColor(new Color(0x006400ff))),
-    KHAKI(new PlayerColor(new Color(0xF0E68Cff))),
-    NEUTRAL(new PlayerColor(new Color(0xc8c8c8ff)));
+    YELLOW("Yellow", new PlayerColor(new Color(0xffff00ff)), Color.BLACK),
+    ORANGE("Orange", new PlayerColor(new Color(0xFFA500ff)), Color.WHITE),
+    RED("Red", new PlayerColor(new Color(0xFF0000ff)), Color.WHITE),
+    PURPLE("Purple", new PlayerColor(new Color(0x800080ff)), Color.WHITE),
+    CYAN("Cyan", new PlayerColor(new Color(0x00FFFFff)), Color.BLACK),
+    BLUE("Blue", new PlayerColor(new Color(0x0000FFff)), Color.WHITE),
+    GREEN("Green", new PlayerColor(new Color(0x006400ff)), Color.WHITE),
+    KHAKI("Khaki", new PlayerColor(new Color(0xF0E68Cff)), Color.BLACK),
+    NEUTRAL("Gray", new PlayerColor(new Color(0xc8c8c8ff)), Color.BLACK);
 
-    @Getter
+    private final String label;
     private final PlayerColor playerColor;
+    private final Color fontColor;
+
+    public static PlayerColorSchema fromLabel(String label)
+    {
+        return PlayerColorSchema.valueOf(label.toUpperCase());
+    }
 }

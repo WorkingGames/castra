@@ -14,20 +14,38 @@ import com.github.workinggames.castra.core.stage.World;
 public class ScoreUtility
 {
     private final int MAX_SECONDS_GETTING_POINTS = 300;
-    private final int SCORE_FACTOR = 30;
-    private final int MAXIMUM_SCORE_BY_SOLDIERS = MAX_SECONDS_GETTING_POINTS * SCORE_FACTOR / 2;
+    private final int WINNING_SCORE_FACTOR = 30;
+    private final int LOOSING_SCORE_FACTOR = 10;
+    private final int MAXIMUM_SCORE_BY_SOLDIERS = MAX_SECONDS_GETTING_POINTS * WINNING_SCORE_FACTOR / 2;
 
-    public int getGameScore(World world, Player winner, Float playTime)
+    public int getWinningGameScore(World world, Player winner, int playTime)
     {
         int soldierCount = ScoreUtility.getSoldierCount(world, winner);
         float soldierSpawnPerSecond = ScoreUtility.getMapSoldierSpawnPerSecond(world);
-        int timeScore = Math.max(MathUtils.floor(MAX_SECONDS_GETTING_POINTS - playTime) * SCORE_FACTOR, 0);
-        int soldierScore = Math.min(MathUtils.floor(soldierCount / soldierSpawnPerSecond) * SCORE_FACTOR,
-            MAXIMUM_SCORE_BY_SOLDIERS);
+        int timeScore = getWinningTimeScore(playTime);
+        int soldierScore = getSoldierScore(soldierCount, soldierSpawnPerSecond);
         return timeScore + soldierScore;
     }
 
-    private int getSoldierCount(World world, Player player)
+    public int getSoldierScore(int soldierCount, float soldierSpawnPerSecond)
+    {
+        return Math.min(MathUtils.floor(soldierCount / soldierSpawnPerSecond) * WINNING_SCORE_FACTOR,
+            MAXIMUM_SCORE_BY_SOLDIERS);
+    }
+
+    // score by time is 0-9000
+    public int getWinningTimeScore(int playTime)
+    {
+        return Math.max(MathUtils.floor(MAX_SECONDS_GETTING_POINTS - playTime) * WINNING_SCORE_FACTOR, 0);
+    }
+
+    // score by time is 0-3000
+    public int getLostTimeScore(int playTime)
+    {
+        return MathUtils.floor(Math.min(playTime, MAX_SECONDS_GETTING_POINTS) * LOOSING_SCORE_FACTOR);
+    }
+
+    public int getSoldierCount(World world, Player player)
     {
         int soldiers = 0;
         for (Settlement settlement : world.getSettlements())
@@ -56,7 +74,7 @@ public class ScoreUtility
         return soldiers;
     }
 
-    private float getMapSoldierSpawnPerSecond(World world)
+    public float getMapSoldierSpawnPerSecond(World world)
     {
         float soldiersPerSecond = 0;
         for (Settlement settlement : world.getSettlements())

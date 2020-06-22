@@ -1,6 +1,9 @@
 package com.github.workinggames.castra.core.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -12,23 +15,21 @@ import com.github.workinggames.castra.core.input.DragDropInitializer;
 import com.github.workinggames.castra.core.pathfinding.PathInitializer;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.InitializerTask;
-import com.github.workinggames.castra.core.worldbuilding.FluffInitializer;
 import com.github.workinggames.castra.core.worldbuilding.SettlementInitializer;
 
 public class LoadingScreen extends ScreenAdapter
 {
     private final Castra game;
     private final Stage stage;
+    private final Screens screens;
 
     private World world;
     private SettlementInitializer settlementInitializer;
-    private FluffInitializer fluffInitializer;
     private PathInitializer pathInitializer;
     private DragDropInitializer dragDropInitializer;
     private AiInitializer aiInitializer;
 
     private boolean settlementInitializerStarted;
-    private boolean fluffInitializerStarted;
     private boolean pathInitializerStarted;
     private boolean dragDropInitializerStarted;
     private boolean aiInitializerStarted;
@@ -38,23 +39,31 @@ public class LoadingScreen extends ScreenAdapter
     {
         this.game = game;
         stage = new Stage(game.getViewport());
+        screens = new Screens(game.getViewport());
 
         addBackground();
 
         Label loadingLabel = new Label("Loading...", game.getSkin());
-        loadingLabel.setPosition(Screens.getCenterX(loadingLabel), Screens.getRelativeY(50));
+        loadingLabel.setPosition(screens.getCenterX(loadingLabel), screens.getRelativeY(50));
         stage.addActor(loadingLabel);
     }
 
     private void addBackground()
     {
-        stage.addActor(Screens.toBackground(game.getTextureAtlas().findRegion("Bricks").getTexture(),
-            game.getViewport()));
+        stage.addActor(screens.toBackground(game.getTextureAtlas().findRegion("Bricks").getTexture()));
     }
 
     @Override
     public void render(float delta)
     {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
+        {
+            Gdx.input.vibrate(50);
+            game.setScreen(new MainMenuScreen(game));
+            dispose();
+        }
         stage.act(delta);
         stage.draw();
 
@@ -76,8 +85,7 @@ public class LoadingScreen extends ScreenAdapter
                 game.getStatisticsEventCreator());
             game.getInputMultiplexer().addProcessor(world);
 
-            settlementInitializer = new SettlementInitializer(world, viewport);
-            fluffInitializer = new FluffInitializer(world, viewport);
+            settlementInitializer = new SettlementInitializer(world);
             pathInitializer = new PathInitializer(viewport, textureAtlas, world);
             dragDropInitializer = new DragDropInitializer(world);
             aiInitializer = new AiInitializer(world);
@@ -87,21 +95,19 @@ public class LoadingScreen extends ScreenAdapter
         {
             Timer.post(new InitializerTask(settlementInitializer));
             settlementInitializerStarted = true;
-        }
-        if (world != null && settlementInitializer.isFinished() && !fluffInitializerStarted)
-        {
-            Timer.post(new InitializerTask(fluffInitializer));
-            fluffInitializerStarted = true;
+            Gdx.app.log("loadingScreen", "starting settlements");
         }
         if (world != null && settlementInitializer.isFinished() && !dragDropInitializerStarted)
         {
             Timer.post(new InitializerTask(dragDropInitializer));
             dragDropInitializerStarted = true;
+            Gdx.app.log("loadingScreen", "starting drag&drop");
         }
         if (world != null && settlementInitializer.isFinished() && !pathInitializerStarted)
         {
             Timer.post(new InitializerTask(pathInitializer));
             pathInitializerStarted = true;
+            Gdx.app.log("loadingScreen", "starting paths");
         }
         if (world != null &&
             settlementInitializer.isFinished() &&
@@ -111,15 +117,17 @@ public class LoadingScreen extends ScreenAdapter
             gameScreen = new GameScreen(game, world);
             aiInitializer.initialize();
             aiInitializerStarted = true;
+            Gdx.app.log("loadingScreen", "starting ai");
         }
 
         if (world != null &&
             settlementInitializer.isFinished() &&
-            fluffInitializer.isFinished() &&
             pathInitializer.isFinished() &&
             dragDropInitializer.isFinished() &&
             aiInitializer.isFinished())
         {
+            Gdx.app.log("loadingScreen", "finished loading");
+            game.getAudioManager().stopMainMenuMusic();
             game.setScreen(gameScreen);
             stage.dispose();
         }

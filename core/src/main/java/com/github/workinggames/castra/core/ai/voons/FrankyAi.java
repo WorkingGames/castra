@@ -105,6 +105,7 @@ public class FrankyAi implements Ai, Telegraph
         // This Ai won't bother with neutral Settlements and only attack the opponent and run after his armies
         int soldiersAvailable = gameInfo.getSoldiersAvailable();
         Array<Attack> attackOptions = attackGeneral.getOpponentAttackOptions(settlementInfos, soldiersAvailable);
+        attackOptions.addAll(attackGeneral.getOpponentBattleOptions(settlementInfos, soldiersAvailable));
         attackOptions.addAll(attackGeneral.getOpponentArmyOptions(settlementInfos, soldiersAvailable));
         attackOptions.sort();
 

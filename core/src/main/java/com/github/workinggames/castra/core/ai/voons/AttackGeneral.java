@@ -73,7 +73,6 @@ public class AttackGeneral
         return attackOptions;
     }
 
-    // this one needs more detailed timing, otherwise it might send the soldiers to early and battle neutrals and not the opponent
     public Array<Attack> getOpponentArmyOptions(
         ArrayMap<Integer, SettlementInfo> settlementInfoBySettlementId, int soldiersAvailable)
     {
@@ -101,26 +100,7 @@ public class AttackGeneral
                 float requiredSoldiers;
                 Array<AttackSource> attackSources;
 
-                if (settlementInfo.getSettlement().getOwner().isNeutral())
-                {
-                    // to make it simple for now, first army to arrive will battle all defenders
-                    if (settlementInfo.getInboundArmies().firstValue().getOwner().equals(aiPlayer))
-                    {
-                        requiredSoldiers = Math.abs(Math.abs(settlementInfo.getDefenders() - inboundPlayerSoldiers) -
-                            inboundOpponentSoldiers);
-                    }
-                    else
-                    {
-                        requiredSoldiers = Math.abs(Math.abs(settlementInfo.getDefenders() - inboundOpponentSoldiers) -
-                            inboundPlayerSoldiers);
-                    }
-                    // add one for safety
-                    requiredSoldiers++;
-                    attackSources = getAttackSourcesWithoutSoldierSpawn(settlementInfoBySettlementId,
-                        settlementInfo,
-                        requiredSoldiers);
-                }
-                else
+                if (!settlementInfo.getSettlement().getOwner().isNeutral())
                 {
                     if (settlementInfo.isOwnedByPlayer())
                     {
@@ -138,11 +118,52 @@ public class AttackGeneral
                         settlementInfo,
                         requiredSoldiers,
                         settlementInfo.isOwnedByPlayer());
+                    if (requiredSoldiers <= soldiersAvailable)
+                    {
+                        addAttackToOptions(attackOptions, settlementInfo, attackSources, requiredSoldiers);
+                    }
                 }
+            }
+        }
+        return attackOptions;
+    }
 
-                if (requiredSoldiers <= soldiersAvailable)
+    public Array<Attack> getOpponentBattleOptions(
+        ArrayMap<Integer, SettlementInfo> settlementInfoBySettlementId, int soldiersAvailable)
+    {
+        Array<Attack> attackOptions = new Array<>();
+        Array<SettlementInfo> settlementInfos = settlementInfoBySettlementId.values().toArray();
+        for (SettlementInfo settlementInfo : settlementInfos)
+        {
+            Array<BattleInfo> battleInfos = settlementInfo.getBattles().values().toArray();
+            if (settlementInfo.getSettlement().getOwner().isNeutral() && !battleInfos.isEmpty())
+            {
+                if (!alreadyWinning(settlementInfo))
                 {
-                    addAttackToOptions(attackOptions, settlementInfo, attackSources, requiredSoldiers);
+                    float attackingSoldiers = 0;
+
+                    for (BattleInfo battleInfo : battleInfos)
+                    {
+                        if (!battleInfo.getArmyInfos().first().getOwner().equals(aiPlayer))
+                        {
+                            attackingSoldiers = attackingSoldiers + battleInfo.getEstimatedSoldiers();
+                        }
+                    }
+
+                    if (settlementInfo.getDefenders() < attackingSoldiers)
+                    {
+                        float requiredSoldiers = attackingSoldiers - settlementInfo.getDefenders();
+
+                        Array<AttackSource> attackSources = getAttackSourcesWithoutSoldierSpawn(
+                            settlementInfoBySettlementId,
+                            settlementInfo,
+                            requiredSoldiers);
+
+                        if (requiredSoldiers <= soldiersAvailable)
+                        {
+                            addAttackToOptions(attackOptions, settlementInfo, attackSources, requiredSoldiers);
+                        }
+                    }
                 }
             }
         }

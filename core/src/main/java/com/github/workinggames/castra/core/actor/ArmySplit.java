@@ -36,6 +36,7 @@ public class ArmySplit extends Group
         setPosition(0, 0);
         setZIndex(0);
         Image outerRim = createImage("armySplitOuterRim");
+        setSize(outerRim.getWidth(), outerRim.getHeight());
         Label firstInfo = createInfoLabel(155, 62, "25%");
         Label secondInfo = createInfoLabel(100, 105, "50%");
         Label thirdInfo = createInfoLabel(40, 128, "75%");

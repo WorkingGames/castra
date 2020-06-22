@@ -7,9 +7,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AiType
 {
-    RANDY("Easiest"),
-    BILLY("Medium"),
-    FRANKY("Medium");
+    RANDY("Randy", "Easiest"),
+    BILLY("Billy", "Medium"),
+    FRANKY("Franky", "Hard");
 
+    private final String label;
     private final String difficulty;
+
+    public static AiType fromLabel(String label)
+    {
+        return AiType.valueOf(label.toUpperCase());
+    }
 }

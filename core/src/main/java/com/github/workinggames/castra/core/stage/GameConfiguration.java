@@ -18,7 +18,7 @@ public class GameConfiguration
 
     private long seed = MathUtils.random(978234L);
 
-    private Player player1 = new Player(PlayerColorSchema.RED, "Player 1", PlayerType.HUMAN, true);
+    private Player player1 = new Player(PlayerColorSchema.ORANGE, "Player 1", PlayerType.HUMAN, true);
     private Player player2 = new Player(PlayerColorSchema.BLUE, "Player 2", PlayerType.AI, false);
 
     private GameSpeed gameSpeed = GameSpeed.MEDIUM;

@@ -11,10 +11,11 @@ public class GameEnded implements VortexEvent
     public static class Attributes
     {
         private final String gameId;
-        private final PlayerDto winner;
+        private final PlayerDto player;
         private final Array<SettlementDto> settlements;
         private final int playTime;
         private final int score;
+        private final boolean won;
     }
 
     private final String name = "game_ended";

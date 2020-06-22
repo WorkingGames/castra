@@ -1,13 +1,13 @@
 package com.github.workinggames.castra.core.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.workinggames.castra.core.Castra;
@@ -16,9 +16,9 @@ import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.input.ArmySplitInputProcessor;
 import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.World;
-import com.github.workinggames.castra.core.statistics.ScoreUtility;
 import com.github.workinggames.castra.core.task.BattleProcessor;
 import com.github.workinggames.castra.core.task.SoldierSpawner;
+import com.github.workinggames.castra.core.ui.GameOverMenu;
 
 public class GameScreen extends ScreenAdapter
 {
@@ -28,6 +28,7 @@ public class GameScreen extends ScreenAdapter
     private final BattleProcessor battleProcessor;
     private final VictoryCondition victoryCondition;
     private final ArmySplitInputProcessor armySplitInputProcessor;
+    private final Screens screens;
 
     private boolean gameStarted = false;
     private boolean skipNextDeltaForPlayTime = false;
@@ -38,6 +39,7 @@ public class GameScreen extends ScreenAdapter
     {
         this.game = game;
         this.world = world;
+        screens = new Screens(game.getViewport());
 
         if (game.getGameConfiguration().getPlayer1().isHuman())
         {
@@ -63,11 +65,21 @@ public class GameScreen extends ScreenAdapter
             this.world.getGameId(),
             game.getStatisticsEventCreator());
         victoryCondition = new VictoryCondition(this.world);
+        game.getAudioManager().playGameMusic();
     }
 
     @Override
     public void render(float delta)
     {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
+        {
+            Gdx.input.vibrate(50);
+            game.getAudioManager().stopGameMusic();
+            game.setScreen(new MainMenuScreen(game));
+            dispose();
+        }
         if (gameScreenDrawn && !gameEnded)
         {
             Player winner = getWinner();
@@ -104,10 +116,30 @@ public class GameScreen extends ScreenAdapter
     {
         gameEnded = true;
         freezeWorld();
-        float playTime = world.getTimepiece().getTime();
-        int score = ScoreUtility.getGameScore(world, winner, playTime);
-        game.getStatisticsEventCreator().gameEnded(world, winner, playTime, score);
-        addGameEndedOverlay(playTime, score);
+        game.getAudioManager().stopGameMusic();
+
+        Image overlay = new Image(game.getSkin().newDrawable("white", Color.valueOf("A9A9A960")));
+        overlay.setSize(game.getViewport().getWorldWidth(), game.getViewport().getWorldHeight());
+        world.addActor(overlay);
+
+        GameOverMenu gameOverMenu = new GameOverMenu(game, winner, world);
+        world.addActor(gameOverMenu);
+
+        TextButton mainMenuButton = new TextButton("Main Menu", game.getSkin());
+        mainMenuButton.getLabel().setFontScale(0.95f);
+        mainMenuButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Gdx.input.vibrate(50);
+                game.getAudioManager().playClickSound();
+                game.setScreen(new MainMenuScreen(game));
+                dispose();
+            }
+        });
+        mainMenuButton.setPosition(screens.getCenterX(mainMenuButton), screens.getRelativeY(14));
+        world.addActor(mainMenuButton);
     }
 
     private void freezeWorld()
@@ -122,7 +154,10 @@ public class GameScreen extends ScreenAdapter
         {
             settlement.clearListeners();
         }
-        world.getArmySplit().clearListeners();
+        if (world.getArmySplit() != null)
+        {
+            world.getArmySplit().clearListeners();
+        }
     }
 
     @Override
@@ -154,39 +189,6 @@ public class GameScreen extends ScreenAdapter
             winner = world.getGameConfiguration().getPlayer2();
         }
         return winner;
-    }
-
-    private void addGameEndedOverlay(float playTime, int score)
-    {
-        Image overlay = new Image(game.getSkin().newDrawable("white", Color.valueOf("A9A9A940")));
-        overlay.setSize(game.getViewport().getWorldWidth(), game.getViewport().getWorldHeight());
-        world.addActor(overlay);
-
-        String message = game.getGameConfiguration().getPlayer1().getName() + " Won!";
-        if (!victoryCondition.player1Won())
-        {
-            message = game.getGameConfiguration().getPlayer2().getName() + " Won!";
-        }
-        message = message + " in " + MathUtils.ceil(playTime) + " seconds, getting a score of " + score;
-
-        Label label = new Label(message, game.getSkin());
-        label.setPosition(Screens.getCenterX(label), Screens.getRelativeY(60));
-        world.addActor(label);
-
-        TextButton mainMenuButton = new TextButton("Main Menu", game.getSkin());
-        mainMenuButton.getLabel().setFontScale(0.95f);
-        mainMenuButton.addListener(new ClickListener()
-        {
-            @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
-                Gdx.input.vibrate(50);
-                game.setScreen(new MainMenuScreen(game));
-                dispose();
-            }
-        });
-        mainMenuButton.setPosition(Screens.getCenterX(mainMenuButton), Screens.getRelativeY(50));
-        world.addActor(mainMenuButton);
     }
 
     @Override

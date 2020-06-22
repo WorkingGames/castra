@@ -5,11 +5,10 @@ import lombok.Getter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+@Getter
 public class LinePath
 {
     private final Array<Line> lines;
-
-    @Getter
     private float distance;
 
     public LinePath(Array<Line> lines)

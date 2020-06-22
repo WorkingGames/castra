@@ -1,83 +1,109 @@
 package com.github.workinggames.castra.core.texture;
 
-import java.util.Arrays;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
+@RequiredArgsConstructor
 public class TextureAtlasInitializer
 {
-    public static final List<String> FLUFF_ALL = Arrays.asList("Stone1",
-        "Stone2",
-        "Stone3",
-        "Stone4",
-        "Stone5",
-        "Stone6",
-        "Stone7",
-        "Bush1",
-        "Tree1",
-        "Tree2",
-        "Tree3",
-        "Tree4",
-        "BrokenColumn",
-        "OldWagon",
-        "NoSwordStone",
-        "SwordStone");
-    public static final List<String> FLUFF_STONES = Arrays.asList("Stone1",
-        "Stone2",
-        "Stone3",
-        "Stone4",
-        "Stone5",
-        "Stone6",
-        "Stone7");
-    public static final List<String> FLUFF_TREES = Arrays.asList("Bush1", "Tree1", "Tree2", "Tree3", "Tree4");
-    public static final List<String> FLUFF_OTHER = Arrays.asList("BrokenColumn", "OldWagon");
+    private final TextureAtlas textureAtlas;
 
-    public void initializeAtlasContent(TextureAtlas textureAtlas)
+    public void initializeAtlasContent(boolean humbleAssetsPresent)
     {
-        addToAtlas("soldier", textureAtlas);
-        addToAtlas("soldiers", textureAtlas);
-        addToAtlas("horsesAndSoldiers", textureAtlas);
-        addToAtlas("Background256", textureAtlas);
-        addToAtlas("cloud", textureAtlas);
-        addToAtlas("LargeCastlePink", textureAtlas);
-        addToAtlas("LargeCastleHighlight", textureAtlas);
-        addToAtlas("LargeCastleNeutralHighlight", textureAtlas);
-        addToAtlas("LargeCastleFlags", textureAtlas);
-        addToAtlas("MediumCastlePink", textureAtlas);
-        addToAtlas("MediumCastleHighlight", textureAtlas);
-        addToAtlas("MediumCastleNeutralHighlight", textureAtlas);
-        addToAtlas("MediumCastleFlags", textureAtlas);
-        addToAtlas("SmallCastlePink", textureAtlas);
-        addToAtlas("SmallCastleHighlight", textureAtlas);
-        addToAtlas("SmallCastleNeutralHighlight", textureAtlas);
-        addToAtlas("SmallCastleFlags", textureAtlas);
-        addToAtlas("armySplit", textureAtlas);
-        addToAtlas("armySplitOuterRim", textureAtlas);
-        addToAtlas("uncheckedBox", textureAtlas);
-        addToAtlas("checkedBox", textureAtlas);
-        addToAtlas("Bricks", textureAtlas);
-        addToAtlas("sliderKnob", textureAtlas);
-        addToAtlas("battle1", textureAtlas);
-        addToAtlas("InstructionsScreenshot", textureAtlas);
-        for (String name : FLUFF_ALL)
+        addToAtlas("LargeCastlePink");
+        addToAtlas("LargeCastleHighlight");
+        addToAtlas("LargeCastleNeutralHighlight");
+        addToAtlas("LargeCastleFlags");
+        addToAtlas("MediumCastlePink");
+        addToAtlas("MediumCastleHighlight");
+        addToAtlas("MediumCastleNeutralHighlight");
+        addToAtlas("MediumCastleFlags");
+        addToAtlas("SmallCastlePink");
+        addToAtlas("SmallCastleHighlight");
+        addToAtlas("SmallCastleNeutralHighlight");
+        addToAtlas("SmallCastleFlags");
+        addToAtlas("armySplit");
+        addToAtlas("armySplitOuterRim");
+        addToAtlas("uncheckedBox");
+        addToAtlas("checkedBox");
+        addToAtlas("Bricks");
+        addToAtlas("sliderKnob");
+        addToAtlas("battle1");
+        addToAtlas("InstructionsScreenshot");
+        addToAtlas("singleSoldier");
+        addToAtlas("mediumSoldiers");
+        addToAtlas("LargeSoldiers");
+        addToAtlas("Background1");
+        addToAtlas("SelectedShade");
+        if (humbleAssetsPresent)
         {
-            addToAtlas(name, textureAtlas);
+            addHumbleAssets();
+        }
+        else
+        {
+            addToAtlas("MainMenu");
+            addToAtlas("PlayerMenuBackground");
+            addToAtlas("PlayerMenuBanners");
+            addToAtlas("PlayerMenuBannersShade");
+            addToAtlas("Button");
+            addToAtlas("MouseOverButton");
+            addToAtlas("ClickedButton");
+            addToAtlas("AiActivated");
+            addToAtlas("AiDeactivated");
+            addToAtlas("AiTypeSelectBox");
+            addToAtlas("HumanActivated");
+            addToAtlas("HumanDeactivated");
+            addToAtlas("InputBackground");
+            addToAtlas("TypeButtonBackground");
+            addToAtlas("TypeButtonMouseOver");
+            addToAtlas("ColorSelectBoxBackground");
+            addToAtlas("Torch");
+            addToAtlas("Title");
+            addToAtlas("GameOptions");
+            addToAtlas("Parchment");
+            addToAtlas("GameOverMenu");
+            addToAtlas("GameOverBanners");
         }
     }
 
-    private void addToAtlas(String name, TextureAtlas textureAtlas)
+    private void addToAtlas(String name)
     {
-        Texture texture = new Texture(getFile(name));
+        Texture texture = new Texture(Gdx.files.internal(name + ".png"));
         textureAtlas.addRegion(name, texture, 0, 0, texture.getWidth(), texture.getHeight());
     }
 
-    // visible for testing
-    public FileHandle getFile(String name)
+    private void addHumbleAssetToAtlas(String name)
     {
-        return Gdx.files.internal(name + ".png");
+        Texture texture = new Texture(Gdx.files.internal("humble-assets/" + name + ".png"));
+        textureAtlas.addRegion(name, texture, 0, 0, texture.getWidth(), texture.getHeight());
+    }
+
+    private void addHumbleAssets()
+    {
+        addHumbleAssetToAtlas("MainMenu");
+        addHumbleAssetToAtlas("PlayerMenuBackground");
+        addHumbleAssetToAtlas("PlayerMenuBanners");
+        addHumbleAssetToAtlas("PlayerMenuBannersShade");
+        addHumbleAssetToAtlas("Button");
+        addHumbleAssetToAtlas("MouseOverButton");
+        addHumbleAssetToAtlas("ClickedButton");
+        addHumbleAssetToAtlas("AiActivated");
+        addHumbleAssetToAtlas("AiDeactivated");
+        addHumbleAssetToAtlas("AiTypeSelectBox");
+        addHumbleAssetToAtlas("HumanActivated");
+        addHumbleAssetToAtlas("HumanDeactivated");
+        addHumbleAssetToAtlas("InputBackground");
+        addHumbleAssetToAtlas("TypeButtonBackground");
+        addHumbleAssetToAtlas("TypeButtonMouseOver");
+        addHumbleAssetToAtlas("ColorSelectBoxBackground");
+        addHumbleAssetToAtlas("Torch");
+        addHumbleAssetToAtlas("Title");
+        addHumbleAssetToAtlas("GameOptions");
+        addHumbleAssetToAtlas("Parchment");
+        addHumbleAssetToAtlas("GameOverMenu");
+        addHumbleAssetToAtlas("GameOverBanners");
     }
 }

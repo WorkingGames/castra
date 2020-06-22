@@ -18,18 +18,12 @@ public class FontProvider implements Disposable
     private final BitmapFont splitInfo;
 
     @Getter
-    private final BitmapFont menuLarge;
+    private final BitmapFont vinque;
 
     @Getter
-    private final BitmapFont menuMedium;
+    private final BitmapFont vinqueLarge;
 
-    @Getter
-    private final BitmapFont menuSmall;
-
-    @Getter
-    private final BitmapFont title;
-
-    public FontProvider()
+    public FontProvider(boolean humbleAssetsPresent)
     {
         defaultFont = new BitmapFont();
         soldierCount = new BitmapFont(Gdx.files.internal("fonts/SoldierCount.fnt"),
@@ -38,16 +32,20 @@ public class FontProvider implements Disposable
         splitInfo = new BitmapFont(Gdx.files.internal("fonts/SplitInfoText.fnt"),
             Gdx.files.internal("fonts/SplitInfoText.png"),
             false);
-        menuLarge = new BitmapFont(Gdx.files.internal("fonts/MenuLarge.fnt"),
-            Gdx.files.internal("fonts/MenuLarge.png"),
-            false);
-        menuMedium = new BitmapFont(Gdx.files.internal("fonts/MenuMedium.fnt"),
-            Gdx.files.internal("fonts/MenuMedium.png"),
-            false);
-        menuSmall = new BitmapFont(Gdx.files.internal("fonts/MenuSmall.fnt"),
-            Gdx.files.internal("fonts/MenuSmall.png"),
-            false);
-        title = new BitmapFont(Gdx.files.internal("fonts/Title.fnt"), Gdx.files.internal("fonts/Title.png"), false);
+        if (humbleAssetsPresent)
+        {
+            vinque = new BitmapFont(Gdx.files.internal("humble-assets/fonts/Vinque30.fnt"),
+                Gdx.files.internal("humble-assets/fonts/Vinque30.png"),
+                false);
+            vinqueLarge = new BitmapFont(Gdx.files.internal("humble-assets/fonts/Vinque34.fnt"),
+                Gdx.files.internal("humble-assets/fonts/Vinque34.png"),
+                false);
+        }
+        else
+        {
+            vinque = soldierCount;
+            vinqueLarge = soldierCount;
+        }
     }
 
     @Override
@@ -55,5 +53,8 @@ public class FontProvider implements Disposable
     {
         defaultFont.dispose();
         soldierCount.dispose();
+        splitInfo.dispose();
+        vinque.dispose();
+        vinqueLarge.dispose();
     }
 }

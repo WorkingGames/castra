@@ -5,12 +5,14 @@ import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.workinggames.castra.core.audio.AudioManager;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.screen.MainMenuScreen;
 import com.github.workinggames.castra.core.stage.GameConfiguration;
@@ -31,6 +33,11 @@ public class Castra extends Game
     @Getter
     private final GameConfiguration gameConfiguration = new GameConfiguration();
 
+    private final TimestampFormatter timestampFormatter;
+
+    @Getter
+    private AudioManager audioManager;
+
     @Getter
     private FontProvider fontProvider;
 
@@ -43,7 +50,8 @@ public class Castra extends Game
     @Getter
     private StatisticsEventCreator statisticsEventCreator;
 
-    private final TimestampFormatter timestampFormatter;
+    @Getter
+    private boolean humbleAssetsPresent;
 
     @Override
     public void pause()
@@ -60,20 +68,30 @@ public class Castra extends Game
     @Override
     public void create()
     {
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        viewport = new FitViewport(1920, 1080);
+        humbleAssetsPresent = tryIfHumbleAssetsPresent();
 
         inputMultiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        new TextureAtlasInitializer().initializeAtlasContent(textureAtlas);
+        // disabling the android back button, to handle it on our own
+        Gdx.input.setCatchKey(Input.Keys.BACK, true);
 
-        textureAtlas.findRegion("Background256")
-            .getTexture()
-            .setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        if (humbleAssetsPresent)
+        {
+            Pixmap cursorPixmap = new Pixmap(Gdx.files.internal("humble-assets/Cursor.png"));
+            Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursorPixmap, 6, 5));
+            cursorPixmap.dispose();
+        }
 
-        fontProvider = new FontProvider();
+        new TextureAtlasInitializer(textureAtlas).initializeAtlasContent(humbleAssetsPresent);
+
+        fontProvider = new FontProvider(humbleAssetsPresent);
 
         statisticsEventCreator = new StatisticsEventCreator(new VortexEventSender(), timestampFormatter);
+
+        audioManager = new AudioManager(humbleAssetsPresent);
+        audioManager.initializeSounds();
 
         this.setScreen(new MainMenuScreen(this));
     }
@@ -92,5 +110,10 @@ public class Castra extends Game
         fontProvider.dispose();
         textureAtlas.dispose();
         skin.dispose();
+    }
+
+    public boolean tryIfHumbleAssetsPresent()
+    {
+        return Gdx.files.internal("humble-assets/cursor.png").exists();
     }
 }

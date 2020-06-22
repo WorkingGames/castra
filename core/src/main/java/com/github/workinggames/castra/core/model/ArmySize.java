@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum ArmySize
 {
-    SMALL(1, "soldier"),
-    MEDIUM(20, "soldiers"),
-    LARGE(50, "horsesAndSoldiers");
+    SMALL(1, "singleSoldier", 53),
+    MEDIUM(20, "mediumSoldiers", 35),
+    LARGE(50, "LargeSoldiers", 40);
 
     public static ArmySize bySoldierCount(int soldiers)
     {
@@ -25,8 +25,9 @@ public enum ArmySize
         return result;
     }
 
-    @Getter
     private final int minimumSoldiers;
 
     private final String textureName;
+
+    private final int animationOffset;
 }

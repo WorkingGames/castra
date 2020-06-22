@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -28,61 +29,62 @@ public class Skins
         skin.add("white", new Texture(pixmap));
 
         skin.add("default", game.getFontProvider().getDefaultFont());
-        skin.add("menuLarge", game.getFontProvider().getMenuLarge());
-        skin.add("menuMedium", game.getFontProvider().getMenuMedium());
+        skin.add("Vinque", game.getFontProvider().getVinque());
+        skin.add("VinqueLarge", game.getFontProvider().getVinqueLarge());
 
-        Label.LabelStyle titleStyle = new Label.LabelStyle();
-        titleStyle.font = game.getFontProvider().getTitle();
-        titleStyle.fontColor = Color.FIREBRICK;
-        skin.add("title", titleStyle);
+        Label.LabelStyle defaultStyle = new Label.LabelStyle();
+        defaultStyle.font = game.getFontProvider().getVinque();
+        defaultStyle.fontColor = Color.WHITE;
+        skin.add("default", defaultStyle);
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.checked = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
-        textButtonStyle.font = skin.getFont("menuLarge");
+        Image regularButtonLarge = new Image(game.getTextureAtlas().findRegion("Button"));
+        Image mouseOverButtonLarge = new Image(game.getTextureAtlas().findRegion("MouseOverButton"));
+        Image clickedButtonLarge = new Image(game.getTextureAtlas().findRegion("ClickedButton"));
+        textButtonStyle.up = regularButtonLarge.getDrawable();
+        textButtonStyle.down = clickedButtonLarge.getDrawable();
+        textButtonStyle.checked = clickedButtonLarge.getDrawable();
+        textButtonStyle.over = mouseOverButtonLarge.getDrawable();
+        textButtonStyle.font = game.getFontProvider().getVinque();
         skin.add("default", textButtonStyle);
 
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = skin.getFont("menuMedium");
-        textFieldStyle.fontColor = Color.WHITE;
-        textFieldStyle.cursor = skin.newDrawable("white", Color.WHITE);
-        textFieldStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
-        textFieldStyle.focusedBackground = skin.newDrawable("white", Color.LIGHT_GRAY);
-        textFieldStyle.messageFont = skin.getFont("menuMedium");
-        textFieldStyle.messageFontColor = Color.WHITE;
+        Drawable inputBackground = new Image(game.getTextureAtlas().findRegion("InputBackground")).getDrawable();
+        textFieldStyle.background = inputBackground;
+        textFieldStyle.fontColor = Color.BLACK;
+        textFieldStyle.font = skin.getFont("Vinque");
+        Pixmap cursorPixmap = new Pixmap(1, 30, Pixmap.Format.RGBA8888);
+        cursorPixmap.setColor(Color.BLACK);
+        cursorPixmap.fill();
+        textFieldStyle.cursor = new Image(new Texture(cursorPixmap)).getDrawable();
         skin.add("default", textFieldStyle);
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = skin.getFont("menuMedium");
-        labelStyle.fontColor = Color.WHITE;
-        skin.add("default", labelStyle);
-
         List.ListStyle listStyle = new List.ListStyle();
-        listStyle.font = skin.getFont("menuMedium");
-        listStyle.selection = skin.newDrawable("white", Color.GOLD);
+        listStyle.font = skin.getFont("Vinque");
+        listStyle.fontColorUnselected = Color.BLACK;
+        listStyle.fontColorSelected = Color.BLACK;
+        listStyle.selection = new Image(game.getTextureAtlas().findRegion("SelectedShade")).getDrawable();
         skin.add("default", listStyle);
 
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
-        scrollPaneStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
+        scrollPaneStyle.background = new Image(game.getTextureAtlas().findRegion("AiTypeSelectBox")).getDrawable();
         skin.add("default", scrollPaneStyle);
 
         SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
-        selectBoxStyle.font = skin.getFont("menuMedium");
-        selectBoxStyle.fontColor = Color.WHITE;
-        selectBoxStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
-        selectBoxStyle.backgroundOver = skin.newDrawable("white", Color.LIGHT_GRAY);
-        selectBoxStyle.backgroundOpen = skin.newDrawable("white", Color.LIGHT_GRAY);
-        selectBoxStyle.listStyle = listStyle;
+        selectBoxStyle.background = inputBackground;
+        selectBoxStyle.fontColor = Color.BLACK;
+        selectBoxStyle.font = skin.getFont("Vinque");
+        selectBoxStyle.backgroundOpen = inputBackground;
+        selectBoxStyle.backgroundOver = inputBackground;
         selectBoxStyle.scrollStyle = scrollPaneStyle;
+        selectBoxStyle.listStyle = listStyle;
         skin.add("default", selectBoxStyle);
 
         ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
         skin.add("default", imageButtonStyle);
 
         CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
-        checkBoxStyle.font = skin.getFont("menuMedium");
+        checkBoxStyle.font = skin.getFont("Vinque");
         checkBoxStyle.fontColor = Color.WHITE;
         checkBoxStyle.checkboxOff = new TextureRegionDrawable(game.getTextureAtlas()
             .findRegion("uncheckedBox")

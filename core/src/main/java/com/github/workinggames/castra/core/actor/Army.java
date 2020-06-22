@@ -64,10 +64,12 @@ public class Army extends Group
         setSize(image.getWidth(), image.getHeight());
         setZIndex(100);
 
+        image.setPosition(-armySize.getAnimationOffset(), 0);
+
         // flip image, moving from right to left
         if (path.valueAt(0).x > path.valueAt(1).x)
         {
-            image.setOriginX(image.getWidth() / 2);
+            image.setOriginX(armySize.getAnimationOffset());
             image.setScaleX(-1);
         }
         addActor(image);

@@ -37,8 +37,6 @@ public class World extends Stage
     @Getter
     private final TextureAtlas textureAtlas;
 
-    private final ZAwareActorComparator actorComparator;
-
     @Getter
     private final Array<Settlement> settlements;
 
@@ -82,15 +80,14 @@ public class World extends Stage
         this.gameConfiguration = gameConfiguration;
         this.statisticsEventCreator = statisticsEventCreator;
 
-        actorComparator = new ZAwareActorComparator();
-
         settlements = new Array<>();
         paths = new Paths();
         armies = new Array<>();
         battles = new Array<>();
         timepiece = new DefaultTimepiece();
 
-        addBackground();
+        Screens screens = new Screens(viewport);
+        addActor(screens.toBackground(textureAtlas.findRegion("Background1").getTexture()));
 
         if (gameConfiguration.getPlayer1().getType().equals(PlayerType.HUMAN))
         {
@@ -106,17 +103,11 @@ public class World extends Stage
         actorCreator = new ActorCreator(gameConfiguration, textureAtlas, fontProvider);
     }
 
-    private void addBackground()
-    {
-        addActor(Screens.toBackground(textureAtlas.findRegion("Background256").getTexture(), getViewport()));
-    }
-
     @Override
     public void act(float deltaTime)
     {
         processArmies();
         super.act(deltaTime);
-        getActors().sort(actorComparator);
 
         if (ai1 != null)
         {

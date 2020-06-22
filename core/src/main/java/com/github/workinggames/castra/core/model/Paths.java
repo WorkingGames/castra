@@ -2,6 +2,7 @@ package com.github.workinggames.castra.core.model;
 
 import lombok.Data;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.pathfinding.LinePath;
@@ -25,5 +26,10 @@ public class Paths
     public LinePath get(Settlement origin, Settlement destination)
     {
         return paths.get(new Key(origin, destination));
+    }
+
+    public Array<LinePath> getAllPaths()
+    {
+        return paths.values().toArray();
     }
 }

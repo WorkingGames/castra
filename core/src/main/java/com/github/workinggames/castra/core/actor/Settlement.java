@@ -79,7 +79,7 @@ public class Settlement extends Group
         }
 
         boolean detailsVisible = soldierCountVisible || !owner.isAi();
-        label = createLabel(font, detailsVisible);
+        label = createLabel(font, owner, detailsVisible);
 
         addActor(highlight);
         addActor(image);
@@ -90,11 +90,12 @@ public class Settlement extends Group
         setZIndex(1);
     }
 
-    private Label createLabel(BitmapFont font, boolean visible)
+    private Label createLabel(BitmapFont font, Player owner, boolean visible)
     {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
         Label result = new Label(String.valueOf(soldiers), labelStyle);
         applyOffset(result);
+        result.setColor(owner.getColorSchema().getFontColor());
         result.setVisible(visible);
         return result;
     }
@@ -105,22 +106,22 @@ public class Settlement extends Group
         {
             label.setWidth(48);
             label.setHeight(20);
-            label.setX(52);
+            label.setX(58);
             label.setY(6);
         }
         else if (size.equals(SettlementSize.MEDIUM))
         {
             label.setWidth(56);
             label.setHeight(22);
-            label.setX(52);
-            label.setY(7);
+            label.setX(58);
+            label.setY(6);
         }
         else
         {
             label.setWidth(56);
             label.setHeight(22);
-            label.setX(70);
-            label.setY(9);
+            label.setX(76);
+            label.setY(7);
         }
         label.setAlignment(Align.center);
     }
@@ -140,10 +141,13 @@ public class Settlement extends Group
         image.setDrawable(settlementImage.getImage().getDrawable());
 
         flags.setAnimation(settlementImage.getFlags().getAnimation());
+        flags.setDrawable(settlementImage.getFlags().getDrawable());
         flags.setVisible(true);
 
         highlight.setAnimation(settlementImage.getHighlight().getAnimation());
+        highlight.setDrawable(settlementImage.getHighlight().getDrawable());
 
+        label.setColor(newOwner.getColorSchema().getFontColor());
         label.setVisible(soldierCountVisible || !owner.isAi());
     }
 
