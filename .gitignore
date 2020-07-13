@@ -6,3 +6,4 @@ target
 *.iml
 /android/src/main/libs
 /tools
+/assets/humble-assets
