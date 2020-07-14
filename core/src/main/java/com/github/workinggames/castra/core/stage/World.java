@@ -57,7 +57,7 @@ public class World extends Stage
 
     @Getter
     private final AudioManager audioManager;
-    
+
     private final MessageManager messageManager = MessageManager.getInstance();
     private final ActorCreator actorCreator;
     private final StatisticsEventCreator statisticsEventCreator;
@@ -195,9 +195,9 @@ public class World extends Stage
             Battle battle = actorCreator.createBattle(army);
             addActor(battle);
             battles.add(battle);
-            audioManager.playBattleStartedSound();
             messageManager.dispatchMessage(0, null, null, MessageType.BATTLE_STARTED, battle);
             statisticsEventCreator.battleStarted(this, battle);
         }
+        audioManager.playBattleStartedSound();
     }
 }

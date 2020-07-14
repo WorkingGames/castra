@@ -96,19 +96,16 @@ public class LoadingScreen extends ScreenAdapter
         {
             Timer.post(new InitializerTask(settlementInitializer));
             settlementInitializerStarted = true;
-            Gdx.app.log("loadingScreen", "starting settlements");
         }
         if (world != null && settlementInitializer.isFinished() && !dragDropInitializerStarted)
         {
             Timer.post(new InitializerTask(dragDropInitializer));
             dragDropInitializerStarted = true;
-            Gdx.app.log("loadingScreen", "starting drag&drop");
         }
         if (world != null && settlementInitializer.isFinished() && !pathInitializerStarted)
         {
             Timer.post(new InitializerTask(pathInitializer));
             pathInitializerStarted = true;
-            Gdx.app.log("loadingScreen", "starting paths");
         }
         if (world != null &&
             settlementInitializer.isFinished() &&
@@ -118,7 +115,6 @@ public class LoadingScreen extends ScreenAdapter
             gameScreen = new GameScreen(game, world);
             aiInitializer.initialize();
             aiInitializerStarted = true;
-            Gdx.app.log("loadingScreen", "starting ai");
         }
 
         if (world != null &&
@@ -127,7 +123,6 @@ public class LoadingScreen extends ScreenAdapter
             dragDropInitializer.isFinished() &&
             aiInitializer.isFinished())
         {
-            Gdx.app.log("loadingScreen", "finished loading");
             game.getAudioManager().stopMainMenuMusic();
             game.setScreen(gameScreen);
             stage.dispose();

@@ -9,6 +9,7 @@ import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
+import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.ai.Ai;
 import com.github.workinggames.castra.core.ai.AiUtils;
 import com.github.workinggames.castra.core.model.Player;
@@ -112,7 +113,15 @@ public class FrankyAi implements Ai, Telegraph
         if (!attackOptions.isEmpty())
         {
             Attack attack = attackOptions.first();
-            createArmies(attack);
+            // finish the opponent if he has only one settlement and is clearly outnumbered
+            if (attackOptions.size == 1 && soldiersAvailable > gameInfo.getOpponentArmyEstimate() + 30)
+            {
+                finishOpponent(attack);
+            }
+            else
+            {
+                createArmies(attack);
+            }
             attacked = true;
         }
         else
@@ -177,6 +186,22 @@ public class FrankyAi implements Ai, Telegraph
             world.createArmy(gameInfo.getSettlement(source.getSettlementId()),
                 gameInfo.getSettlement(attack.getTargetSettlementId()),
                 source.getSoldiers());
+        }
+    }
+
+    private void finishOpponent(Attack attack)
+    {
+        for (AttackSource source : attack.getAttackSources())
+        {
+            Settlement sourceSettlement = gameInfo.getSettlement(source.getSettlementId());
+            int dispatchSoldiers = source.getSoldiers();
+            if (sourceSettlement.getSoldiers() > dispatchSoldiers)
+            {
+                dispatchSoldiers = sourceSettlement.getSoldiers();
+            }
+            world.createArmy(sourceSettlement,
+                gameInfo.getSettlement(attack.getTargetSettlementId()),
+                dispatchSoldiers);
         }
     }
 }
