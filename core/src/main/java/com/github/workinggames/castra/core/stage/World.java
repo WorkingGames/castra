@@ -10,7 +10,6 @@ import com.badlogic.gdx.ai.Timepiece;
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.actor.ActorCreator;
@@ -20,6 +19,7 @@ import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.ai.Ai;
 import com.github.workinggames.castra.core.ai.voons.MessageType;
+import com.github.workinggames.castra.core.audio.AudioManager;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.model.Paths;
 import com.github.workinggames.castra.core.model.Player;
@@ -73,7 +73,8 @@ public class World extends Stage
         TextureAtlas textureAtlas,
         FontProvider fontProvider,
         GameConfiguration gameConfiguration,
-        StatisticsEventCreator statisticsEventCreator)
+        StatisticsEventCreator statisticsEventCreator,
+        AudioManager audioManager)
     {
         super(viewport);
         this.textureAtlas = textureAtlas;
@@ -91,12 +92,12 @@ public class World extends Stage
 
         if (gameConfiguration.getPlayer1().getType().equals(PlayerType.HUMAN))
         {
-            armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer1());
+            armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer1(), audioManager);
             addActor(armySplit);
         }
         else if (gameConfiguration.getPlayer2().getType().equals(PlayerType.HUMAN))
         {
-            armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer2());
+            armySplit = new ArmySplit(textureAtlas, fontProvider, gameConfiguration.getPlayer2(), audioManager);
             addActor(armySplit);
         }
 
@@ -148,11 +149,6 @@ public class World extends Stage
             messageManager.dispatchMessage(0, null, null, MessageType.ARMY_CREATED, army);
             statisticsEventCreator.armyDeployed(this, army);
         }
-    }
-
-    public void createFluff(Image fluff)
-    {
-        addActor(fluff);
     }
 
     private void processArmies()

@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Align;
+import com.github.workinggames.castra.core.audio.AudioManager;
 import com.github.workinggames.castra.core.font.FontProvider;
 import com.github.workinggames.castra.core.input.ArmySplitDragSource;
 import com.github.workinggames.castra.core.input.ArmySplitDragTarget;
@@ -27,7 +28,7 @@ public class ArmySplit extends Group
     private final FontProvider fontProvider;
     private final Player player;
 
-    public ArmySplit(TextureAtlas textureAtlas, FontProvider fontProvider, Player player)
+    public ArmySplit(TextureAtlas textureAtlas, FontProvider fontProvider, Player player, AudioManager audioManager)
     {
         this.textureAtlas = textureAtlas;
         this.fontProvider = fontProvider;
@@ -56,8 +57,8 @@ public class ArmySplit extends Group
         addActor(innerRimGroup);
 
         DragAndDrop dragAndDrop = new DragAndDrop();
-        dragAndDrop.addSource(new ArmySplitDragSource(this));
-        dragAndDrop.addTarget(new ArmySplitDragTarget(this));
+        dragAndDrop.addSource(new ArmySplitDragSource(this, audioManager));
+        dragAndDrop.addTarget(new ArmySplitDragTarget(this, audioManager));
     }
 
     public void updateLabel()

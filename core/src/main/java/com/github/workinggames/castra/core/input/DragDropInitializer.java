@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.audio.AudioManager;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.task.AsyncInitializer;
 
@@ -11,6 +12,7 @@ import com.github.workinggames.castra.core.task.AsyncInitializer;
 public class DragDropInitializer implements AsyncInitializer
 {
     private final World world;
+    private final AudioManager audioManager;
 
     private boolean finished;
 
@@ -20,8 +22,8 @@ public class DragDropInitializer implements AsyncInitializer
 
         for (Settlement settlement : world.getSettlements())
         {
-            dragAndDrop.addSource(new SettlementDragSource(settlement));
-            dragAndDrop.addTarget(new SettlementDragTarget(settlement, world));
+            dragAndDrop.addSource(new SettlementDragSource(settlement, audioManager));
+            dragAndDrop.addTarget(new SettlementDragTarget(settlement, world, audioManager));
         }
 
         finished = true;

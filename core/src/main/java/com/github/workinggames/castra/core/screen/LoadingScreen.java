@@ -82,12 +82,13 @@ public class LoadingScreen extends ScreenAdapter
                 textureAtlas,
                 game.getFontProvider(),
                 game.getGameConfiguration(),
-                game.getStatisticsEventCreator());
+                game.getStatisticsEventCreator(),
+                game.getAudioManager());
             game.getInputMultiplexer().addProcessor(world);
 
             settlementInitializer = new SettlementInitializer(world);
             pathInitializer = new PathInitializer(viewport, textureAtlas, world);
-            dragDropInitializer = new DragDropInitializer(world);
+            dragDropInitializer = new DragDropInitializer(world, game.getAudioManager());
             aiInitializer = new AiInitializer(world);
         }
 

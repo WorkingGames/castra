@@ -1,14 +1,20 @@
 package com.github.workinggames.castra.core.input;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.github.workinggames.castra.core.actor.Settlement;
+import com.github.workinggames.castra.core.audio.AudioManager;
 
 class SettlementDragSource extends DragAndDrop.Source
 {
-    public SettlementDragSource(Settlement settlement)
+    private final AudioManager audioManager;
+
+    public SettlementDragSource(
+        Settlement settlement, AudioManager audioManager)
     {
         super(settlement);
+        this.audioManager = audioManager;
     }
 
     @Override
@@ -20,6 +26,8 @@ class SettlementDragSource extends DragAndDrop.Source
         {
             settlement.setHighlight(true);
             result = new DragAndDrop.Payload();
+            Gdx.input.vibrate(50);
+            audioManager.playClickSound();
         }
         return result;
     }

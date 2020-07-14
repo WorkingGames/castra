@@ -47,6 +47,11 @@ public class GameOptions extends WidgetGroup
 
         addSeedInput(game);
         addGameSpeedSelectBox(game);
+        if (game.isHumbleAssetsPresent())
+        {
+            addMusicVolumeInput();
+            addSoundVolumeInput();
+        }
         if (game.getGameConfiguration().isDebug())
         {
             addOpponentSettlementDetailsVisible(game);
@@ -139,6 +144,16 @@ public class GameOptions extends WidgetGroup
             }
         });
         addActor(gameSpeedSelectBox);
+    }
+
+    private void addMusicVolumeInput()
+    {
+        
+    }
+
+    private void addSoundVolumeInput()
+    {
+
     }
 
     private void addOpponentSettlementDetailsVisible(Castra game)
