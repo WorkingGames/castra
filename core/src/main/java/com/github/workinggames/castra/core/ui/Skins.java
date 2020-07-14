@@ -94,17 +94,27 @@ public class Skins
             .getTexture());
         skin.add("default", checkBoxStyle);
 
-        pixmap = new Pixmap(1, 10, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        Texture sliderTexture = new Texture(pixmap);
-        sliderTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        Drawable sliderBar = new TextureRegionDrawable(sliderTexture);
-        Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
-        sliderStyle.knob = new TextureRegionDrawable(game.getTextureAtlas().findRegion("sliderKnob").getTexture());
-        sliderStyle.knobBefore = sliderBar;
-        sliderStyle.knobAfter = sliderBar;
-        sliderStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
-        skin.add("default-horizontal", sliderStyle);
+        if (game.isHumbleAssetsPresent())
+        {
+            Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
+            sliderStyle.knob = new TextureRegionDrawable(game.getTextureAtlas().findRegion("sliderKnob").getTexture());
+            sliderStyle.background = new Image(game.getTextureAtlas().findRegion("ChainBackground")).getDrawable();
+            skin.add("default-horizontal", sliderStyle);
+        }
+        else
+        {
+            pixmap = new Pixmap(1, 10, Pixmap.Format.RGBA8888);
+            pixmap.setColor(Color.WHITE);
+            pixmap.fill();
+            Texture sliderTexture = new Texture(pixmap);
+            sliderTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+            Drawable sliderBar = new TextureRegionDrawable(sliderTexture);
+            Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
+            sliderStyle.knob = new TextureRegionDrawable(game.getTextureAtlas().findRegion("sliderKnob").getTexture());
+            sliderStyle.knobBefore = sliderBar;
+            sliderStyle.knobAfter = sliderBar;
+            sliderStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
+            skin.add("default-horizontal", sliderStyle);
+        }
     }
 }

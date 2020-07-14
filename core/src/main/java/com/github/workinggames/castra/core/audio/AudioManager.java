@@ -42,6 +42,17 @@ public class AudioManager
         }
     }
 
+    public void updateMusicVolume(float volume)
+    {
+        musicVolume = volume;
+        mainMenuMusic.setVolume(musicVolume);
+    }
+
+    public void updateSoundVolume(float volume)
+    {
+        soundVolume = volume;
+    }
+
     public void playMainMenuMusic()
     {
         if (humbleAssetsPresent)

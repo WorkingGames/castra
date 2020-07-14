@@ -105,5 +105,6 @@ public class TextureAtlasInitializer
         addHumbleAssetToAtlas("Parchment");
         addHumbleAssetToAtlas("GameOverMenu");
         addHumbleAssetToAtlas("GameOverBanners");
+        addHumbleAssetToAtlas("ChainBackground");
     }
 }

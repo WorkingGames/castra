@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -28,15 +29,19 @@ public class GameOptions extends WidgetGroup
     private static final float MIN_STARTING_SOLDIERS = 10;
     private static final float MAX_STARTING_SOLDIERS = 200;
     private static final float STARTING_SOLDIERS_STEP_SIZE = 10;
+    private static final int LABEL_BEGIN = 39;
+    private static final int VALUE_BEGIN = 51;
 
     @Getter
     private final TextButton closeOptionsButton;
     private final Skin skin;
     private final Screens screens;
     private final AudioManager audioManager;
+    private final Castra game;
 
     public GameOptions(Castra game)
     {
+        this.game = game;
         skin = game.getSkin();
         screens = new Screens(game.getViewport());
         audioManager = game.getAudioManager();
@@ -45,8 +50,8 @@ public class GameOptions extends WidgetGroup
         background.setPosition(screens.getCenterX(background), screens.getRelativeY(20));
         addActor(background);
 
-        addSeedInput(game);
-        addGameSpeedSelectBox(game);
+        addSeedInput();
+        addGameSpeedSelectBox();
         if (game.isHumbleAssetsPresent())
         {
             addMusicVolumeInput();
@@ -54,9 +59,9 @@ public class GameOptions extends WidgetGroup
         }
         if (game.getGameConfiguration().isDebug())
         {
-            addOpponentSettlementDetailsVisible(game);
-            addOpponentArmyDetailsVisible(game);
-            addStartSoldiersSlider(game);
+            addOpponentSettlementDetailsVisible();
+            addOpponentArmyDetailsVisible();
+            addStartSoldiersSlider();
         }
 
         closeOptionsButton = new TextButton("Close", skin);
@@ -64,14 +69,14 @@ public class GameOptions extends WidgetGroup
         addActor(closeOptionsButton);
     }
 
-    private void addSeedInput(Castra game)
+    private void addSeedInput()
     {
         Label seedInputLabel = new Label("Seed: ", skin);
-        seedInputLabel.setPosition(screens.getRelativeX(40), screens.getRelativeY(64));
+        seedInputLabel.setPosition(screens.getRelativeX(LABEL_BEGIN), screens.getRelativeY(64));
         addActor(seedInputLabel);
 
         TextField seedInputField = new TextField("" + game.getGameConfiguration().getSeed(), skin);
-        seedInputField.setPosition(screens.getRelativeX(50), screens.getRelativeY(64));
+        seedInputField.setPosition(screens.getRelativeX(VALUE_BEGIN), screens.getRelativeY(64));
         seedInputField.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
         seedInputField.setMaxLength(10);
         seedInputField.setWidth(200);
@@ -105,16 +110,22 @@ public class GameOptions extends WidgetGroup
         addActor(seedInputField);
     }
 
-    private void addGameSpeedSelectBox(Castra game)
+    private void addGameSpeedSelectBox()
     {
         Label gameSpeedLabel = new Label("Game speed: ", skin);
-        gameSpeedLabel.setPosition(screens.getRelativeX(40), screens.getRelativeY(57));
+        gameSpeedLabel.setPosition(screens.getRelativeX(LABEL_BEGIN), screens.getRelativeY(57));
         addActor(gameSpeedLabel);
 
-        SelectBox<String> gameSpeedSelectBox = new SelectBox<>(skin);
+        ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
+        scrollPaneStyle.background = new Image(game.getTextureAtlas().findRegion("AiTypeSelectBox")).getDrawable();
+
+        SelectBox.SelectBoxStyle selectBoxStyle = skin.get(SelectBox.SelectBoxStyle.class);
+        selectBoxStyle.scrollStyle = scrollPaneStyle;
+
+        SelectBox<String> gameSpeedSelectBox = new SelectBox<>(selectBoxStyle);
         gameSpeedSelectBox.setWidth(200);
         gameSpeedSelectBox.setAlignment(Align.center);
-        gameSpeedSelectBox.setPosition(screens.getRelativeX(50), screens.getRelativeY(57));
+        gameSpeedSelectBox.setPosition(screens.getRelativeX(VALUE_BEGIN), screens.getRelativeY(57));
         Array<String> items = new Array<>();
         for (GameSpeed gameSpeed : GameSpeed.values())
         {
@@ -148,21 +159,55 @@ public class GameOptions extends WidgetGroup
 
     private void addMusicVolumeInput()
     {
-        
+        Label optionText = new Label("Music Volume: ", skin);
+        optionText.setPosition(screens.getRelativeX(LABEL_BEGIN), screens.getRelativeY(50));
+        addActor(optionText);
+
+        Slider optionInput = new Slider(0, 1, 0.05f, false, skin);
+        optionInput.setValue(game.getAudioManager().getMusicVolume());
+        optionInput.addListener(new ChangeListener()
+        {
+            @Override
+            public void changed(ChangeEvent event, Actor actor)
+            {
+                Slider slider = (Slider) actor;
+                game.getAudioManager().updateMusicVolume(slider.getValue());
+            }
+        });
+        optionInput.setSize(200, optionInput.getHeight());
+        optionInput.setPosition(screens.getRelativeX(VALUE_BEGIN), screens.getRelativeY(50));
+        addActor(optionInput);
     }
 
     private void addSoundVolumeInput()
     {
+        Label optionText = new Label("Sound Volume: ", skin);
+        optionText.setPosition(screens.getRelativeX(LABEL_BEGIN), screens.getRelativeY(43));
+        addActor(optionText);
 
+        Slider optionInput = new Slider(0, 1, 0.05f, false, skin);
+        optionInput.setValue(game.getAudioManager().getSoundVolume());
+        optionInput.addListener(new ChangeListener()
+        {
+            @Override
+            public void changed(ChangeEvent event, Actor actor)
+            {
+                Slider slider = (Slider) actor;
+                game.getAudioManager().updateSoundVolume(slider.getValue());
+            }
+        });
+        optionInput.setSize(200, optionInput.getHeight());
+        optionInput.setPosition(screens.getRelativeX(VALUE_BEGIN), screens.getRelativeY(43));
+        addActor(optionInput);
     }
 
-    private void addOpponentSettlementDetailsVisible(Castra game)
+    private void addOpponentSettlementDetailsVisible()
     {
-        Label optionText = new Label("Opponent settlement details visible: ", game.getSkin());
+        Label optionText = new Label("Opponent settlement details visible: ", skin);
         optionText.setPosition(screens.getRelativeX(30), screens.getRelativeY(49));
         addActor(optionText);
 
-        CheckBox optionInput = new CheckBox(null, game.getSkin());
+        CheckBox optionInput = new CheckBox(null, skin);
         optionInput.setChecked(game.getGameConfiguration().isOpponentSettlementDetailsVisible());
         optionInput.addListener(new ChangeListener()
         {
@@ -177,13 +222,13 @@ public class GameOptions extends WidgetGroup
         addActor(optionInput);
     }
 
-    private void addOpponentArmyDetailsVisible(Castra game)
+    private void addOpponentArmyDetailsVisible()
     {
-        Label optionText = new Label("Opponent army details visible: ", game.getSkin());
+        Label optionText = new Label("Opponent army details visible: ", skin);
         optionText.setPosition(screens.getRelativeX(30), screens.getRelativeY(42));
         addActor(optionText);
 
-        CheckBox optionInput = new CheckBox(null, game.getSkin());
+        CheckBox optionInput = new CheckBox(null, skin);
         optionInput.setChecked(game.getGameConfiguration().isOpponentArmyDetailsVisible());
         optionInput.addListener(new ChangeListener()
         {
@@ -198,9 +243,9 @@ public class GameOptions extends WidgetGroup
         addActor(optionInput);
     }
 
-    private void addStartSoldiersSlider(Castra game)
+    private void addStartSoldiersSlider()
     {
-        Label optionText = new Label("Starting soldiers: ", game.getSkin());
+        Label optionText = new Label("Starting soldiers: ", skin);
         optionText.setPosition(screens.getRelativeX(30), screens.getRelativeY(35));
         addActor(optionText);
 
@@ -208,7 +253,7 @@ public class GameOptions extends WidgetGroup
             MAX_STARTING_SOLDIERS,
             STARTING_SOLDIERS_STEP_SIZE,
             false,
-            game.getSkin());
+            skin);
         optionInput.setValue(game.getGameConfiguration().getStartingSoldiers());
         optionInput.addListener(new ChangeListener()
         {
