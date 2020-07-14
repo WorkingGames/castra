@@ -23,7 +23,7 @@ public class DragDropInitializer implements AsyncInitializer
         for (Settlement settlement : world.getSettlements())
         {
             dragAndDrop.addSource(new SettlementDragSource(settlement, audioManager));
-            dragAndDrop.addTarget(new SettlementDragTarget(settlement, world, audioManager));
+            dragAndDrop.addTarget(new SettlementDragTarget(settlement, world));
         }
 
         finished = true;

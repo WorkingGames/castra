@@ -53,14 +53,17 @@ public class World extends Stage
     private final Timepiece timepiece;
 
     @Getter
-    private ArmySplit armySplit;
-
-    @Getter
     private final GameConfiguration gameConfiguration;
 
+    @Getter
+    private final AudioManager audioManager;
+    
     private final MessageManager messageManager = MessageManager.getInstance();
     private final ActorCreator actorCreator;
     private final StatisticsEventCreator statisticsEventCreator;
+
+    @Getter
+    private ArmySplit armySplit;
 
     @Setter
     private Ai ai1 = null;
@@ -80,6 +83,7 @@ public class World extends Stage
         this.textureAtlas = textureAtlas;
         this.gameConfiguration = gameConfiguration;
         this.statisticsEventCreator = statisticsEventCreator;
+        this.audioManager = audioManager;
 
         settlements = new Array<>();
         paths = new Paths();
@@ -191,7 +195,7 @@ public class World extends Stage
             Battle battle = actorCreator.createBattle(army);
             addActor(battle);
             battles.add(battle);
-
+            audioManager.playBattleStartedSound();
             messageManager.dispatchMessage(0, null, null, MessageType.BATTLE_STARTED, battle);
             statisticsEventCreator.battleStarted(this, battle);
         }

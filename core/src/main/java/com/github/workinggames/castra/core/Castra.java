@@ -109,11 +109,12 @@ public class Castra extends Game
         super.dispose();
         fontProvider.dispose();
         textureAtlas.dispose();
+        audioManager.disposeSounds();
         skin.dispose();
     }
 
     public boolean tryIfHumbleAssetsPresent()
     {
-        return Gdx.files.internal("humble-assets/cursor.png").exists();
+        return Gdx.files.internal("humble-assets/Cursor.png").exists();
     }
 }

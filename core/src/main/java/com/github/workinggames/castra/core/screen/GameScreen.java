@@ -63,7 +63,8 @@ public class GameScreen extends ScreenAdapter
         soldierSpawner = new SoldierSpawner(this.world.getSettlements());
         battleProcessor = new BattleProcessor(this.world.getBattles(),
             this.world.getGameId(),
-            game.getStatisticsEventCreator());
+            game.getStatisticsEventCreator(),
+            game.getAudioManager());
         victoryCondition = new VictoryCondition(this.world);
         game.getAudioManager().playGameMusic();
     }

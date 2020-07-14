@@ -12,6 +12,8 @@ import com.github.workinggames.castra.core.actor.Army;
 import com.github.workinggames.castra.core.actor.Battle;
 import com.github.workinggames.castra.core.actor.Settlement;
 import com.github.workinggames.castra.core.ai.voons.MessageType;
+import com.github.workinggames.castra.core.audio.AudioManager;
+import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.statistics.StatisticsEventCreator;
 
 @RequiredArgsConstructor
@@ -20,6 +22,7 @@ public class BattleProcessTask extends Timer.Task
     private final Array<Battle> battles;
     private final String gameId;
     private final StatisticsEventCreator statisticsEventCreator;
+    private final AudioManager audioManager;
 
     private boolean captured = false;
 
@@ -35,7 +38,8 @@ public class BattleProcessTask extends Timer.Task
 
             Army army = battle.getArmy();
             Settlement settlement = army.getTarget();
-            if (army.getOwner().equals(settlement.getOwner()))
+            Player oldOwner = settlement.getOwner();
+            if (army.getOwner().equals(oldOwner))
             {
                 settlement.addSoldier();
                 messageManager.dispatchMessage(0, null, null, MessageType.DEFENDER_ADDED, battle);
@@ -49,6 +53,14 @@ public class BattleProcessTask extends Timer.Task
                 }
                 else
                 {
+                    if (oldOwner.isHuman())
+                    {
+                        audioManager.playSettlementLostSound();
+                    }
+                    else if (army.getOwner().isHuman())
+                    {
+                        audioManager.playSettlementCapturedSound();
+                    }
                     settlement.changeOwner(army.getOwner());
                     settlement.addSoldier();
                     messageManager.dispatchMessage(0, null, null, MessageType.DEFENDER_ADDED, battle);

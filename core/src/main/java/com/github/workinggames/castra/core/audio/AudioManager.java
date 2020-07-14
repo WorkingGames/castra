@@ -24,6 +24,9 @@ public class AudioManager
     private Sound defeat;
     private Sound charge;
     private Sound click;
+    private Sound battleStarted;
+    private Sound settlementCaptured;
+    private Sound settlementLost;
 
     public void initializeSounds()
     {
@@ -33,6 +36,9 @@ public class AudioManager
             defeat = Gdx.audio.newSound(Gdx.files.internal("humble-assets/sounds/Defeat.mp3"));
             charge = Gdx.audio.newSound(Gdx.files.internal("humble-assets/sounds/Charge.mp3"));
             click = Gdx.audio.newSound(Gdx.files.internal("humble-assets/sounds/Click.mp3"));
+            battleStarted = Gdx.audio.newSound(Gdx.files.internal("humble-assets/sounds/BattleStart.mp3"));
+            settlementCaptured = Gdx.audio.newSound(Gdx.files.internal("humble-assets/sounds/SettlementCaptured.mp3"));
+            settlementLost = Gdx.audio.newSound(Gdx.files.internal("humble-assets/sounds/SettlementLost.mp3"));
         }
     }
 
@@ -106,6 +112,30 @@ public class AudioManager
         }
     }
 
+    public void playBattleStartedSound()
+    {
+        if (humbleAssetsPresent)
+        {
+            battleStarted.play(soundVolume);
+        }
+    }
+
+    public void playSettlementCapturedSound()
+    {
+        if (humbleAssetsPresent)
+        {
+            settlementCaptured.play(soundVolume);
+        }
+    }
+
+    public void playSettlementLostSound()
+    {
+        if (humbleAssetsPresent)
+        {
+            settlementLost.play(soundVolume);
+        }
+    }
+
     public void disposeSounds()
     {
         if (humbleAssetsPresent)
@@ -114,6 +144,9 @@ public class AudioManager
             defeat.dispose();
             charge.dispose();
             click.dispose();
+            battleStarted.dispose();
+            settlementCaptured.dispose();
+            settlementLost.dispose();
         }
     }
 }
