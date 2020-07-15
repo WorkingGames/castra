@@ -174,6 +174,7 @@ public class GameOptions extends WidgetGroup
                 game.getAudioManager().updateMusicVolume(slider.getValue());
             }
         });
+        optionInput.addListener(getSliderClickListener());
         optionInput.setSize(200, optionInput.getHeight());
         optionInput.setPosition(screens.getRelativeX(VALUE_BEGIN), screens.getRelativeY(50));
         addActor(optionInput);
@@ -196,9 +197,24 @@ public class GameOptions extends WidgetGroup
                 game.getAudioManager().updateSoundVolume(slider.getValue());
             }
         });
+        optionInput.addListener(getSliderClickListener());
         optionInput.setSize(200, optionInput.getHeight());
         optionInput.setPosition(screens.getRelativeX(VALUE_BEGIN), screens.getRelativeY(43));
         addActor(optionInput);
+    }
+
+    private ClickListener getSliderClickListener()
+    {
+        return new ClickListener()
+        {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+            {
+                Gdx.input.vibrate(50);
+                audioManager.playClickSound();
+                return false;
+            }
+        };
     }
 
     private void addOpponentSettlementDetailsVisible()
