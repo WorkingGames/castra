@@ -5,11 +5,15 @@ import java.util.Iterator;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.DefaultTimepiece;
 import com.badlogic.gdx.ai.Timepiece;
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.workinggames.castra.core.actor.ActorCreator;
@@ -71,6 +75,8 @@ public class World extends Stage
     @Setter
     private Ai ai2 = null;
 
+    private Settlement selectedSettlement = null;
+
     public World(
         Viewport viewport,
         TextureAtlas textureAtlas,
@@ -92,7 +98,22 @@ public class World extends Stage
         timepiece = new DefaultTimepiece();
 
         Screens screens = new Screens(viewport);
-        addActor(screens.toBackground(textureAtlas.findRegion("Background1").getTexture()));
+        Image background = screens.toBackground(textureAtlas.findRegion("Background1").getTexture());
+        background.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                if (selectedSettlement != null)
+                {
+                    Gdx.input.vibrate(50);
+                    audioManager.playClickSound();
+                    selectedSettlement.setHighlight(false);
+                    selectedSettlement = null;
+                }
+            }
+        });
+        addActor(background);
 
         if (gameConfiguration.getPlayer1().getType().equals(PlayerType.HUMAN))
         {
@@ -127,6 +148,33 @@ public class World extends Stage
     public void createSettlement(SettlementSize size, int x, int y, int soldiers, Player owner)
     {
         Settlement settlement = actorCreator.createSettlement(size, x, y, soldiers, owner);
+        settlement.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Gdx.input.vibrate(50);
+                audioManager.playClickSound();
+                Settlement clickedSettlement = (Settlement) event.getListenerActor();
+                if (selectedSettlement == null)
+                {
+                    if (settlement.getOwner().isHuman())
+                    {
+                        clickedSettlement.setHighlight(true);
+                        selectedSettlement = clickedSettlement;
+                    }
+                }
+                else
+                {
+                    if (clickedSettlement != selectedSettlement)
+                    {
+                        createArmy(selectedSettlement, clickedSettlement);
+                    }
+                    selectedSettlement.setHighlight(false);
+                    selectedSettlement = null;
+                }
+            }
+        });
         addActor(settlement);
         settlements.add(settlement);
     }
