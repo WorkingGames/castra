@@ -2,11 +2,14 @@ package com.github.workinggames.castra.core.actor;
 
 import lombok.Getter;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Align;
 import com.github.workinggames.castra.core.audio.AudioManager;
@@ -58,7 +61,39 @@ public class ArmySplit extends Group
 
         DragAndDrop dragAndDrop = new DragAndDrop();
         dragAndDrop.addSource(new ArmySplitDragSource(this, audioManager));
-        dragAndDrop.addTarget(new ArmySplitDragTarget(this, audioManager));
+        ArmySplitDragTarget dragTarget = new ArmySplitDragTarget(this, audioManager);
+        dragAndDrop.addTarget(dragTarget);
+
+        innerRimGroup.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                if (!outerRimGroup.isVisible())
+                {
+                    showOuterRimGroup();
+                }
+                else
+                {
+                    hideOuterRimGroup();
+                }
+                Gdx.input.vibrate(50);
+                audioManager.playClickSound();
+            }
+        });
+
+        outerRimGroup.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                int armySplitPercentage = dragTarget.calculateArmySplitPercentage(x, y);
+                updatePercentage(armySplitPercentage);
+                Gdx.input.vibrate(50);
+                audioManager.playClickSound();
+                hideOuterRimGroup();
+            }
+        });
     }
 
     public void updateLabel()

@@ -37,7 +37,7 @@ public class ArmySplitDragTarget extends DragAndDrop.Target
         audioManager.playClickSound();
     }
 
-    private int calculateArmySplitPercentage(float x, float y)
+    public int calculateArmySplitPercentage(float x, float y)
     {
         float angle = new Vector2(x, y).angle();
         return (int) (Math.round(angle / DEGREES_FOR_STEP) * STEP_SIZE);
