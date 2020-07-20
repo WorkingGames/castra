@@ -15,9 +15,11 @@ import com.github.workinggames.castra.core.model.Player;
 import com.github.workinggames.castra.core.stage.GameConfiguration;
 import com.github.workinggames.castra.core.stage.World;
 import com.github.workinggames.castra.core.statistics.event.ArmyDeployed;
+import com.github.workinggames.castra.core.statistics.event.ArmyDto;
 import com.github.workinggames.castra.core.statistics.event.BattleEnded;
 import com.github.workinggames.castra.core.statistics.event.BattleJoined;
 import com.github.workinggames.castra.core.statistics.event.BattleStarted;
+import com.github.workinggames.castra.core.statistics.event.GameCanceled;
 import com.github.workinggames.castra.core.statistics.event.GameEnded;
 import com.github.workinggames.castra.core.statistics.event.GameStarted;
 import com.github.workinggames.castra.core.statistics.event.PlayerDto;
@@ -49,12 +51,24 @@ public class StatisticsEventCreator
         GameEnded.Attributes attributes = new GameEnded.Attributes(getGameId(world),
             new PlayerDto(player),
             getSettlementDtos(world),
-            MathUtils.ceil(playTime),
+            playTime,
             score,
             playerWon);
         GameEnded gameEnded = new GameEnded(attributes, getTimestamp());
 
         vortexEventSender.send(gameEnded);
+    }
+
+    public void gameCanceled(World world)
+    {
+        GameCanceled.Attributes attributes = new GameCanceled.Attributes(getGameId(world),
+            world.getGameConfiguration().getSeed(),
+            getSettlementDtos(world),
+            getArmyDtos(world),
+            MathUtils.floor(world.getTimepiece().getTime()));
+        GameCanceled gameCanceled = new GameCanceled(attributes, getTimestamp());
+
+        vortexEventSender.send(gameCanceled);
     }
 
     public void armyDeployed(World world, Army army)
@@ -127,5 +141,15 @@ public class StatisticsEventCreator
             settlementDtos.add(new SettlementDto(settlement));
         }
         return settlementDtos;
+    }
+
+    private Array<ArmyDto> getArmyDtos(World world)
+    {
+        Array<ArmyDto> armyDtos = new Array<>();
+        for (Army army : world.getArmies())
+        {
+            armyDtos.add(new ArmyDto(army));
+        }
+        return armyDtos;
     }
 }

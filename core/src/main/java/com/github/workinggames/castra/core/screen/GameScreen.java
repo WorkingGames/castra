@@ -79,6 +79,7 @@ public class GameScreen extends ScreenAdapter
             Gdx.input.vibrate(50);
             game.getAudioManager().stopGameMusic();
             game.setScreen(new MainMenuScreen(game));
+            game.getStatisticsEventCreator().gameCanceled(this.world);
             dispose();
         }
         if (gameScreenDrawn && !gameEnded)
